@@ -2,6 +2,7 @@
 set -euo pipefail
 
 DEPLOY=false
+VERCEL_ARGS=(--prod)
 
 usage() {
   echo "Usage: $0 <path-to-latest-html> [--deploy]"
@@ -41,11 +42,19 @@ echo "Updated index.html from: $SOURCE_FILE"
 echo "Done. Validate locally with: python3 -m http.server 8080"
 
 if [[ "$DEPLOY" == "true" ]]; then
-  if ! command -v vercel >/dev/null 2>&1; then
-    echo "Error: vercel CLI not found. Install with: npm i -g vercel"
-    exit 1
+  if [[ -n "${VERCEL_TOKEN:-}" ]]; then
+    VERCEL_ARGS+=(--token "$VERCEL_TOKEN")
   fi
 
-  echo "Deploying to Vercel production..."
-  vercel --prod
+  if command -v vercel >/dev/null 2>&1; then
+    echo "Deploying to Vercel production with installed CLI..."
+    vercel "${VERCEL_ARGS[@]}"
+  elif command -v npx >/dev/null 2>&1; then
+    echo "Deploying to Vercel production with npx..."
+    npx vercel@latest "${VERCEL_ARGS[@]}"
+  else
+    echo "Error: neither 'vercel' nor 'npx' is available."
+    echo "Install Node.js + npm, then run: npm i -g vercel"
+    exit 1
+  fi
 fi

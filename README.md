@@ -62,6 +62,21 @@ cp versions/index-<timestamp>.html index.html
 vercel --prod
 ```
 
+## Deploy from environments without global Vercel CLI
+
+If `vercel` is not installed globally, the updater can deploy via `npx` automatically:
+
+```bash
+./scripts/update_latest_html.sh "your-latest-file.html" --deploy
+```
+
+Optional for CI/non-interactive deploys:
+
+```bash
+export VERCEL_TOKEN="your_vercel_token"
+./scripts/update_latest_html.sh "your-latest-file.html" --deploy
+```
+
 ## Make it public for free on Vercel
 
 Yes — this project is perfect for Vercel’s free **Hobby** tier.
