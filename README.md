@@ -77,6 +77,25 @@ export VERCEL_TOKEN="your_vercel_token"
 ./scripts/update_latest_html.sh "your-latest-file.html" --deploy
 ```
 
+## Auto-deploy to Vercel with GitHub Actions
+
+I added a workflow at `.github/workflows/deploy-vercel.yml` so every push to `main` that changes `index.html` or `vercel.json` can auto-deploy to Vercel production.
+
+### One-time setup in GitHub
+
+In your GitHub repository, go to **Settings → Secrets and variables → Actions** and add:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+You can get these from the Vercel dashboard/project settings (or by running `vercel link` locally and checking `.vercel/project.json`).
+
+### Trigger deploy
+
+- Push to `main` after updating `index.html`, or
+- Run the workflow manually from the **Actions** tab (`workflow_dispatch`).
+
 ## Make it public for free on Vercel
 
 Yes — this project is perfect for Vercel’s free **Hobby** tier.
