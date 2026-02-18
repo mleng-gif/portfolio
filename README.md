@@ -21,8 +21,28 @@ Personal portfolio website built as a single static HTML file.
 
 ## Project files
 
-- `index.html` — website entry page.
-- `michael-leng-timeline-v3 (1).html` — original source snapshot kept for reference.
+- `index.html` — website entry page currently deployed.
+- `michael-leng-timeline-v3 (1).html` — older source snapshot kept for reference.
+- `scripts/update_latest_html.sh` — helper script to swap in your newest HTML and back up the old `index.html`.
+- `versions/` — automatic backups created when updating `index.html`.
+
+## Update to your latest website iteration
+
+If you have a newer HTML export, you can replace the live entry file in one command:
+
+```bash
+./scripts/update_latest_html.sh "/path/to/your/latest-file.html"
+```
+
+What this does:
+- Backs up the current `index.html` into `versions/index-<timestamp>.html`
+- Replaces `index.html` with your latest file
+
+Then test it locally:
+
+```bash
+python3 -m http.server 8080
+```
 
 ## Make it public for free on Vercel
 
