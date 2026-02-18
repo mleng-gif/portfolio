@@ -44,3 +44,15 @@ vercel --prod
 - In **Project Settings → General**, confirm **Root Directory** is `.` (repo root).
 - In **Project Settings → Domains**, ensure your custom domain is assigned to this project (not another Vercel project).
 - If the latest commit is not deployed, trigger **Redeploy** from the newest deployment or run `vercel --prod` from an authenticated machine.
+
+
+## 8) Why GitHub shows multiple failed Vercel checks
+- Your screenshot shows **three separate Vercel Git integrations** attached to this repo (`mleng-gif-portfolio`, `portfolio`, `portfolio-rwpp`).
+- GitHub marks checks red if each connected Vercel project reports a failed deployment.
+- This is usually project wiring, not HTML: wrong **Root Directory**, wrong branch, or stale/duplicate Vercel projects still connected to the same repo.
+
+### Fix checklist (important)
+1. In Vercel, open each of the three projects shown in checks and confirm only one should remain connected.
+2. For projects you no longer use, disconnect Git integration or remove the project.
+3. In the active project: set Root Directory to `.` and Production Branch to your live branch.
+4. Redeploy from the latest commit.
