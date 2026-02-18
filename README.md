@@ -28,10 +28,10 @@ Personal portfolio website built as a single static HTML file.
 
 ## Update to your latest website iteration
 
-If you have a newer HTML export, you can replace the live entry file in one command:
+If your new export is named `michael-leng-timeline-v4 (8).html`, place it in the repo root and run:
 
 ```bash
-./scripts/update_latest_html.sh "/path/to/your/latest-file.html"
+./scripts/update_latest_html.sh "michael-leng-timeline-v4 (8).html"
 ```
 
 What this does:
@@ -43,6 +43,16 @@ Then test it locally:
 ```bash
 python3 -m http.server 8080
 ```
+
+## Update to latest index on Vercel
+
+After replacing `index.html`, deploy immediately to production:
+
+```bash
+./scripts/update_latest_html.sh "michael-leng-timeline-v4 (8).html" --deploy
+```
+
+This runs `vercel --prod` after the file swap (requires Vercel CLI installed and project linked).
 
 ## Make it public for free on Vercel
 
