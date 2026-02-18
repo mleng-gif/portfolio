@@ -25,13 +25,14 @@ Personal portfolio website built as a single static HTML file.
 - `michael-leng-timeline-v3 (1).html` — older source snapshot kept for reference.
 - `scripts/update_latest_html.sh` — helper script to swap in your newest HTML and back up the old `index.html`.
 - `versions/` — automatic backups created when updating `index.html`.
+- `vercel.json` — Vercel routing config that serves `index.html` for all paths.
 
 ## Update to your latest website iteration
 
-If your new export is named `michael-leng-timeline-v4 (8).html`, place it in the repo root and run:
+If you have a newer HTML export, place it in the repo root and run:
 
 ```bash
-./scripts/update_latest_html.sh "michael-leng-timeline-v4 (8).html"
+./scripts/update_latest_html.sh "your-latest-file.html"
 ```
 
 What this does:
@@ -44,15 +45,22 @@ Then test it locally:
 python3 -m http.server 8080
 ```
 
-## Update to latest index on Vercel
+## Recover quickly if Vercel is down
 
-After replacing `index.html`, deploy immediately to production:
+1. Ensure `index.html` exists in the repo root.
+2. Ensure `vercel.json` is present (this repo includes it already).
+3. Redeploy production:
 
 ```bash
-./scripts/update_latest_html.sh "michael-leng-timeline-v4 (8).html" --deploy
+vercel --prod
 ```
 
-This runs `vercel --prod` after the file swap (requires Vercel CLI installed and project linked).
+If you need to roll back quickly, copy a backup back into place and redeploy:
+
+```bash
+cp versions/index-<timestamp>.html index.html
+vercel --prod
+```
 
 ## Make it public for free on Vercel
 
@@ -90,4 +98,5 @@ vercel --prod
 ## Deploy notes
 
 - Vercel automatically serves `index.html` at `/`.
+- `vercel.json` routes all paths to `index.html` to avoid route-level 404 downtime.
 - You can connect a custom domain in Vercel project settings later.
