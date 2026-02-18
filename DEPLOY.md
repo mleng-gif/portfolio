@@ -37,3 +37,10 @@ vercel --prod
 
 ## 6) Fallback page for static hosts
 - `404.html` is intentionally a copy of `index.html` to support SPA fallback behavior on hosts that serve a static 404 document.
+
+
+## 7) If you still see `404: NOT_FOUND`
+- In Vercel, open **Project → Deployments** and verify there is a recent successful deployment from your latest commit.
+- In **Project Settings → General**, confirm **Root Directory** is `.` (repo root).
+- In **Project Settings → Domains**, ensure your custom domain is assigned to this project (not another Vercel project).
+- If the latest commit is not deployed, trigger **Redeploy** from the newest deployment or run `vercel --prod` from an authenticated machine.
