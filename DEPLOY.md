@@ -17,9 +17,7 @@ This repo is configured for static hosting with a Vercel rewrite fallback in `ve
 - In Vercel Project Settings → **Git**, set **Production Branch** to your main branch (commonly `main`).
 
 ## 3) Why this resolves 404s
-- `vercel.json` is configured to:
-  1. Serve existing files directly.
-  2. Rewrite unmatched paths to `/index.html`.
+- `vercel.json` is configured with a catch-all rewrite to `/index.html` for any route path.
 - This prevents Vercel `404: NOT_FOUND` for direct visits to non-root routes.
 
 ## 4) Local verification
@@ -36,3 +34,6 @@ vercel login
 vercel --prod
 ```
 
+
+## 6) Fallback page for static hosts
+- `404.html` is intentionally a copy of `index.html` to support SPA fallback behavior on hosts that serve a static 404 document.
