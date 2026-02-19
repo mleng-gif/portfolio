@@ -1514,6 +1514,8 @@
         .hero-text {
             text-align: center;
             transform-style: preserve-3d;
+            will-change: opacity, transform;
+            transform-origin: center center;
         }
 
         .hero-logo {
@@ -1638,20 +1640,22 @@
             justify-content: center;
             opacity: 0;
             pointer-events: none;
+            transform: scale(0.92) translateY(40px);
+            transform-origin: center center;
+            will-change: opacity, transform;
         }
 
         .section.active {
-            opacity: 1;
             pointer-events: auto;
         }
 
         .section-content {
-            max-width: 700px;
-            padding: 0 50px;
+            max-width: 70%;
+            padding: 0 40px;
         }
 
         .section-content-wide {
-            max-width: 1000px;
+            max-width: 70%;
         }
 
         .section-label {
@@ -1765,17 +1769,17 @@
         /* Work preview grid */
         .work-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 36px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 28px;
         }
 
         .work-item {
             --item-color: var(--accent);
             position: relative;
-            aspect-ratio: 16/10;
+            aspect-ratio: 16/9;
             background: var(--bg-panel);
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid rgba(128,128,128,0.12);
             overflow: hidden;
             cursor: pointer;
@@ -1845,7 +1849,6 @@
         .section.active .work-item:nth-child(6) { transition-delay: 0.5s; }
         .section.active .work-item:nth-child(7) { transition-delay: 0.56s; }
         .section.active .work-item:nth-child(8) { transition-delay: 0.62s; }
-        .section.active .work-item:nth-child(9) { transition-delay: 0.68s; }
 
         .work-item::before {
             content: '';
@@ -2412,14 +2415,13 @@
         }
 
         .work-grid.expanding .work-item:nth-child(1) { transform: translate(-120%, -80%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(2) { transform: translateY(-120%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(3) { transform: translate(120%, -80%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(4) { transform: translate(-120%, 0%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(5) { transform: scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(6) { transform: translate(120%, 0%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(2) { transform: translate(120%, -80%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(3) { transform: translate(-120%, -30%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(4) { transform: translate(120%, -30%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(5) { transform: translate(-120%, 30%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(6) { transform: translate(120%, 30%) scale(0.8); }
         .work-grid.expanding .work-item:nth-child(7) { transform: translate(-120%, 80%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(8) { transform: translateY(120%) scale(0.8); }
-        .work-grid.expanding .work-item:nth-child(9) { transform: translate(120%, 80%) scale(0.8); }
+        .work-grid.expanding .work-item:nth-child(8) { transform: translate(120%, 80%) scale(0.8); }
 
         /* The clicked tile stays centered briefly before expanding */
         .work-grid.expanding .work-item.active-tile {
@@ -2441,10 +2443,6 @@
 
         /* Responsive */
         @media (max-width: 900px) {
-            .work-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .section-content-wide {
                 max-width: 600px;
             }
@@ -2457,6 +2455,12 @@
 
             .work-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
+                margin-top: 16px;
+            }
+
+            .work-item {
+                aspect-ratio: 16/9;
             }
 
             .contact-links {
@@ -2469,9 +2473,9 @@
             }
 
             .top-right-controls {
-                top: 16px;
-                right: 16px;
-                gap: 8px;
+                top: 12px;
+                right: 12px;
+                gap: 6px;
             }
 
             .theme-toggle-label {
@@ -2483,14 +2487,106 @@
             }
 
             .timecode {
-                padding: 8px 12px;
-                font-size: 12px;
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .section-content {
+                padding: 0 20px;
+                max-width: 100%;
             }
 
             .section-content-wide {
                 max-width: 100%;
-                padding: 0 24px;
+                padding: 0 16px;
             }
+
+            .section h2 {
+                font-size: clamp(28px, 7vw, 42px);
+                margin-bottom: 16px;
+            }
+
+            .section p {
+                font-size: 15px;
+                line-height: 1.65;
+            }
+
+            .section-label {
+                font-size: 9px;
+                margin-bottom: 16px;
+            }
+
+            /* Mobile expanded panel */
+            .portfolio-expanded {
+                padding: 12px;
+            }
+
+            .portfolio-expanded-inner {
+                border-radius: 12px;
+            }
+
+            .portfolio-expanded-header {
+                padding: 20px 16px;
+                padding-left: 16px;
+                padding-top: 50px;
+            }
+
+            .portfolio-expanded-title {
+                font-size: clamp(20px, 5vw, 28px) !important;
+            }
+
+            .portfolio-expanded-desc {
+                font-size: 13px;
+            }
+
+            .portfolio-expanded-close {
+                top: 12px;
+                left: 12px;
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+
+            .portfolio-expanded-case-study {
+                padding: 16px;
+            }
+
+            .portfolio-expanded-actions {
+                padding: 12px 16px;
+            }
+
+            .cs-heading {
+                font-size: clamp(17px, 3vw, 22px) !important;
+            }
+
+            .cs-text {
+                font-size: 13px !important;
+            }
+
+            /* Mobile timeline */
+            .timeline-bar {
+                padding: 0 8px;
+            }
+
+            .timeline-controls {
+                gap: 2px;
+            }
+
+            .duration-label {
+                font-size: 8px;
+            }
+
+            .comp-info {
+                display: none;
+            }
+
+            .scroll-hint {
+                font-size: 9px;
+                bottom: 70px;
+            }
+
+            /* Registration marks */
+            .reg-mark { display: none; }
+            .safe-area { display: none; }
         }
 
         /* Theme toggle button */
@@ -2865,7 +2961,7 @@
             </div>
 
             <!-- Section: Work -->
-            <div class="section" id="section-work">
+            <div class="section" id="section-work" style="align-items: flex-start; overflow-y: auto; padding-top: 40px; padding-bottom: 40px;">
                 <div class="section-content section-content-wide">
                     <div class="section-label work">MARKER: WORK @ 2:16</div>
                     <h2>Systematic craft for brands that move.</h2>
@@ -2925,13 +3021,6 @@
                             <div class="work-item-content">
                                 <div class="work-item-title">PBS Space Time</div>
                                 <div class="work-item-desc">Science Communication</div>
-                            </div>
-                        </a>
-                        <a href="#" class="work-item" data-project="karmalog" style="--item-color: #14b8a6;">
-                            <div class="work-item-bg" style="background-image: url('https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1424650151412-JR8LVXSJKGQ82WI3YX3T/leng_michael_01.jpg')"><span class="bg-label">KL</span></div>
-                            <div class="work-item-content">
-                                <div class="work-item-title">Karma Log</div>
-                                <div class="work-item-desc">Data Viz · Thesis</div>
                             </div>
                         </a>
                     </div>
@@ -3219,12 +3308,15 @@
                 // Update background images
                 updateBgImages(progress);
 
-                // === HERO ANIMATION ===
-                const heroFadeOut = Math.max(0, (progress - 0.08) / 0.06);
+                // === HERO ANIMATION (zoom through) ===
+                const heroFadeOut = Math.max(0, (progress - 0.06) / 0.08);
                 const heroOpacity = Math.max(0, 1 - heroFadeOut);
+                const heroScale = 1 + heroFadeOut * 0.12; // 1.0 → 1.12 zoom past
+                const heroShift = -heroFadeOut * 50; // drift upward
                 
                 if (hero) {
                     hero.style.opacity = heroOpacity;
+                    hero.style.transform = `scale(${heroScale}) translateY(${heroShift}px)`;
                     hero.style.pointerEvents = progress < 0.14 ? 'auto' : 'none';
                 }
 
@@ -3311,30 +3403,75 @@
                 const cd2DriftY = progress * -25 + Math.sin(progress * Math.PI * 1.8) * 15;
                 if (code2) { code2.style.opacity = cd2Eased * 0.4 * (1 - progress * 0.3); baseTransforms.set(code2, `translate(${cd2Drift}px, ${20 * (1 - cd2Eased) + cd2DriftY}px)`); code2.style.transform = baseTransforms.get(code2); }
 
-                // === SECTION VISIBILITY ===
-                const heroVis = progress < 0.14;
-                const workVis = progress >= 0.14 && progress < 0.50;
-                const aboutVis = progress >= 0.50 && progress < 0.75;
-                const contactVis = progress >= 0.75;
+                // === SECTION VISIBILITY (Scroll + Zoom Depth) ===
+                // Each section scales from 0.92→1.0 on entry, 1.0→1.08 on exit (zoom through)
+                const workStart = 0.10, workPeak = 0.17, workFade = 0.46, workEnd = 0.54;
+                const aboutStart = 0.46, aboutPeak = 0.55, aboutFade = 0.71, aboutEnd = 0.78;
+                const contactStart = 0.71, contactPeak = 0.80;
 
-                if (hero) hero.style.pointerEvents = heroVis ? 'auto' : 'none';
+                function sectionTransform(p, start, peak, fade, end) {
+                    let op = 0, sc = 0.92, ty = 40;
+                    if (p >= start && (!end || p <= end)) {
+                        if (p < peak) {
+                            const t = (p - start) / (peak - start);
+                            op = t;
+                            sc = 0.92 + t * 0.08;  // 0.92 → 1.0
+                            ty = 40 * (1 - t);       // 40 → 0
+                        } else if (end && p > fade) {
+                            const t = (p - fade) / (end - fade);
+                            op = 1 - t;
+                            sc = 1.0 + t * 0.08;    // 1.0 → 1.08 (zoom past)
+                            ty = -30 * t;             // 0 → -30 (drift up)
+                        } else {
+                            op = 1; sc = 1.0; ty = 0;
+                        }
+                    }
+                    if (!end && p >= start) {
+                        if (p < peak) {
+                            const t = (p - start) / (peak - start);
+                            op = t; sc = 0.92 + t * 0.08; ty = 40 * (1 - t);
+                        } else { op = 1; sc = 1.0; ty = 0; }
+                    }
+                    return { op: Math.max(0, Math.min(1, op)), sc, ty };
+                }
 
-                if (sectionWork) sectionWork.classList.toggle('active', workVis);
-                if (sectionAbout) sectionAbout.classList.toggle('active', aboutVis);
-                if (sectionContact) sectionContact.classList.toggle('active', contactVis);
+                const wk = sectionTransform(progress, workStart, workPeak, workFade, workEnd);
+                const ab = sectionTransform(progress, aboutStart, aboutPeak, aboutFade, aboutEnd);
+                const ct = sectionTransform(progress, contactStart, contactPeak, null, null);
+
+                if (hero) hero.style.pointerEvents = progress < 0.14 ? 'auto' : 'none';
+
+                if (sectionWork) {
+                    sectionWork.style.opacity = wk.op;
+                    sectionWork.style.transform = `scale(${wk.sc}) translateY(${wk.ty}px)`;
+                    sectionWork.style.pointerEvents = wk.op > 0.3 ? 'auto' : 'none';
+                    sectionWork.classList.toggle('active', wk.op > 0.05);
+                }
+                if (sectionAbout) {
+                    sectionAbout.style.opacity = ab.op;
+                    sectionAbout.style.transform = `scale(${ab.sc}) translateY(${ab.ty}px)`;
+                    sectionAbout.style.pointerEvents = ab.op > 0.3 ? 'auto' : 'none';
+                    sectionAbout.classList.toggle('active', ab.op > 0.05);
+                }
+                if (sectionContact) {
+                    sectionContact.style.opacity = ct.op;
+                    sectionContact.style.transform = `scale(${ct.sc}) translateY(${ct.ty}px)`;
+                    sectionContact.style.pointerEvents = ct.op > 0.3 ? 'auto' : 'none';
+                    sectionContact.classList.toggle('active', ct.op > 0.05);
+                }
 
                 // Update expression code based on section
                 let currentExpr = `<span class="keyword">let</span> t = <span class="func">time</span> - <span class="func">inPoint</span>;
 <span class="func">easeOut</span>(t, <span class="number">0</span>, <span class="number">1.2</span>, <span class="number">0</span>, <span class="number">100</span>)`;
 
-                if (workVis) {
+                if (wk.op > 0.5) {
                     currentExpr = `<span class="keyword">let</span> n = <span class="func">thisComp</span>.numLayers;
 <span class="func">loopOut</span>(<span class="number">"cycle"</span>)`;
                     paramRotation.textContent = '-2°';
-                } else if (aboutVis) {
+                } else if (ab.op > 0.5) {
                     currentExpr = `<span class="func">wiggle</span>(<span class="number">2</span>, <span class="number">8</span>)`;
                     paramRotation.textContent = '1.5°';
-                } else if (contactVis) {
+                } else if (ct.op > 0.5) {
                     currentExpr = `<span class="func">linear</span>(t, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">100</span>)`;
                     paramRotation.textContent = '-1°';
                 } else {
@@ -3886,10 +4023,7 @@
                     { type: 'section', label: 'The Brief', heading: 'A new sports network that needed to feel premium from day one.', text: 'Fubo was building a live sports streaming network with original programming. They needed a broadcast design language that could scale across multiple shows, live events, and promotional content while competing visually with legacy networks that had decades of established identity.' },
                     { type: 'hero', src: S+'805e3fe4-fce5-4913-8630-8ab3d4813ae4/fubo-sports-network.jpg' },
                     { type: 'section', label: 'The Approach', heading: 'Start with the foundational toolkit. Build a modular system.', text: 'I treated this the way you\'d approach any broadcast redesign — lower thirds, score bugs, transition packages, show opens, end pages. But because this was a new network, every decision was being made for the first time. I built a modular system that could flex across different show formats while maintaining a cohesive visual identity.' },
-                    { type: 'grid2', images: [
-                        S+'1709063121803-BCJF14DG0SWLVZ2CXLTQ/Slate-FSN-05+%280%3B00%3B12%3B25%29.png',
-                        S+'1709063121803-BCJF14DG0SWLVZ2CXLTQ/Slate-FSN-05+%280%3B00%3B12%3B25%29.png'
-                    ], caption: 'Broadcast slate designs across show formats' },
+                    { type: 'video', src: 'https://player.vimeo.com/video/910148835?h=0&badge=0&autopause=0&player_id=0', caption: 'Fubo Sports Network — Broadcast Package Reel' },
                     { type: 'section', label: 'The Execution', heading: 'Full broadcast toolkit across multiple show formats.', text: 'The scope covered lower thirds, full-screen graphics, transition wipes, bumpers, logo animations, show-specific packaging, and promotional assets. I designed and animated across multiple show formats, ensuring each had its own personality while clearly belonging to the same network.' },
                     { type: 'section', label: 'The Outcome', heading: 'A scalable framework that works when you\'re not there.', text: 'The Fubo Sports Network launched with a fully realized broadcast identity that held up across hours of weekly content. The system I built gave the production team a scalable framework they could execute independently — which is ultimately the measure of good broadcast design.' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Art Director, Animator' }, { l: 'Client', v: 'Fubo TV' }, { l: 'Type', v: 'Broadcast Graphics' }, { l: 'Scope', v: 'Full channel identity' }] }
@@ -3927,6 +4061,7 @@
                 blocks: [
                     { type: 'section', label: 'Overview', heading: 'Not a single project — an era.', text: 'Over the course of my time at CBS Sports, I worked across nearly every corner of their on-air design — from the foundational broadcast graphics package that launched during the Super Bowl, to sport-specific show packaging, to one-off creative projects that pushed beyond the typical broadcast design playbook.' },
                     { type: 'hero', src: S+'1604545567941-O072PYU58V1P9MTZ83WB/155207_CBS_Eye_Transition_C_sample.gif' },
+                    { type: 'video', src: 'https://player.vimeo.com/video/166399356?h=0&badge=0&autopause=0&player_id=0', caption: 'CBS Sports — Super Bowl 50 Broadcast Package' },
                     { type: 'subprojects', items: [
                         { num: '01', name: 'Super Bowl 50 — Broadcast Overhaul', role: 'Designer, Animator', heading: 'Every element redesigned. Debuted on the biggest stage.', text: 'CBS Sports undertook a complete redesign of their broadcast graphics package — every visual element that appears on air. The new design language debuted during Super Bowl 50. I contributed to the design and animation of elements within the new package, working as part of a team to meet the quality bar required for a Super Bowl debut.', result: 'Debuted Super Bowl 50 (Feb 7, 2016). 2016 Sports Emmy Award. 100M+ viewers.' },
                         { num: '02', name: 'NCAA Football — Studio Redesign', role: 'Lead Designer, Animator', heading: 'Overhauling the studio for pregame, halftime, and postgame.', text: 'As Lead Designer and Animator, I implemented a sleeker, smoother animation language throughout the NCAA Football show — redesigning how content appeared on studio monitors and how transitions moved viewers between segments.', result: 'Streamlined graphics that made production faster without sacrificing quality.' }
@@ -4009,10 +4144,22 @@
             'verneek': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'An AI education platform that feels futuristic and human.', text: 'Verneek needed a visual identity and motion system that could communicate both technological sophistication and human accessibility — a tricky balance when your product is literally artificial intelligence.' },
-                    { type: 'hero', src: S+'8ce2bd53-10f1-4107-b460-b3fc7fd9f85c/Screenshot+2024-08-12+114845.png' },
-                    { type: 'section', label: 'The Approach', heading: 'Between cold enterprise and cliché sci-fi.', text: 'I aimed for a design language that feels futuristic and data-informed but also approachable. Education is personal, and the brand needed to reflect that. I built the visual system around data-driven graphic elements — abstract visualizations, flowing data streams, and geometric forms that suggest intelligence without being literal.' },
+                    { type: 'hero', src: S+'a556b31d-2680-43ed-8b48-b3b4fecc07f8/composite_orb_9_1.gif' },
+                    { type: 'section', label: 'The Approach', heading: 'Defining the voice of AI.', text: 'I aimed for a design language that feels futuristic and data-informed but also approachable. The key creative solve was defining what a conversational AI brain could look like — abstract visualizations, flowing data streams, and organic orb forms that suggest intelligence without being literal.' },
+                    { type: 'grid2', images: [
+                        S+'d97abb69-1823-4fb2-b3de-405e90dd1a19/composite+9+%280-00-14-23%29.png',
+                        S+'f9a1d4be-c6d2-4394-9cb9-91a0eb0c20fd/composite+9+%280-00-04-19%29.png'
+                    ], caption: 'AI orb composites — data-driven visual identity' },
+                    { type: 'grid2', images: [
+                        S+'d7a35012-e979-4046-a0f1-fdf65961e717/Screenshot+2024-08-11+143936.png',
+                        S+'daec20be-0985-4091-bc69-e1c5dcf021ad/Screenshot+2024-08-11+144027.png'
+                    ], caption: 'Platform interface design — conversational AI experience' },
+                    { type: 'grid2', images: [
+                        S+'ea585aff-867f-4a2e-a349-a3ad5bfbce58/image+8.png',
+                        S+'d1f01c86-5c83-43e3-b91a-5bf572ccda29/Orb_08-AURORA+3+%280-00-02-23%29_2.png'
+                    ], caption: 'Brand visual system — orb explorations & aurora effects' },
                     { type: 'section', label: 'The Outcome', heading: 'A credible, distinctive presence in AI/edtech.', text: 'The visual identity gave Verneek a credible presence in a crowded landscape. The motion system provided a flexible framework for communicating complex product capabilities in an accessible, visually engaging way.' },
-                    { type: 'facts', items: [{ l: 'Role', v: 'Designer, Motion Designer' }, { l: 'Client', v: 'Verneek' }, { l: 'Type', v: 'Brand Identity' }, { l: 'Sector', v: 'AI / EdTech' }] }
+                    { type: 'facts', items: [{ l: 'Role', v: 'Sr. Brand Designer' }, { l: 'Client', v: 'Verneek' }, { l: 'Type', v: 'Brand Identity' }, { l: 'Sector', v: 'AI / EdTech' }] }
                 ]
             },
             'pbs': {
@@ -4020,7 +4167,10 @@
                     { type: 'section', label: 'The Brief', heading: 'Make astrophysics visually engaging without dumbing it down.', text: 'PBS Digital Studios was launching Space Time, a YouTube series about astrophysics. The show needed a visual identity and episode graphics that could make complex scientific concepts engaging for a mainstream audience.' },
                     { type: 'hero', src: S+'4812b781-1309-443a-b155-8c55df610034/season-2015.jpg' },
                     { type: 'section', label: 'The Approach', heading: 'The visualization IS the explanation.', text: 'Science communication design is its own discipline. Black holes, the edge of the universe, the nature of spacetime — these are topics where the visualization IS the explanation. I developed a visual system that mixed diagrammatic clarity with cinematic scale.' },
+                    { type: 'video', src: 'https://www.youtube.com/embed/AwwIFcdUFrE', caption: 'Episode: "What Happens At The Edge Of The Universe?"' },
                     { type: 'section', label: 'The Execution', heading: 'Weekly episodes from event horizons to the nature of time.', text: 'I designed the show\'s visual language and animated episodes covering topics from black hole event horizons to the nature of space and time as illusion. Episodes released weekly, maintaining a production rhythm that balanced quality with YouTube\'s release schedule.' },
+                    { type: 'video', src: 'https://www.youtube.com/embed/YycAzdtUIko', caption: 'Episode: "Do Events Inside Black Holes Happen?"' },
+                    { type: 'video', src: 'https://www.youtube.com/embed/GguAN1_JouQ', caption: 'Episode: "Are Space and Time An Illusion?"' },
                     { type: 'section', label: 'The Outcome', heading: '700K+ subscribers and growing.', text: 'PBS Space Time grew to over 700,000 subscribers and became one of the most respected science channels on YouTube. The visual design played a meaningful role in establishing credibility.' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Original Designer' }, { l: 'Studio', v: 'Kornhaber Brown' }, { l: 'Client', v: 'PBS Digital' }, { l: 'Audience', v: '700K+ subs' }] }
                 ]
@@ -4099,6 +4249,12 @@
                                 </div>
                             </div>`;
                         });
+                        break;
+                    case 'video':
+                        html += `<div style="margin: 20px 0 24px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,0.1); background: #000; aspect-ratio: 16/9;">
+                            <iframe src="${block.src}" style="width: 100%; height: 100%; border: none;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                        </div>
+                        ${block.caption ? `<div style="margin: -16px 0 20px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}`;
                         break;
                     case 'facts':
                         html += '<hr class="cs-divider"><div class="cs-facts">';
