@@ -128,7 +128,132 @@
             transition: background 0.4s ease;
         }
 
-        /* Animated gradient background */
+        /* ═══ INTRO / BOOT SEQUENCE ═══ */
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #05050a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        .intro-overlay.hidden {
+            display: none;
+        }
+
+        .intro-content {
+            text-align: center;
+            width: 380px;
+            max-width: 90vw;
+        }
+
+        .intro-logo {
+            width: 120px;
+            margin: 0 auto 32px;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: intro-logo-in 0.6s ease-out 0.3s forwards;
+        }
+
+        .intro-logo svg {
+            width: 100%;
+            fill: var(--text-primary);
+            filter: drop-shadow(0 0 40px rgba(91, 164, 255, 0.3));
+        }
+
+        @keyframes intro-logo-in {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .intro-lines {
+            text-align: left;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 2;
+            margin-bottom: 32px;
+        }
+
+        .intro-line {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .intro-line.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.3s ease;
+        }
+
+        .intro-line .val {
+            color: var(--accent);
+        }
+
+        .intro-line .ok {
+            color: var(--marker-work);
+        }
+
+        .intro-progress-wrap {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: intro-logo-in 0.3s ease 0.5s forwards;
+        }
+
+        .intro-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--marker-work));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .intro-status {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            opacity: 0;
+            animation: intro-logo-in 0.3s ease 0.6s forwards;
+        }
+
+        /* Scanline sweep on intro */
+        .intro-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(91, 164, 255, 0.03) 50%,
+                transparent 100%
+            );
+            background-size: 100% 8px;
+            animation: intro-scan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes intro-scan {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100%); }
+        }
+
+        /* ═══ ANIMATED AURORA / GRADIENT MESH BACKGROUND ═══ */
         .bg-gradient {
             position: absolute;
             top: 0;
@@ -136,17 +261,278 @@
             right: 0;
             bottom: 0;
             opacity: var(--gradient-opacity);
-            background: 
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(91, 164, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(255, 120, 84, 0.06) 0%, transparent 50%);
             pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .bg-gradient::before,
+        .bg-gradient::after {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            border-radius: 50%;
+            filter: blur(80px);
+            will-change: transform;
+        }
+
+        .bg-gradient::before {
+            background: radial-gradient(ellipse at center, rgba(91, 164, 255, 0.12) 0%, transparent 60%);
+            width: 70%;
+            height: 60%;
+            top: -10%;
+            left: 10%;
+            animation: aurora-drift-1 20s ease-in-out infinite;
+        }
+
+        .bg-gradient::after {
+            background: radial-gradient(ellipse at center, rgba(255, 120, 84, 0.08) 0%, transparent 60%);
+            width: 60%;
+            height: 50%;
+            bottom: 0%;
+            right: 5%;
+            animation: aurora-drift-2 25s ease-in-out infinite;
+        }
+
+        /* Section-aware color layer */
+        .bg-gradient-section {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            filter: blur(100px);
+        }
+
+        .bg-gradient-section.work-active {
+            background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(61, 255, 163, 0.06) 0%, transparent 70%);
+            opacity: 1;
+        }
+
+        .bg-gradient-section.about-active {
+            background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255, 217, 82, 0.05) 0%, transparent 70%);
+            opacity: 1;
+        }
+
+        .bg-gradient-section.contact-active {
+            background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255, 92, 141, 0.06) 0%, transparent 70%);
+            opacity: 1;
+        }
+
+        @keyframes aurora-drift-1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(10%, 5%) rotate(5deg) scale(1.1); }
+            50% { transform: translate(-5%, 10%) rotate(-3deg) scale(0.95); }
+            75% { transform: translate(8%, -5%) rotate(4deg) scale(1.05); }
+        }
+
+        @keyframes aurora-drift-2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(-12%, -8%) rotate(-4deg) scale(1.15); }
+            66% { transform: translate(8%, 5%) rotate(6deg) scale(0.9); }
+        }
+
+        [data-theme="light"] .bg-gradient::before {
+            background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.08) 0%, transparent 60%);
+        }
+
+        [data-theme="light"] .bg-gradient::after {
+            background: radial-gradient(ellipse at center, rgba(220, 74, 34, 0.05) 0%, transparent 60%);
+        }
+
+        /* ═══ CURSOR PARTICLE TRAIL ═══ */
+        .cursor-trail-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        /* ═══ ENHANCED WORK GRID HOVER ═══ */
+        .work-item::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--item-color), transparent 60%);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+            filter: blur(20px);
+        }
+
+        .work-item:hover::after {
+            opacity: 0.3;
+        }
+
+        .work-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--item-color);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 60px color-mix(in srgb, var(--item-color) 15%, transparent);
+        }
+
+        .work-item:hover .work-item-bg {
+            opacity: 1;
+            transform: scale(1.08);
+        }
+
+        .work-item:hover .work-item-bg .bg-label {
+            letter-spacing: 0.3em;
+        }
+
+        .work-item:hover .work-item-content {
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+        }
+
+        .work-item .work-item-content {
+            transition: background 0.4s ease;
+        }
+
+        /* ═══ ENHANCED CONTACT SECTION ═══ */
+        .contact-link {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-alt), var(--marker-contact));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
             transition: opacity 0.4s ease;
         }
 
-        [data-theme="light"] .bg-gradient {
-            background: 
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(220, 74, 34, 0.04) 0%, transparent 50%);
+        .contact-link:hover::before {
+            opacity: 1;
+        }
+
+        .contact-link:hover {
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(91, 164, 255, 0.1);
+        }
+
+        .contact-link:hover .contact-link-value {
+            background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ═══ MAGNETIC BUTTON EFFECT ═══ */
+        .magnetic-hover {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ═══ ENHANCED HERO ═══ */
+        .hero-text {
+            perspective: 1000px;
+        }
+
+        .hero-title .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px) rotateX(-40deg);
+            animation: char-reveal 0.5s ease forwards;
+        }
+
+        @keyframes char-reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .hero-title .separator .char {
+            color: var(--accent);
+        }
+
+        /* Hero logo enhanced glow */
+        .hero-logo svg {
+            animation: hero-logo-breathe 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes hero-logo-breathe {
+            0% { filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.1)); }
+            100% { filter: drop-shadow(0 0 45px rgba(91, 164, 255, 0.2)) drop-shadow(0 0 80px rgba(91, 164, 255, 0.05)); }
+        }
+
+        [data-theme="light"] .hero-logo svg {
+            animation: none;
+            filter: none;
+        }
+
+        /* ═══ GRADIENT TEXT FOR SECTION HEADINGS ═══ */
+        #section-about h2 {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--marker-about) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #section-contact h2 {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--marker-contact) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #section-work h2 {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--marker-work) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] #section-about h2,
+        [data-theme="light"] #section-contact h2,
+        [data-theme="light"] #section-work h2 {
+            -webkit-text-fill-color: var(--text-primary);
+        }
+
+        /* ═══ SCROLL PROGRESS GLOW ON TIMELINE ═══ */
+        .timeline-fill {
+            position: relative;
+        }
+
+        .timeline-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            bottom: -4px;
+            width: 30px;
+            background: radial-gradient(ellipse at right, var(--accent-glow), transparent);
+            pointer-events: none;
+        }
+
+        /* ═══ ENHANCED SKILL TAGS ═══ */
+        .skill-tag {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .skill-tag:hover::before {
+            width: 200%;
+            height: 200%;
         }
 
         /* Grid overlay */
@@ -1521,11 +1907,11 @@
         .hero-logo {
             width: clamp(280px, 50vw, 500px);
             height: auto;
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 0;
+            transform: translateY(40px);
             margin: 0 auto;
             display: block;
-            animation: hero-fade-in 1s ease-out forwards;
+            animation: hero-fade-in 1s ease-out 3.5s forwards;
         }
 
         .hero-logo svg {
@@ -1561,7 +1947,7 @@
             text-transform: uppercase;
             opacity: 0;
             transform: translateY(20px);
-            animation: hero-fade-in 0.8s ease-out 0.3s forwards;
+            animation: hero-fade-in 0.8s ease-out 3.8s forwards;
         }
 
         .hero-title .separator {
@@ -1573,7 +1959,7 @@
             margin-top: 50px;
             opacity: 0;
             transform: translateY(20px);
-            animation: hero-fade-in 0.8s ease-out 0.5s forwards;
+            animation: hero-fade-in 0.8s ease-out 5s forwards;
         }
 
         .hero-cta a {
@@ -3473,6 +3859,18 @@
                 display: none;
             }
 
+            .cursor-trail-canvas {
+                display: none;
+            }
+
+            .intro-content {
+                width: 280px;
+            }
+
+            .intro-lines {
+                font-size: 9px;
+            }
+
             .top-right-controls {
                 top: 12px;
                 right: 12px;
@@ -3676,6 +4074,33 @@
     </style>
 </head>
 <body>
+    <!-- ═══ INTRO OVERLAY ═══ -->
+    <div class="intro-overlay" id="intro-overlay">
+        <div class="intro-content">
+            <div class="intro-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 619 576">
+                    <path d="M583.68,308.42c-.68-32.2-36.99-37.46-57.42-18.54-21.16,17.24-29.21,42.35-35.64,68.58-2.59,6.35-1.4,17.95-7.56,20.52-8.41,2.22-17.5,3.89-25.74,5.94-3.3,1.4,1.21-6.71,1.26-8.1,5.4-17,9.26-32.93,12.42-50.58,3.33-9.09-2.21-16.4-8.46-21.42-7.25,6.14-8.87,16.42-13.68,24.3-34.16,38.07-14.49-77.84,6.12-28.62,4.82,6.79,15.41-9.27,9.54-14.04-11.4-15.03-34.13-13.88-41.94,3.78-6.05,9.8-7.94,23.9-6.66,36.36-1.06,6.47-7.84,11.11-12.06,15.84-10.93,11.36-6.27-14.41-5.94-21.06,7.03-38.55-6.96-46.64-33.3-16.74-3.17,6.42-3.26-1.22-6.12-3.24-19.42-9.3-24.78,31.8-31.68,42.84-4.32,11.76-12.07,34.16-27.9,27.54-13.83-19.33-9.59-11.56.54-20.7,29.95-27.6,1.27-56.12-20.34-24.3-4.19,5.5-5.71,12.66-6.12,19.62.78,4.02-4.47.55-6.3,2.34-2.72,7.45,7.23,4.44,9.18,16.38,5.59,18.91,29.88,23.59,42.48,9.18,8.14-10.99,13.45-23.41,18.36-35.82,3.01-8.64,4-20.29,10.08-27.54,12.02,3.25-16.84,67.72,6.84,51.84,10.65-7.11,6.82-25.92,9.54-37.8.5-11.07,6.99-18.5,15.3-25.02,14.35-10.38-17.35,97.82,35.28,37.98,5.83-10.68,3.35,9.71,15.84,10.98,12.99,2.78,19.81-10.68,25.74-19.98,4.61-5.17-2.8,16.81-3.24,19.44-3.83,13.63-6.25,27.98-12.42,41.4-36.34,8.77-71.34,20.68-106.74,31.5-39.92-17.07-93.13,9.35-97.92,55.25-3.19,102.99,139.44,81.1,190.61,29.34,32.84-30.13,56.24-71.59,69.84-116.45.83-4.06,4.07-4.06,7.02-5.04,36.99-9.98,75.85-33.34,81.18-75.96Z"/>
+                    <path d="M235.57,435.32c3.23-9,6.27-18.15,8.1-27.72,2.29-9.41-.73-14.77,11.7-10.8,37.37,11.04,77.01,10.81,113.22.36,21.48-7.06,43.69-13.98,55.44-32.4.99-1.89,3.98-12.9-1.8-10.62-39.31,30.45-99.72,45.5-149.76,34.92-33.85-10.85-23.95-1.82-20.7-38.52,3.43-14.26,2.8-31.69,9.18-43.74,18.32-6.77,39.85-18.45,45.18-38.34,4.16-22.18-19.04-30.62-34.74-21.42-12.1,8.77-19.48,22.7-24.66,36.36-3.46,17.13-3.03,16.25-20.34,17.46-30.71,2.11-57-12.95-84.6-23.04-5.35-3.67-20.15-3.12-17.46-11.7-.31-25.01,1.9-50.89-1.44-75.78,1.65-11.74,20.9-45.61,28.8-21.06,1.85,26.1,1.15,51.26.9,77.22.13,5.92-.74,18.93,7.74,10.08,13.29-1.8,6.11-65.18,6.48-77.94-.61-5.03,3-9.06,4.32-13.86,2.05-6.1,3.96-11.54,7.38-16.92,9.36-13.16,10.78-.7,10.62,8.28,9.52,34.12-10.25,146.9,48.96,77.22,12.57,4.59,20.69-2.73,28.44-12.6,2.34-3.09,4.11,2.44,6.66,3.42,9.67,6.44,19.46-.32,27-6.48,13.28-11.91,6.4-23.81,18.18-2.52,9.08,18.32,1.48-29.06,3.42-33.66.62-6.62,6.32-12.07,10.08-16.92,9.61-12.44,4.43,11.23,4.5,16.38-6.76,137.83,192.09,92.07,208.26-10.44Z"/>
+                    <path d="M520.74,152.91c-2.4-.23-.26-1.33-1.62-2.52-4.04-1.53-3.09,4.21-4.14,6.48-1.8,4.91-4.31,9.63-7.74,13.68-19.9,19.92-29.8-7.4-15.66-23.22,10.02-26.65,18.94-58.34,12.6-86.04-11.34-17.64-26.32,4.96-28.8,17.46-5.08,19.54-7.24,42.5-5.94,63Z"/>
+                </svg>
+            </div>
+            <div class="intro-lines" id="intro-lines">
+                <div class="intro-line">init <span class="val">michael_leng</span>.portfolio()</div>
+                <div class="intro-line">loading compositions... <span class="ok">OK</span></div>
+                <div class="intro-line">mounting expressions engine... <span class="ok">OK</span></div>
+                <div class="intro-line">resolving 8 project timelines... <span class="ok">OK</span></div>
+                <div class="intro-line">rendering at <span class="val">24fps</span> &mdash; <span class="ok">READY</span></div>
+            </div>
+            <div class="intro-progress-wrap">
+                <div class="intro-progress-bar" id="intro-progress"></div>
+            </div>
+            <div class="intro-status" id="intro-status">Initializing</div>
+        </div>
+    </div>
+
+    <!-- Canvas for cursor trail particles -->
+    <canvas class="cursor-trail-canvas" id="cursor-trail"></canvas>
+
     <!-- Custom cursor -->
     <div class="custom-cursor" id="cursor"></div>
     <div class="cursor-dot" id="cursor-dot"></div>
@@ -3683,6 +4108,7 @@
     <div class="scroll-container">
         <div class="viewport">
             <div class="bg-gradient"></div>
+            <div class="bg-gradient-section" id="bg-gradient-section"></div>
             <div class="grid-overlay"></div>
             <div class="noise-overlay"></div>
             <div class="safe-area"></div>
@@ -5862,6 +6288,205 @@
                 try { localStorage.setItem('theme', 'light'); } catch(e) {}
             }
         });
+        // ═══ INTRO SEQUENCE ═══
+        (function() {
+            const overlay = document.getElementById('intro-overlay');
+            const lines = document.querySelectorAll('#intro-lines .intro-line');
+            const progressBar = document.getElementById('intro-progress');
+            const statusEl = document.getElementById('intro-status');
+            if (!overlay) return;
+
+            let step = 0;
+            const totalSteps = lines.length + 2;
+            const stepDelay = 350;
+
+            function advance() {
+                step++;
+                const pct = Math.min((step / totalSteps) * 100, 100);
+                if (progressBar) progressBar.style.width = pct + '%';
+
+                if (step <= lines.length) {
+                    lines[step - 1].classList.add('visible');
+                    const statusTexts = ['Loading modules', 'Compositing layers', 'Building expressions', 'Resolving timelines', 'Ready'];
+                    if (statusEl) statusEl.textContent = statusTexts[Math.min(step - 1, statusTexts.length - 1)];
+                }
+
+                if (step < totalSteps) {
+                    setTimeout(advance, stepDelay + Math.random() * 200);
+                } else {
+                    // Done — fade out
+                    setTimeout(() => {
+                        overlay.classList.add('fade-out');
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            // Trigger hero text animation after intro
+                            animateHeroText();
+                        }, 800);
+                    }, 400);
+                }
+            }
+
+            setTimeout(advance, 600);
+        })();
+
+        // ═══ HERO TEXT SPLIT ANIMATION ═══
+        function animateHeroText() {
+            const heroTitle = document.querySelector('.hero-title');
+            if (!heroTitle) return;
+
+            // Reset the animation states so they trigger fresh
+            heroTitle.style.opacity = '1';
+            heroTitle.style.transform = 'none';
+            heroTitle.style.animation = 'none';
+
+            const html = heroTitle.innerHTML;
+            // Split into segments, preserving HTML tags
+            const parts = html.split(/(<[^>]+>)/);
+            let charIndex = 0;
+            let newHtml = '';
+
+            parts.forEach(part => {
+                if (part.startsWith('<')) {
+                    newHtml += part;
+                } else {
+                    for (let i = 0; i < part.length; i++) {
+                        const char = part[i] === ' ' ? '&nbsp;' : part[i];
+                        const delay = 0.8 + charIndex * 0.025;
+                        newHtml += `<span class="char" style="animation-delay:${delay}s">${char}</span>`;
+                        charIndex++;
+                    }
+                }
+            });
+
+            heroTitle.innerHTML = newHtml;
+        }
+
+        // ═══ CURSOR PARTICLE TRAIL ═══
+        (function() {
+            const canvas = document.getElementById('cursor-trail');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let mouseX = 0, mouseY = 0;
+            let lastEmit = 0;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function emit() {
+                const now = Date.now();
+                if (now - lastEmit < 30) return;
+                lastEmit = now;
+
+                const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#5ba4ff';
+                // Parse hex to rgb
+                let r = 91, g = 164, b = 255;
+                if (accent.startsWith('#')) {
+                    r = parseInt(accent.slice(1,3), 16);
+                    g = parseInt(accent.slice(3,5), 16);
+                    b = parseInt(accent.slice(5,7), 16);
+                }
+
+                particles.push({
+                    x: mouseX,
+                    y: mouseY,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    life: 1,
+                    decay: 0.015 + Math.random() * 0.01,
+                    size: 1.5 + Math.random() * 2,
+                    r, g, b
+                });
+            }
+
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= p.decay;
+
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.life * 0.5})`;
+                    ctx.fill();
+                }
+
+                // Keep particle count reasonable
+                if (particles.length > 80) particles.splice(0, particles.length - 80);
+
+                emit();
+                requestAnimationFrame(update);
+            }
+
+            requestAnimationFrame(update);
+        })();
+
+        // ═══ SECTION-AWARE BACKGROUND COLOR SHIFTS ═══
+        (function() {
+            const bgSection = document.getElementById('bg-gradient-section');
+            if (!bgSection) return;
+
+            let lastSection = '';
+
+            function updateSectionColor() {
+                const sectionWork = document.getElementById('section-work');
+                const sectionAbout = document.getElementById('section-about');
+                const sectionContact = document.getElementById('section-contact');
+
+                let currentSection = '';
+                if (sectionContact && sectionContact.classList.contains('active')) currentSection = 'contact';
+                else if (sectionAbout && sectionAbout.classList.contains('active')) currentSection = 'about';
+                else if (sectionWork && sectionWork.classList.contains('active')) currentSection = 'work';
+
+                if (currentSection !== lastSection) {
+                    lastSection = currentSection;
+                    bgSection.className = 'bg-gradient-section';
+                    if (currentSection) bgSection.classList.add(currentSection + '-active');
+                }
+
+                requestAnimationFrame(updateSectionColor);
+            }
+
+            requestAnimationFrame(updateSectionColor);
+        })();
+
+        // ═══ MAGNETIC BUTTON EFFECT ═══
+        (function() {
+            const magneticEls = document.querySelectorAll('.hero-cta a, .section .cta, .contact-link, .skill-tag, .bio-card-toggle');
+
+            magneticEls.forEach(el => {
+                el.classList.add('magnetic-hover');
+
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    el.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'translate(0, 0)';
+                });
+            });
+        })();
+
         // ═══ VIDEO GAME BIO CARD ═══
         (function() {
             const toggle = document.getElementById('bio-card-toggle');
