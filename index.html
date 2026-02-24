@@ -2395,6 +2395,380 @@
             border-radius: 4px;
         }
 
+        /* ═══════════════════════════════════════════════════════
+           ENHANCED PROJECT PAGE STYLES
+           ═══════════════════════════════════════════════════════ */
+
+        /* Hero banner at top of expanded view */
+        .cs-hero-banner {
+            position: relative;
+            width: calc(100% + 80px);
+            margin: -28px -40px 0;
+            height: 320px;
+            overflow: hidden;
+        }
+        .cs-hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .cs-hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 160px;
+            background: linear-gradient(to top, var(--bg-panel), transparent);
+            pointer-events: none;
+        }
+        .cs-hero-banner-overlay {
+            position: absolute;
+            bottom: 24px;
+            left: 40px;
+            right: 40px;
+            z-index: 2;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .cs-hero-banner-num {
+            font-family: var(--mono);
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1;
+            opacity: 0.12;
+            color: var(--text-primary);
+        }
+        .cs-hero-banner-year {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Editorial pull-quote block */
+        .cs-pullquote {
+            position: relative;
+            margin: 32px 0;
+            padding: 28px 32px;
+            padding-left: 36px;
+            border-left: 3px solid var(--accent);
+            background: linear-gradient(135deg, rgba(91,164,255,0.03), transparent);
+            border-radius: 0 10px 10px 0;
+        }
+        .cs-pullquote-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(22px, 2.8vw, 30px);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        .cs-pullquote-attr {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-top: 14px;
+        }
+
+        /* Key metrics strip */
+        .cs-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1px;
+            margin: 28px 0;
+            background: rgba(128,128,128,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(128,128,128,0.08);
+        }
+        .cs-metric {
+            padding: 20px 18px;
+            background: var(--bg-panel);
+            text-align: center;
+        }
+        .cs-metric-value {
+            font-family: var(--mono);
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cs-metric-value .cs-metric-accent {
+            -webkit-text-fill-color: inherit;
+        }
+        .cs-metric-label {
+            font-family: var(--mono);
+            font-size: 8px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        /* Tools/technology tags */
+        .cs-tools {
+            margin: 24px 0;
+        }
+        .cs-tools-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+        .cs-tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .cs-tool-tag {
+            font-family: var(--mono);
+            font-size: 11px;
+            padding: 6px 14px;
+            background: var(--bg-panel-alt);
+            border: 1px solid rgba(128,128,128,0.1);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+        .cs-tool-tag:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        /* Deliverables checklist */
+        .cs-deliverables {
+            margin: 24px 0;
+            padding: 20px 24px;
+            background: var(--bg-panel-alt);
+            border-radius: 10px;
+            border: 1px solid rgba(128,128,128,0.08);
+        }
+        .cs-deliverables-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+        }
+        .cs-deliverables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 24px;
+        }
+        .cs-deliverable-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 4px 0;
+        }
+        .cs-deliverable-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid rgba(128,128,128,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+
+        /* Section number indicator */
+        .cs-section-numbered {
+            position: relative;
+            margin-bottom: 32px;
+            padding-left: 48px;
+        }
+        .cs-section-num-marker {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(128,128,128,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+        }
+
+        /* Divider with label */
+        .cs-divider-labeled {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 36px 0;
+        }
+        .cs-divider-labeled::before,
+        .cs-divider-labeled::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(128,128,128,0.1);
+        }
+        .cs-divider-labeled span {
+            font-family: var(--mono);
+            font-size: 8px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* Enhanced image with caption overlay */
+        .cs-image-featured {
+            position: relative;
+            margin: 24px 0 28px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(128,128,128,0.1);
+        }
+        .cs-image-featured img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .cs-image-featured-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Project navigation (next/prev) */
+        .cs-project-nav {
+            display: flex;
+            gap: 1px;
+            margin: 40px -40px 0;
+            background: rgba(128,128,128,0.06);
+            border-top: 1px solid rgba(128,128,128,0.08);
+        }
+        .cs-project-nav-item {
+            flex: 1;
+            padding: 24px 28px;
+            background: var(--bg-panel);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: block;
+        }
+        .cs-project-nav-item:hover {
+            background: var(--bg-panel-alt);
+        }
+        .cs-project-nav-item--prev {
+            text-align: left;
+        }
+        .cs-project-nav-item--next {
+            text-align: right;
+        }
+        .cs-project-nav-dir {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+        .cs-project-nav-title {
+            font-family: var(--sans);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: color 0.2s ease;
+        }
+        .cs-project-nav-item:hover .cs-project-nav-title {
+            color: var(--accent);
+        }
+        .cs-project-nav-type {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Scroll-triggered entrance animations */
+        .cs-animate {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cs-animate.cs-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .cs-animate-delay-1 { transition-delay: 0.08s; }
+        .cs-animate-delay-2 { transition-delay: 0.16s; }
+        .cs-animate-delay-3 { transition-delay: 0.24s; }
+
+        /* Progress indicator for case study */
+        .cs-progress-bar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(128,128,128,0.06);
+            z-index: 5;
+            margin: 0 -40px;
+            padding: 0;
+        }
+        .cs-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.1s linear;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Responsive for new elements */
+        @media (max-width: 768px) {
+            .cs-hero-banner { height: 200px; width: calc(100% + 32px); margin: -16px -16px 0; }
+            .cs-hero-banner-overlay { left: 16px; right: 16px; bottom: 12px; }
+            .cs-hero-banner-num { font-size: 40px; }
+            .cs-metrics { grid-template-columns: 1fr 1fr; }
+            .cs-metric { padding: 14px 12px; }
+            .cs-metric-value { font-size: clamp(18px, 5vw, 28px); }
+            .cs-pullquote { padding: 16px 18px; padding-left: 22px; margin: 20px 0; }
+            .cs-pullquote-text { font-size: 18px; }
+            .cs-deliverables-grid { grid-template-columns: 1fr; }
+            .cs-project-nav { margin: 28px -16px 0; flex-direction: column; }
+            .cs-project-nav-item--next { text-align: left; }
+            .cs-section-numbered { padding-left: 0; }
+            .cs-section-num-marker { display: none; }
+            .cs-progress-bar { margin: 0 -16px; }
+            .cs-tools-list { gap: 6px; }
+            .cs-tool-tag { font-size: 10px; padding: 5px 10px; }
+        }
+
         /* Work grid states during expansion */
         .work-grid {
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -4050,15 +4424,15 @@
         const workGrid = document.querySelector('.work-grid');
 
         const projectData = {
-            'fubo': { title: 'Fubo TV', type: 'Broadcast Graphics', role: 'Art Director, Animator, Designer', desc: 'I art directed and animated the complete broadcast graphics package for Fubo Sports Network — lower thirds, score bugs, transitions, show opens, and logo animations. Built the entire visual language from concept through execution.', color: '#e63946', url: 'https://www.michaelleng.com/portfolio-2/fubotv', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1709063121803-BCJF14DG0SWLVZ2CXLTQ/Slate-FSN-05+%280%3B00%3B12%3B25%29.png' },
-            'cashapp': { title: 'Cash App', type: 'Performance Marketing', role: 'Lead Animator, Systems Designer', stats: '98 assets · Under 3 weeks', desc: 'I built a scalable performance marketing system for Cash App — 98 unique assets across formats, product lines, and messaging variants, all delivered in under three weeks.', color: '#00d26a', url: 'https://www.michaelleng.com/portfolio-2/project-four-l3zw3-hjlzf', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1658424580396-SCK7PKVV2T1G3XVTHX6Z/9x16_BTC_101_BLK_02.gif' },
-            'cbs': { title: 'CBS Sports', type: 'Broadcast Design · Emmy Award', role: 'Designer, Animator, Lead Designer', stats: 'Sports Emmy · 100M+ viewers', desc: 'From the Super Bowl 50 broadcast redesign to NCAA studio graphics, Final Four team intros, NFL transitions, and seasonal title design — a body of work seen by 100M+ viewers.', color: '#dc2626', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1604545567941-O072PYU58V1P9MTZ83WB/155207_CBS_Eye_Transition_C_sample.gif' },
-            'intuit': { title: 'Intuit', type: 'Employer Brand', role: 'Lead Designer, Animator, Compositor', stats: '16 assets · ~5 weeks', desc: 'I led design, animation, and compositing for Intuit\'s employer brand campaign — four hero videos shot remotely during the pandemic, wrapped in a sci-fi visual language.', color: '#0077b6', url: 'https://www.michaelleng.com/portfolio-2/fubotv-wwh6x-gj85s', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/7acaf1d5-a1f8-4785-ae76-9406dc6c3c43/_INTU-EBFY21-Justin-A-16x9-03-25+Second-april+2+%280-00-16-10%29.png' },
-            'careerbuilder': { title: 'Career Builder', type: 'Campaign', role: 'Designer, Animator', desc: 'Typography-driven social campaign that leaned into the emotional pain points of job hunting. Bold kinetic type, vibrant color, and smart motion design that stopped the scroll.', color: '#2a9d8f', url: 'https://www.michaelleng.com/portfolio-2/fubotv-yjlpw', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1631288724569-O3PCPV01SEJ3PI1JA5SJ/JOB_HUNTING_STRESSFUL_EXPERIENCE_3.gif' },
-            'msmax': { title: 'MS Max', type: 'Museum Experience', role: 'Lead Animator, Designer, Compositor', desc: 'I led animation and production for a 10\'×40\' media wall at the Mississippi Arts + Entertainment Experience — motion portraits of cultural icons rendered at 4K. Permanent installation.', color: '#9b5de5', url: 'https://www.michaelleng.com/portfolio-2/fubotv-wwh6x', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1630426188908-O6M78Z7KWFQPUVT6EXJJ/MS+Arts%2C+Morgan+Freeman-high.gif' },
-            'verneek': { title: 'Verneek', type: 'AI Platform', role: 'Designer, Motion Designer', desc: 'Brand identity and motion design for an AI-powered education platform — data-driven graphics communicating technological sophistication and human accessibility.', color: '#f77f00', url: 'https://www.michaelleng.com/portfolio-2/fubotv-yjlpw-rcp88', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/8ce2bd53-10f1-4107-b460-b3fc7fd9f85c/Screenshot+2024-08-12+114845.png' },
-            'pbs': { title: 'PBS Space Time', type: 'Science Communication', role: 'Original Designer, Animator', stats: '700K+ subscribers', desc: 'I was the original designer and animator for PBS Space Time — creating the show\'s visual identity and animating episodes that make astrophysics visually compelling.', color: '#6366f1', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/4812b781-1309-443a-b155-8c55df610034/season-2015.jpg' },
-            'karmalog': { title: 'Karma Log', type: 'Data Visualization · Thesis', role: 'Designer, Information Architect', stats: 'Parsons BFA · 2013', desc: 'My Parsons thesis — a data-logging app that mines your social media activity to visualize the patterns of your online behavior.', color: '#14b8a6', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1424650151412-JR8LVXSJKGQ82WI3YX3T/leng_michael_01.jpg' }
+            'fubo': { title: 'Fubo TV', type: 'Broadcast Graphics', role: 'Art Director, Animator, Designer', desc: 'I art directed and animated the complete broadcast graphics package for Fubo Sports Network — lower thirds, score bugs, transitions, show opens, and logo animations. Built the entire visual language from concept through execution.', color: '#e63946', url: 'https://www.michaelleng.com/portfolio-2/fubotv', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1709063121803-BCJF14DG0SWLVZ2CXLTQ/Slate-FSN-05+%280%3B00%3B12%3B25%29.png', year: '2024', client: 'Fubo TV', industry: 'Sports / Streaming', tools: ['After Effects', 'Illustrator', 'Premiere Pro'], deliverables: ['Lower thirds', 'Score bugs', 'Transitions', 'Show opens', 'Logo animations'] },
+            'cashapp': { title: 'Cash App', type: 'Performance Marketing', role: 'Lead Animator, Systems Designer', stats: '98 assets · Under 3 weeks', desc: 'I built a scalable performance marketing system for Cash App — 98 unique assets across formats, product lines, and messaging variants, all delivered in under three weeks.', color: '#00d26a', url: 'https://www.michaelleng.com/portfolio-2/project-four-l3zw3-hjlzf', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1658424580396-SCK7PKVV2T1G3XVTHX6Z/9x16_BTC_101_BLK_02.gif', year: '2022', client: 'Cash App (Block)', industry: 'Fintech', tools: ['After Effects', 'Expressions', 'Illustrator'], deliverables: ['98 ad variations', 'Template system', 'Style guide'] },
+            'cbs': { title: 'CBS Sports', type: 'Broadcast Design · Emmy Award', role: 'Designer, Animator, Lead Designer', stats: 'Sports Emmy · 100M+ viewers', desc: 'From the Super Bowl 50 broadcast redesign to NCAA studio graphics, Final Four team intros, NFL transitions, and seasonal title design — a body of work seen by 100M+ viewers.', color: '#dc2626', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1604545567941-O072PYU58V1P9MTZ83WB/155207_CBS_Eye_Transition_C_sample.gif', year: '2015–2018', client: 'CBS Sports', industry: 'Broadcast Television', tools: ['After Effects', 'Cinema 4D', 'Photoshop', 'Illustrator'], deliverables: ['Broadcast package', 'Studio redesign', 'Team transitions', 'Title design'] },
+            'intuit': { title: 'Intuit', type: 'Employer Brand', role: 'Lead Designer, Animator, Compositor', stats: '16 assets · ~5 weeks', desc: 'I led design, animation, and compositing for Intuit\'s employer brand campaign — four hero videos shot remotely during the pandemic, wrapped in a sci-fi visual language.', color: '#0077b6', url: 'https://www.michaelleng.com/portfolio-2/fubotv-wwh6x-gj85s', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/7acaf1d5-a1f8-4785-ae76-9406dc6c3c43/_INTU-EBFY21-Justin-A-16x9-03-25+Second-april+2+%280-00-16-10%29.png', year: '2021', client: 'Intuit', industry: 'Technology / Finance', tools: ['After Effects', 'Premiere Pro', 'Photoshop'], deliverables: ['4 hero videos', '12 cutdowns', 'Motion graphics framework'] },
+            'careerbuilder': { title: 'Career Builder', type: 'Campaign', role: 'Designer, Animator', desc: 'Typography-driven social campaign that leaned into the emotional pain points of job hunting. Bold kinetic type, vibrant color, and smart motion design that stopped the scroll.', color: '#2a9d8f', url: 'https://www.michaelleng.com/portfolio-2/fubotv-yjlpw', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1631288724569-O3PCPV01SEJ3PI1JA5SJ/JOB_HUNTING_STRESSFUL_EXPERIENCE_3.gif', year: '2021', client: 'CareerBuilder', agency: 'Decoded', industry: 'HR / Recruitment', tools: ['After Effects', 'Illustrator'], deliverables: ['Social ad series', 'Kinetic type animations'] },
+            'msmax': { title: 'MS Max', type: 'Museum Experience', role: 'Lead Animator, Designer, Compositor', desc: 'I led animation and production for a 10\'×40\' media wall at the Mississippi Arts + Entertainment Experience — motion portraits of cultural icons rendered at 4K. Permanent installation.', color: '#9b5de5', url: 'https://www.michaelleng.com/portfolio-2/fubotv-wwh6x', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1630426188908-O6M78Z7KWFQPUVT6EXJJ/MS+Arts%2C+Morgan+Freeman-high.gif', year: '2017', client: 'Gallagher Design', industry: 'Museum / Experiential', tools: ['After Effects', 'Cinema 4D', 'Photoshop'], deliverables: ['4K media wall content', 'Animated portraits', 'Installation delivery'] },
+            'verneek': { title: 'Verneek', type: 'AI Platform', role: 'Designer, Motion Designer', desc: 'Brand identity and motion design for an AI-powered education platform — data-driven graphics communicating technological sophistication and human accessibility.', color: '#f77f00', url: 'https://www.michaelleng.com/portfolio-2/fubotv-yjlpw-rcp88', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/8ce2bd53-10f1-4107-b460-b3fc7fd9f85c/Screenshot+2024-08-12+114845.png', year: '2024', client: 'Verneek', industry: 'AI / EdTech', tools: ['After Effects', 'Figma', 'Illustrator'], deliverables: ['Brand identity', 'Motion system', 'UI design', 'Orb visualizations'] },
+            'pbs': { title: 'PBS Space Time', type: 'Science Communication', role: 'Original Designer, Animator', stats: '700K+ subscribers', desc: 'I was the original designer and animator for PBS Space Time — creating the show\'s visual identity and animating episodes that make astrophysics visually compelling.', color: '#6366f1', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/4812b781-1309-443a-b155-8c55df610034/season-2015.jpg', year: '2015', client: 'PBS Digital Studios', studio: 'Kornhaber Brown', industry: 'Science / Media', tools: ['After Effects', 'Illustrator', 'Cinema 4D'], deliverables: ['Show identity', 'Episode graphics', 'Data visualizations'] },
+            'karmalog': { title: 'Karma Log', type: 'Data Visualization · Thesis', role: 'Designer, Information Architect', stats: 'Parsons BFA · 2013', desc: 'My Parsons thesis — a data-logging app that mines your social media activity to visualize the patterns of your online behavior.', color: '#14b8a6', url: 'https://www.michaelleng.com', cover: 'https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1424650151412-JR8LVXSJKGQ82WI3YX3T/leng_michael_01.jpg', year: '2013', client: 'Parsons BFA Thesis', industry: 'Data / Social Media', tools: ['After Effects', 'Illustrator', 'Processing'], deliverables: ['App concept', 'Data visualizations', 'Thesis exhibition'] }
         };
 
         // SQS image CDN base
@@ -4068,30 +4442,36 @@
             'fubo': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'A new sports network that needed to feel premium from day one.', text: 'Fubo was building a live sports streaming network with original programming. They needed a broadcast design language that could scale across multiple shows, live events, and promotional content while competing visually with legacy networks that had decades of established identity.' },
+                    { type: 'pullquote', text: 'Every decision was being made for the first time. There was no legacy system to reference — just a blank canvas and a launch date.', attribution: 'On the challenge' },
                     { type: 'hero', src: S+'805e3fe4-fce5-4913-8630-8ab3d4813ae4/fubo-sports-network.jpg' },
                     { type: 'section', label: 'The Approach', heading: 'Start with the foundational toolkit. Build a modular system.', text: 'I treated this the way you\'d approach any broadcast redesign — lower thirds, score bugs, transition packages, show opens, end pages. But because this was a new network, every decision was being made for the first time. I built a modular system that could flex across different show formats while maintaining a cohesive visual identity.' },
                     { type: 'video', src: 'https://player.vimeo.com/video/910148835?h=0&badge=0&autopause=0&player_id=0', caption: 'Fubo Sports Network — Broadcast Package Reel' },
+                    { type: 'divider', label: 'Process & Execution' },
                     { type: 'section', label: 'The Execution', heading: 'Full broadcast toolkit across multiple show formats.', text: 'The scope covered lower thirds, full-screen graphics, transition wipes, bumpers, logo animations, show-specific packaging, and promotional assets. I designed and animated across multiple show formats, ensuring each had its own personality while clearly belonging to the same network.' },
                     { type: 'section', label: 'The Outcome', heading: 'A scalable framework that works when you\'re not there.', text: 'The Fubo Sports Network launched with a fully realized broadcast identity that held up across hours of weekly content. The system I built gave the production team a scalable framework they could execute independently — which is ultimately the measure of good broadcast design.' },
+                    { type: 'pullquote', text: 'The measure of good broadcast design isn\'t how it looks on your reel — it\'s whether the production team can execute it without you.', attribution: 'On scalability' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Art Director, Animator' }, { l: 'Client', v: 'Fubo TV' }, { l: 'Type', v: 'Broadcast Graphics' }, { l: 'Scope', v: 'Full channel identity' }] }
                 ]
             },
             'cashapp': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'Build a machine that generates dozens of variations.', text: 'Cash App needed a performance marketing system deployable across social platforms at scale. The challenge wasn\'t making one beautiful ad — it was building a system that could generate dozens of variations for A/B testing across messaging, color, feature, and format combinations while maintaining visual quality.' },
+                    { type: 'pullquote', text: 'The challenge wasn\'t making one beautiful ad — it was building a system that could produce 98 of them without breaking.', attribution: 'On the scale problem' },
                     { type: 'hero', src: S+'1114c834-5949-4b01-9bb1-a4b38c7dc692/2022Q1_B_Cash_Card_Animation_Line_Phase1_Customization_Light_MakeYourDebitCardYours_9x16.gif' },
                     { type: 'section', label: 'The Approach', heading: 'Think in systems — modular rigs, expression-controlled templates.', text: 'When you need 98 variations, you can\'t hand-animate each one. I built the animation framework as a templatized system in After Effects. Swap a headline, change a color palette, toggle a product feature — the animation adapts. Expression-controlled templates that could output variations efficiently without sacrificing motion quality.' },
                     { type: 'grid2', images: [
                         S+'1655216773906-T21J0TOP3KXGX2W1EWZZ/2022Q1_B_Cash_Card_Animation_Line_Phase1_Customization_Light_CustomizeAFreeDebitCard_16x9.gif',
                         S+'03f806d2-683e-48ff-97a4-bd9eb37ee63e/2022Q1_B_Equities_Animation_Line_Phase1_Fractional_Light_Got1Dollar_16x9.gif'
                     ], caption: 'Light palette — Cash Card customization & Equities fractional shares' },
+                    { type: 'divider', label: 'The Matrix' },
                     { type: 'section', label: 'The Execution', heading: '98 unique assets across formats and product lines.', text: 'The final delivery covered 98 unique assets across 16×9 and 9×16 formats, spanning Cash Card, Bitcoin, and Equities product lines. Each variation tested different messaging angles, light and dark palettes, and feature callouts.' },
                     { type: 'grid2', images: [
                         S+'57bb3624-f3bd-411e-bf48-30ff7366aa14/2022Q1_B_Bitcoin_Animation_Line_Phase1_Fractional_Dark_Got1Dollar_9x16.gif',
                         S+'6d461b73-7a69-4c9b-83fe-4525b6885b65/2022Q1_B_Cash_Card_Animation_Line_Phase1_Boost_Dark_InstantDiscountsandCashBack_9x17.gif'
                     ], caption: 'Dark palette — Bitcoin fractional & Cash Card Boost' },
                     { type: 'hero', src: S+'b20e032e-ee38-4ee9-acd9-986765f49e24/Screenshot+2022-07-21+094638.png', caption: '96 messaging/feature/color combinations mapped and tracked' },
-                    { type: 'section', label: 'Stroke Explorations', heading: 'Pushing beyond the standard Cash App look.', text: 'I also explored an alternate stroke animation direction that moved away from the primary line-based approach. These explorations tested a more fluid, gestural aesthetic.' },
+                    { type: 'divider', label: 'Explorations' },
+                    { type: 'section', label: 'Stroke Explorations', heading: 'Pushing beyond the standard Cash App look.', text: 'I also explored an alternate stroke animation direction that moved away from the primary line-based approach. These explorations tested a more fluid, gestural aesthetic that could live alongside the primary system.' },
                     { type: 'grid2', images: [
                         S+'017aa5a1-d431-40eb-a38c-76590ad1fcc3/Stroke_Animation_G_07.gif',
                         S+'7ff3cf55-ef65-4208-b21f-48c91cb8ca27/Stroke_Animation_B_02.gif'
@@ -4100,15 +4480,18 @@
                         S+'9536c70f-fca1-4852-8bea-2df4340ae112/Stroke_Animation_B_04.gif',
                         S+'51d69df1-c24c-4e68-8d79-bf7cf7007f2b/Stroke_Animation_B_01.gif'
                     ] },
-                    { type: 'section', label: 'The Outcome', heading: 'Not just fast — repeatable.', text: 'The framework could be reloaded for future campaigns, new product features, or seasonal messaging without rebuilding from scratch. That\'s the difference between making ads and building a marketing engine.' },
+                    { type: 'pullquote', text: 'That\'s the difference between making ads and building a marketing engine.', attribution: 'On the outcome' },
+                    { type: 'section', label: 'The Outcome', heading: 'Not just fast — repeatable.', text: 'The framework could be reloaded for future campaigns, new product features, or seasonal messaging without rebuilding from scratch. The expression-driven system meant the next campaign could inherit the same rigor at a fraction of the original build effort.' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Lead Animator' }, { l: 'Client', v: 'Cash App' }, { l: 'Assets', v: '98 unique' }, { l: 'Timeline', v: 'Under 3 weeks' }] }
                 ]
             },
             'cbs': {
                 blocks: [
                     { type: 'section', label: 'Overview', heading: 'Not a single project — an era.', text: 'Over the course of my time at CBS Sports, I worked across nearly every corner of their on-air design — from the foundational broadcast graphics package that launched during the Super Bowl, to sport-specific show packaging, to one-off creative projects that pushed beyond the typical broadcast design playbook.' },
+                    { type: 'pullquote', text: 'Three years of broadcast design at the highest level — Super Bowl to NFL to NCAA. Every frame seen by millions.', attribution: 'On the body of work' },
                     { type: 'hero', src: S+'1604545567941-O072PYU58V1P9MTZ83WB/155207_CBS_Eye_Transition_C_sample.gif' },
                     { type: 'video', src: 'https://player.vimeo.com/video/166399356?h=0&badge=0&autopause=0&player_id=0', caption: 'CBS Sports — Super Bowl 50 Broadcast Package' },
+                    { type: 'divider', label: 'Sub-Projects' },
                     { type: 'subprojects', items: [
                         { num: '01', name: 'Super Bowl 50 — Broadcast Overhaul', role: 'Designer, Animator', heading: 'Every element redesigned. Debuted on the biggest stage.', text: 'CBS Sports undertook a complete redesign of their broadcast graphics package — every visual element that appears on air. The new design language debuted during Super Bowl 50. I contributed to the design and animation of elements within the new package, working as part of a team to meet the quality bar required for a Super Bowl debut.', result: 'Debuted Super Bowl 50 (Feb 7, 2016). 2016 Sports Emmy Award. 100M+ viewers.' },
                         { num: '02', name: 'NCAA Football — Studio Redesign', role: 'Lead Designer, Animator', heading: 'Overhauling the studio for pregame, halftime, and postgame.', text: 'As Lead Designer and Animator, I implemented a sleeker, smoother animation language throughout the NCAA Football show — redesigning how content appeared on studio monitors and how transitions moved viewers between segments.', result: 'Streamlined graphics that made production faster without sacrificing quality.' }
@@ -4137,6 +4520,7 @@
                     { type: 'subprojects', items: [
                         { num: '05', name: 'CBS Title Design', role: 'Designer, Animator', heading: 'Expanding the visual range beyond sports.', text: 'I designed and animated title cards and opening sequences for seasonal programming and holiday specials across CBS\'s wider television slate.', result: 'Event-specific title designs expanding CBS\'s on-air identity beyond sports.' }
                     ]},
+                    { type: 'pullquote', text: 'Broadcast design at this level is unforgiving — every frame is seen by millions, and there\'s no second take on live television.', attribution: 'On the stakes' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Designer, Lead Designer' }, { l: 'Client', v: 'CBS Sports' }, { l: 'Recognition', v: 'Sports Emmy' }, { l: 'Audience', v: '100M+ viewers' }] }
                 ]
             },
@@ -4144,59 +4528,70 @@
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'Reposition Intuit as a destination for top tech talent.', text: 'Intuit wanted to attract top-tier engineers. The campaign needed to affirm that Intuit is a leading, innovative tech company — not just a tax software brand — and showcase the real people doing meaningful work there.' },
                     { type: 'hero', src: S+'1658442074115-DVLAHOBGDGFM5L6B5XFR/_INTU-EBFY21-Justin-A-16x9-Assembly-30s-DirectorsCut-04+%280-00-22-20%29.png' },
+                    { type: 'pullquote', text: 'We directed four engineers remotely during a pandemic — the design and compositing had to do the heavy lifting to unify footage from four different homes.', attribution: 'On the constraints' },
                     { type: 'section', label: 'The Approach', heading: 'Sci-fi aesthetic, not corporate recruitment.', text: 'Most employer brand content plays it safe. I pushed for something different — a sci-fi aesthetic that felt more like a title sequence than a recruitment video. The wrinkle: shot during the pandemic. We directed four engineers remotely, so the design and compositing had to do heavy lifting to create a unified, polished look from footage shot in four different locations.' },
                     { type: 'grid2', images: [
                         S+'7acaf1d5-a1f8-4785-ae76-9406dc6c3c43/_INTU-EBFY21-Justin-A-16x9-03-25+Second-april+2+%280-00-16-10%29.png',
                         S+'5376f5b9-a665-4e94-94a5-b2aa7828ce1e/justin_selects_low_res+%280-00-00-00%29.png'
                     ], caption: 'Justin — composited sci-fi aesthetic & raw remote footage' },
+                    { type: 'divider', label: 'Production' },
                     { type: 'section', label: 'The Execution', heading: 'Four hero videos, 16 total assets, ~5 weeks.', text: 'Each video highlighted an engineer\'s contributions while working at Intuit. I designed the motion graphics framework, animated transitions and data visualizations, and composited the final pieces — layering the sci-fi aesthetic over live footage.' },
                     { type: 'grid2', images: [
                         S+'e1249db9-04a0-4ddf-846e-bcebb071bc31/_INTU-EBFY21-Simon-A-16x9-Assembly-30s-01+%280-00-21-07%29.png',
                         S+'874be6b8-3b5e-45d7-bf80-fb4bf29b0b69/simon_selects_lowres+%280-03-29-01%29.png'
                     ], caption: 'Simon — final composite & source material' },
-                    { type: 'section', label: 'The Outcome', heading: 'A distinct visual identity in the talent acquisition space.', text: 'Rather than blending in with every other tech company\'s recruitment content, the sci-fi direction gave Intuit a distinct visual identity in the employer brand space.' },
+                    { type: 'section', label: 'The Outcome', heading: 'A distinct visual identity in the talent acquisition space.', text: 'Rather than blending in with every other tech company\'s recruitment content, the sci-fi direction gave Intuit a distinct visual identity in the employer brand space. It proved that employer brand content can be as visually ambitious as consumer-facing work.' },
+                    { type: 'pullquote', text: 'Constraints breed creativity. A pandemic and remote shoots forced a design-forward solution that would never have emerged from a traditional production.', attribution: 'On the silver lining' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Lead Designer, Compositor' }, { l: 'Client', v: 'Intuit' }, { l: 'Assets', v: '16 total' }, { l: 'Timeline', v: '~5 weeks' }] }
                 ]
             },
             'careerbuilder': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'Reinvent a stale brand for a design-savvy audience.', text: 'CareerBuilder needed an aesthetic overhaul that could resonate with a younger audience while communicating that their job search platform had been significantly improved.' },
+                    { type: 'pullquote', text: 'Job hunting is stressful, and pretending otherwise doesn\'t connect. We leaned into the pain.', attribution: 'On the creative direction' },
                     { type: 'grid3', images: [
                         S+'1631288722995-5PHBJVYQZA9D0ZS9G7O7/VERTICAL_GROWTH_04.gif',
                         S+'1631288724569-O3PCPV01SEJ3PI1JA5SJ/JOB_HUNTING_STRESSFUL_EXPERIENCE_3.gif',
                         S+'1631288725474-QST3G6ELG21K4TVB9QMK/WORK_LIFE_BALANCE_V1.gif'
                     ], caption: 'Vertical growth, job hunting stress, work-life balance' },
                     { type: 'section', label: 'The Approach', heading: 'Lean into the pain. Typography as the storytelling device.', text: 'The creative team at Decoded made a smart call: lean into the pain. Job hunting is stressful, and pretending otherwise doesn\'t connect. I pushed hard on typography animation as the primary storytelling device. No stock footage, no illustrations — just bold type, vibrant color, and kinetic energy.' },
-                    { type: 'section', label: 'The Execution', heading: 'Social-format pieces that stop the scroll.', text: 'I designed and animated a series covering salary negotiation, work-life balance, job hunting stress, career growth, and valuable skills. Each followed the same narrative structure but had its own visual personality.' },
+                    { type: 'divider', label: 'The Work' },
+                    { type: 'section', label: 'The Execution', heading: 'Social-format pieces that stop the scroll.', text: 'I designed and animated a series covering salary negotiation, work-life balance, job hunting stress, career growth, and valuable skills. Each followed the same narrative structure but had its own visual personality within the type-forward system.' },
                     { type: 'grid3', images: [
                         S+'1631288727676-H8X1HHJ53JQBVFN7WW0W/VALUABLE_JOB_SKILLS_V1.gif',
                         S+'1631288726675-O30WAT1ZICXSKJ25DSBK/START_JOB_HUNT_V5_1.gif',
                         S+'1631288721778-Y4ZY8KALAPOD2LUM9MT5/SALARY_INCREASE_v3.gif'
                     ], caption: 'Valuable skills, starting the hunt, salary negotiation' },
-                    { type: 'section', label: 'The Outcome', heading: 'Bold type beats bigger budgets.', text: 'The typography-forward approach proved that you don\'t need live action or complex illustration to create engaging social content — sometimes bold type and smart motion design is more effective.' },
+                    { type: 'section', label: 'The Outcome', heading: 'Bold type beats bigger budgets.', text: 'The typography-forward approach proved that you don\'t need live action or complex illustration to create engaging social content — sometimes bold type and smart motion design is more effective than a six-figure production budget.' },
+                    { type: 'pullquote', text: 'No stock footage, no illustrations — just bold type, vibrant color, and kinetic energy that stopped the scroll.', attribution: 'On the method' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Designer, Animator' }, { l: 'Agency', v: 'Decoded' }, { l: 'Client', v: 'CareerBuilder' }, { l: 'Type', v: 'Social Campaign' }] }
                 ]
             },
             'msmax': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'A 10\' × 40\' media wall celebrating Mississippi\'s legends.', text: 'The Mississippi Arts + Entertainment Experience needed a centerpiece media wall — 10 feet tall by 40 feet wide — showcasing animated portraits of the state\'s most iconic cultural figures.' },
+                    { type: 'pullquote', text: 'Designing for a wall you physically move through is fundamentally different from designing for screens. You\'re creating an environment.', attribution: 'On spatial design' },
                     { type: 'hero', src: S+'1630426188908-O6M78Z7KWFQPUVT6EXJJ/MS+Arts%2C+Morgan+Freeman-high.gif' },
                     { type: 'section', label: 'The Approach', heading: 'Designing for a wall you physically move through.', text: 'Designing for a 10\' × 40\' wall is fundamentally different from screens. You\'re creating an environment visitors move through. Viewing distance, resolution, pacing, and the relationship between individual portraits and the full panoramic composition all had to be considered.' },
                     { type: 'hero', src: S+'f0c9f6ca-987d-485c-a007-a6cdea0d17ee/_Render-Working%2Bcomp-4K_00200.png', caption: 'Full 4K render — panoramic composition detail' },
-                    { type: 'section', label: 'The Execution', heading: 'Full 4K media wall — animation, compositing, delivery.', text: 'I animated, composited, and produced the full 4K content, including rendering and delivery for the final installation. Each portrait integrated photographic imagery with graphic elements and subtle motion.' },
-                    { type: 'section', label: 'The Outcome', heading: 'Permanent installation — the work has a physical life.', text: 'The media wall is currently on permanent view at The MAX in Meridian, Mississippi. Visitors experience it in person, in a space dedicated to celebrating creative legacy.' },
+                    { type: 'divider', label: 'Production' },
+                    { type: 'section', label: 'The Execution', heading: 'Full 4K media wall — animation, compositing, delivery.', text: 'I animated, composited, and produced the full 4K content, including rendering and delivery for the final installation. Each portrait integrated photographic imagery with graphic elements and subtle motion that brought the cultural icons to life at massive scale.' },
+                    { type: 'section', label: 'The Outcome', heading: 'Permanent installation — the work has a physical life.', text: 'The media wall is currently on permanent view at The MAX in Meridian, Mississippi. Visitors experience it in person, in a space dedicated to celebrating creative legacy. Unlike digital work that lives on a screen, this piece occupies physical space — and that changes everything about how it feels.' },
+                    { type: 'pullquote', text: 'Unlike digital work that lives on a screen, this piece occupies physical space — and that changes everything about how it feels.', attribution: 'On permanence' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Lead Animator' }, { l: 'Client', v: 'Gallagher Design' }, { l: 'Scale', v: '10\' × 40\' · 4K' }, { l: 'Status', v: 'Permanent view' }] }
                 ]
             },
             'verneek': {
                 blocks: [
                     { type: 'section', label: 'The Brief', heading: 'An AI education platform that feels futuristic and human.', text: 'Verneek needed a visual identity and motion system that could communicate both technological sophistication and human accessibility — a tricky balance when your product is literally artificial intelligence.' },
+                    { type: 'pullquote', text: 'The key creative solve was defining what a conversational AI brain could look like — abstract, organic, and suggesting intelligence without being literal.', attribution: 'On the visual challenge' },
                     { type: 'hero', src: S+'a556b31d-2680-43ed-8b48-b3b4fecc07f8/composite_orb_9_1.gif' },
                     { type: 'section', label: 'The Approach', heading: 'Defining the voice of AI.', text: 'I aimed for a design language that feels futuristic and data-informed but also approachable. The key creative solve was defining what a conversational AI brain could look like — abstract visualizations, flowing data streams, and organic orb forms that suggest intelligence without being literal.' },
                     { type: 'grid2', images: [
                         S+'d97abb69-1823-4fb2-b3de-405e90dd1a19/composite+9+%280-00-14-23%29.png',
                         S+'f9a1d4be-c6d2-4394-9cb9-91a0eb0c20fd/composite+9+%280-00-04-19%29.png'
                     ], caption: 'AI orb composites — data-driven visual identity' },
+                    { type: 'divider', label: 'System Design' },
                     { type: 'grid2', images: [
                         S+'d7a35012-e979-4046-a0f1-fdf65961e717/Screenshot+2024-08-11+143936.png',
                         S+'daec20be-0985-4091-bc69-e1c5dcf021ad/Screenshot+2024-08-11+144027.png'
@@ -4205,80 +4600,121 @@
                         S+'ea585aff-867f-4a2e-a349-a3ad5bfbce58/image+8.png',
                         S+'d1f01c86-5c83-43e3-b91a-5bf572ccda29/Orb_08-AURORA+3+%280-00-02-23%29_2.png'
                     ], caption: 'Brand visual system — orb explorations & aurora effects' },
-                    { type: 'section', label: 'The Outcome', heading: 'A credible, distinctive presence in AI/edtech.', text: 'The visual identity gave Verneek a credible presence in a crowded landscape. The motion system provided a flexible framework for communicating complex product capabilities in an accessible, visually engaging way.' },
+                    { type: 'section', label: 'The Outcome', heading: 'A credible, distinctive presence in AI/edtech.', text: 'The visual identity gave Verneek a credible presence in a crowded AI landscape. The motion system provided a flexible framework for communicating complex product capabilities in an accessible, visually engaging way — from investor decks to product demos to marketing assets.' },
+                    { type: 'pullquote', text: 'In a landscape where every AI company looks the same, the brand system gave Verneek a visual presence that feels both futuristic and distinctly human.', attribution: 'On differentiation' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Sr. Brand Designer' }, { l: 'Client', v: 'Verneek' }, { l: 'Type', v: 'Brand Identity' }, { l: 'Sector', v: 'AI / EdTech' }] }
                 ]
             },
             'pbs': {
                 blocks: [
-                    { type: 'section', label: 'The Brief', heading: 'Make astrophysics visually engaging without dumbing it down.', text: 'PBS Digital Studios was launching Space Time, a YouTube series about astrophysics. The show needed a visual identity and episode graphics that could make complex scientific concepts engaging for a mainstream audience.' },
+                    { type: 'section', label: 'The Brief', heading: 'Make astrophysics visually engaging without dumbing it down.', text: 'PBS Digital Studios was launching Space Time, a YouTube series about astrophysics. The show needed a visual identity and episode graphics that could make complex scientific concepts engaging for a mainstream audience — without sacrificing the rigor that makes the science credible.' },
+                    { type: 'pullquote', text: 'Black holes, the edge of the universe, the nature of spacetime — these are topics where the visualization IS the explanation.', attribution: 'On science communication design' },
                     { type: 'hero', src: S+'4812b781-1309-443a-b155-8c55df610034/season-2015.jpg' },
-                    { type: 'section', label: 'The Approach', heading: 'The visualization IS the explanation.', text: 'Science communication design is its own discipline. Black holes, the edge of the universe, the nature of spacetime — these are topics where the visualization IS the explanation. I developed a visual system that mixed diagrammatic clarity with cinematic scale.' },
+                    { type: 'section', label: 'The Approach', heading: 'The visualization IS the explanation.', text: 'Science communication design is its own discipline. Black holes, the edge of the universe, the nature of spacetime — these are topics where the visualization IS the explanation. I developed a visual system that mixed diagrammatic clarity with cinematic scale, giving viewers an entry point into concepts that defy everyday intuition.' },
                     { type: 'video', src: 'https://www.youtube.com/embed/AwwIFcdUFrE', caption: 'Episode: "What Happens At The Edge Of The Universe?"' },
+                    { type: 'divider', label: 'Episode Work' },
                     { type: 'section', label: 'The Execution', heading: 'Weekly episodes from event horizons to the nature of time.', text: 'I designed the show\'s visual language and animated episodes covering topics from black hole event horizons to the nature of space and time as illusion. Episodes released weekly, maintaining a production rhythm that balanced quality with YouTube\'s release schedule.' },
                     { type: 'video', src: 'https://www.youtube.com/embed/YycAzdtUIko', caption: 'Episode: "Do Events Inside Black Holes Happen?"' },
                     { type: 'video', src: 'https://www.youtube.com/embed/GguAN1_JouQ', caption: 'Episode: "Are Space and Time An Illusion?"' },
-                    { type: 'section', label: 'The Outcome', heading: '700K+ subscribers and growing.', text: 'PBS Space Time grew to over 700,000 subscribers and became one of the most respected science channels on YouTube. The visual design played a meaningful role in establishing credibility.' },
+                    { type: 'section', label: 'The Outcome', heading: '700K+ subscribers and growing.', text: 'PBS Space Time grew to over 700,000 subscribers and became one of the most respected science channels on YouTube. The visual design played a meaningful role in establishing the show\'s credibility and in making people care about physics who otherwise wouldn\'t.' },
+                    { type: 'pullquote', text: 'The visual design played a meaningful role in making people care about physics who otherwise wouldn\'t.', attribution: 'On impact' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Original Designer' }, { l: 'Studio', v: 'Kornhaber Brown' }, { l: 'Client', v: 'PBS Digital' }, { l: 'Audience', v: '700K+ subs' }] }
                 ]
             },
             'karmalog': {
                 blocks: [
                     { type: 'section', label: 'The Question', heading: 'What if you could see the cumulative weight of your online actions?', text: 'This was my thesis project at Parsons — a self-directed brief that started with a philosophical question about accountability in digital spaces and ended with a working application concept that visualizes your social media footprint as a living data object.' },
+                    { type: 'pullquote', text: 'What if you could see the cumulative weight of every post, comment, and interaction you\'ve ever made online — rendered as a living data object?', attribution: 'The thesis question' },
                     { type: 'hero', src: S+'1424650151412-JR8LVXSJKGQ82WI3YX3T/leng_michael_01.jpg' },
                     { type: 'section', label: 'The Concept', heading: 'For every action, there is a consequence.', text: 'On the surface, Karma Log is a data-logging application. Users mine their social media activity — every post, comment, and action — creating a personal archive. But the real design challenge was the layer beneath: generating each user\'s "Karmagraph," a data visualization of their accumulated positive and negative karma.' },
                     { type: 'grid2', images: [
                         S+'1424650151448-CBCQRIRDRNMLRVGGM1EI/leng_michael_02.jpg',
                         S+'1424650151505-02PXMNRDIM6NQLS4P63S/leng_michael_03.jpg'
                     ], caption: 'App interface — activity logging & Karmagraph visualization' },
-                    { type: 'section', label: 'The Process', heading: 'Information architecture first, visual system second.', text: 'I defined how data would be captured, categorized, and weighted. What constitutes positive or negative karma? The motion design component was central — animation reveals the story of trajectory that a single chart never could.' },
+                    { type: 'divider', label: 'Architecture' },
+                    { type: 'section', label: 'The Process', heading: 'Information architecture first, visual system second.', text: 'I defined how data would be captured, categorized, and weighted. What constitutes positive or negative karma? How do you visualize trajectory over time? The motion design component was central — animation reveals the story of trajectory that a single chart never could.' },
                     { type: 'grid2', images: [
                         S+'1424650247637-1NCHHKZH0QPIA1E2E8MD/leng_michael_04-rgb.jpg',
                         S+'1424650247636-X3J7Q2FO3OD2MDZMUIKH/leng_michael_05-rgb.jpg'
                     ], caption: 'Data architecture & visual system design' },
                     { type: 'section', label: 'The Through Line', heading: 'Making invisible systems visible.', text: 'The belief that design can make invisible systems visible — whether behavioral patterns, broadcast graphics systems, or animation frameworks that scale across 98 ad variations — is the thread that connects my work from Parsons to CBS to Cash App to today.' },
+                    { type: 'pullquote', text: 'Making invisible systems visible — that\'s the thread connecting every project from this thesis to the broadcast packages, marketing engines, and brand systems that followed.', attribution: 'The through line' },
                     { type: 'facts', items: [{ l: 'Role', v: 'Designer, Info Architect' }, { l: 'Context', v: 'Parsons BFA Thesis' }, { l: 'Exhibition', v: 'Crossing Screens' }, { l: 'Year', v: '2013' }] }
                 ]
             }
         };
 
+        // Project key order for navigation
+        const projectKeys = Object.keys(projectData);
+
         function renderCaseStudy(projectKey) {
             const cs = caseStudyContent[projectKey];
             const project = projectData[projectKey];
             if (!cs || !cs.blocks) return '';
-            
+
+            const projectIndex = projectKeys.indexOf(projectKey);
+            const projectNum = String(projectIndex + 1).padStart(2, '0');
+
             let html = '';
-            
+            let blockIndex = 0;
+
+            // Hero banner with cover image
+            html += `<div class="cs-hero-banner cs-animate">
+                <img src="${project.cover}" alt="${project.title}" loading="lazy">
+                <div class="cs-hero-banner-overlay">
+                    <div class="cs-hero-banner-num">${projectNum}</div>
+                    ${project.year ? `<div class="cs-hero-banner-year">${project.year}</div>` : ''}
+                </div>
+            </div>`;
+
+            // Progress bar
+            html += `<div class="cs-progress-bar"><div class="cs-progress-fill" id="cs-progress-fill"></div></div>`;
+
+            // Spacer after banner
+            html += '<div style="height: 28px;"></div>';
+
+            // Key metrics strip (if project has stats or notable numbers)
+            const metrics = buildMetrics(projectKey, project);
+            if (metrics.length > 0) {
+                html += `<div class="cs-metrics cs-animate">`;
+                metrics.forEach(m => {
+                    html += `<div class="cs-metric"><div class="cs-metric-value">${m.value}</div><div class="cs-metric-label">${m.label}</div></div>`;
+                });
+                html += `</div>`;
+            }
+
             cs.blocks.forEach(block => {
+                const animClass = `cs-animate`;
+                blockIndex++;
                 switch (block.type) {
                     case 'section':
-                        html += `<div class="cs-section">
+                        html += `<div class="cs-section ${animClass}">
                             <div class="cs-label">${block.label}</div>
                             <div class="cs-heading">${block.heading}</div>
                             <div class="cs-text">${block.text}</div>
                         </div>`;
                         break;
                     case 'hero':
-                        html += `<div style="margin: 20px 0 28px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,0.1);">
-                            <img src="${block.src}" alt="" style="width: 100%; height: auto; display: block;" loading="lazy">
-                            ${block.caption ? `<div style="padding: 8px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--text-dim); background: var(--bg-panel-alt);">${block.caption}</div>` : ''}
+                        html += `<div class="cs-image-featured ${animClass}">
+                            <img src="${block.src}" alt="" loading="lazy">
+                            ${block.caption ? `<div class="cs-image-featured-caption">${block.caption}</div>` : ''}
                         </div>`;
                         break;
                     case 'grid2':
-                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 24px;">
-                            ${block.images.map(src => `<div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(128,128,128,0.08); background: var(--bg-panel-alt);"><img src="${src}" alt="" style="width: 100%; height: auto; display: block;" loading="lazy"></div>`).join('')}
-                            ${block.caption ? `<div style="grid-column: 1 / -1; padding: 4px 0; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}
+                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 24px;" class="${animClass}">
+                            ${block.images.map(src => `<div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,0.08); background: var(--bg-panel-alt);"><img src="${src}" alt="" style="width: 100%; height: auto; display: block;" loading="lazy"></div>`).join('')}
+                            ${block.caption ? `<div style="grid-column: 1 / -1; padding: 6px 0 0; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}
                         </div>`;
                         break;
                     case 'grid3':
-                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 16px 0 24px;">
-                            ${block.images.map(src => `<div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(128,128,128,0.08); background: var(--bg-panel-alt);"><img src="${src}" alt="" style="width: 100%; height: auto; display: block;" loading="lazy"></div>`).join('')}
-                            ${block.caption ? `<div style="grid-column: 1 / -1; padding: 4px 0; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}
+                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 16px 0 24px;" class="${animClass}">
+                            ${block.images.map(src => `<div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,0.08); background: var(--bg-panel-alt);"><img src="${src}" alt="" style="width: 100%; height: auto; display: block;" loading="lazy"></div>`).join('')}
+                            ${block.caption ? `<div style="grid-column: 1 / -1; padding: 6px 0 0; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}
                         </div>`;
                         break;
                     case 'subprojects':
                         block.items.forEach(sp => {
-                            html += `<div class="cs-subproject">
+                            html += `<div class="cs-subproject ${animClass}">
                                 <div class="cs-subproject-header">
                                     <div class="cs-subproject-header-left">
                                         <span class="cs-subproject-num">${sp.num}</span>
@@ -4298,13 +4734,22 @@
                         });
                         break;
                     case 'video':
-                        html += `<div style="margin: 20px 0 24px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,0.1); background: #000; aspect-ratio: 16/9;">
+                        html += `<div style="margin: 20px 0 24px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(128,128,128,0.1); background: #000; aspect-ratio: 16/9;" class="${animClass}">
                             <iframe src="${block.src}" style="width: 100%; height: 100%; border: none;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
                         </div>
                         ${block.caption ? `<div style="margin: -16px 0 20px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; color: var(--text-dim);">${block.caption}</div>` : ''}`;
                         break;
+                    case 'pullquote':
+                        html += `<div class="cs-pullquote ${animClass}">
+                            <div class="cs-pullquote-text">${block.text}</div>
+                            ${block.attribution ? `<div class="cs-pullquote-attr">${block.attribution}</div>` : ''}
+                        </div>`;
+                        break;
+                    case 'divider':
+                        html += `<div class="cs-divider-labeled ${animClass}"><span>${block.label || ''}</span></div>`;
+                        break;
                     case 'facts':
-                        html += '<hr class="cs-divider"><div class="cs-facts">';
+                        html += `<hr class="cs-divider"><div class="cs-facts ${animClass}">`;
                         block.items.forEach(f => {
                             html += `<div class="cs-fact"><div class="cs-fact-label">${f.l}</div><div class="cs-fact-value">${f.v}</div></div>`;
                         });
@@ -4312,20 +4757,166 @@
                         break;
                 }
             });
-            
+
+            // Tools & deliverables section
+            if (project.tools || project.deliverables) {
+                html += `<div class="cs-divider-labeled cs-animate"><span>Project Details</span></div>`;
+
+                if (project.tools) {
+                    html += `<div class="cs-tools cs-animate">
+                        <div class="cs-tools-label">Tools & Software</div>
+                        <div class="cs-tools-list">
+                            ${project.tools.map(t => `<span class="cs-tool-tag">${t}</span>`).join('')}
+                        </div>
+                    </div>`;
+                }
+
+                if (project.deliverables) {
+                    html += `<div class="cs-deliverables cs-animate">
+                        <div class="cs-deliverables-label">Deliverables</div>
+                        <div class="cs-deliverables-grid">
+                            ${project.deliverables.map(d => `<div class="cs-deliverable-item"><span class="cs-deliverable-check" style="color: ${project.color};">&#10003;</span>${d}</div>`).join('')}
+                        </div>
+                    </div>`;
+                }
+            }
+
+            // Project navigation (prev/next)
+            const prevIndex = projectIndex > 0 ? projectIndex - 1 : projectKeys.length - 1;
+            const nextIndex = projectIndex < projectKeys.length - 1 ? projectIndex + 1 : 0;
+            const prevProject = projectData[projectKeys[prevIndex]];
+            const nextProject = projectData[projectKeys[nextIndex]];
+
+            html += `<div class="cs-project-nav">
+                <div class="cs-project-nav-item cs-project-nav-item--prev" data-nav-project="${projectKeys[prevIndex]}">
+                    <div class="cs-project-nav-dir">← Previous</div>
+                    <div class="cs-project-nav-title">${prevProject.title}</div>
+                    <div class="cs-project-nav-type">${prevProject.type}</div>
+                </div>
+                <div class="cs-project-nav-item cs-project-nav-item--next" data-nav-project="${projectKeys[nextIndex]}">
+                    <div class="cs-project-nav-dir">Next →</div>
+                    <div class="cs-project-nav-title">${nextProject.title}</div>
+                    <div class="cs-project-nav-type">${nextProject.type}</div>
+                </div>
+            </div>`;
+
             return html;
         }
 
+        // Build metrics for each project
+        function buildMetrics(projectKey, project) {
+            const metricsMap = {
+                'fubo': [
+                    { value: '1', label: 'Network Identity' },
+                    { value: '5+', label: 'Show Formats' },
+                    { value: 'Full', label: 'Toolkit Scope' }
+                ],
+                'cashapp': [
+                    { value: '98', label: 'Unique Assets' },
+                    { value: '3', label: 'Product Lines' },
+                    { value: '<3wk', label: 'Delivery Time' },
+                    { value: '2', label: 'Formats (9×16 / 16×9)' }
+                ],
+                'cbs': [
+                    { value: '100M+', label: 'Viewers Reached' },
+                    { value: '1', label: 'Sports Emmy' },
+                    { value: '5', label: 'Sub-Projects' },
+                    { value: '3yr', label: 'Tenure' }
+                ],
+                'intuit': [
+                    { value: '4', label: 'Hero Videos' },
+                    { value: '16', label: 'Total Assets' },
+                    { value: '~5wk', label: 'Timeline' },
+                    { value: '4', label: 'Remote Shoots' }
+                ],
+                'careerbuilder': [
+                    { value: '6+', label: 'Social Ads' },
+                    { value: '100%', label: 'Type-Driven' },
+                    { value: '5', label: 'Topic Themes' }
+                ],
+                'msmax': [
+                    { value: '10\'×40\'', label: 'Wall Scale' },
+                    { value: '4K', label: 'Resolution' },
+                    { value: '∞', label: 'Installation Duration' }
+                ],
+                'verneek': [
+                    { value: '1', label: 'Brand Identity' },
+                    { value: '3', label: 'Motion Systems' },
+                    { value: 'AI', label: 'Sector Focus' }
+                ],
+                'pbs': [
+                    { value: '700K+', label: 'Subscribers' },
+                    { value: 'S1', label: 'Original Season' },
+                    { value: '∞', label: 'Astrophysics Topics' }
+                ],
+                'karmalog': [
+                    { value: '1', label: 'BFA Thesis' },
+                    { value: '2013', label: 'Year' },
+                    { value: '∞', label: 'Social Data Points' }
+                ]
+            };
+            return metricsMap[projectKey] || [];
+        }
+
         let currentActiveTile = null;
+        let csScrollObserver = null;
+
+        function initCaseStudyAnimations() {
+            // Scroll-triggered entrance animations
+            if (csScrollObserver) csScrollObserver.disconnect();
+
+            const animElements = expandedCaseStudy.querySelectorAll('.cs-animate');
+            csScrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('cs-visible');
+                        csScrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: expandedCaseStudy,
+                rootMargin: '0px 0px -40px 0px',
+                threshold: 0.1
+            });
+
+            animElements.forEach(el => csScrollObserver.observe(el));
+
+            // Progress bar on scroll
+            const progressFill = document.getElementById('cs-progress-fill');
+            if (progressFill) {
+                expandedCaseStudy.addEventListener('scroll', function onCsScroll() {
+                    const scrollTop = expandedCaseStudy.scrollTop;
+                    const scrollHeight = expandedCaseStudy.scrollHeight - expandedCaseStudy.clientHeight;
+                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    progressFill.style.width = progress + '%';
+                });
+            }
+
+            // Project nav click handlers
+            expandedCaseStudy.querySelectorAll('.cs-project-nav-item').forEach(navItem => {
+                navItem.addEventListener('click', () => {
+                    const nextKey = navItem.dataset.navProject;
+                    if (nextKey && projectData[nextKey]) {
+                        openPortfolioExpanded(nextKey, currentActiveTile);
+                    }
+                });
+            });
+        }
 
         function openPortfolioExpanded(projectKey, triggerElement) {
             const project = projectData[projectKey];
             if (!project) return;
 
+            const projectIndex = projectKeys.indexOf(projectKey);
+            const projectNum = String(projectIndex + 1).padStart(2, '0');
+
             // Set header content
             if (expandedTitle) expandedTitle.textContent = project.title;
             if (expandedDesc) expandedDesc.textContent = project.desc;
-            if (expandedLabel) expandedLabel.style.color = project.color;
+            if (expandedLabel) {
+                expandedLabel.style.color = project.color;
+                expandedLabel.textContent = `PROJECT ${projectNum}`;
+            }
             if (expandedType) expandedType.textContent = project.type;
             if (expandedCta) { expandedCta.href = project.url; expandedCta.style.background = project.color; }
 
@@ -4351,9 +4942,25 @@
                 expandedCaseStudy.scrollTop = 0;
                 // Set accent color for cs-labels
                 expandedCaseStudy.querySelectorAll('.cs-label').forEach(el => el.style.color = project.color);
-                expandedCaseStudy.querySelectorAll('.cs-label').forEach(el => { if (el.style) el.style.color = project.color; });
                 expandedCaseStudy.querySelectorAll('.cs-subproject-num').forEach(el => el.style.color = project.color);
                 expandedCaseStudy.querySelectorAll('.cs-subproject-num').forEach(el => el.style.borderColor = project.color + '40');
+                // Set accent for pullquote borders
+                expandedCaseStudy.querySelectorAll('.cs-pullquote').forEach(el => el.style.borderLeftColor = project.color);
+                // Set accent for metric values
+                expandedCaseStudy.querySelectorAll('.cs-metric-value').forEach(el => {
+                    el.style.background = `linear-gradient(135deg, ${project.color}, var(--text-primary))`;
+                    el.style.webkitBackgroundClip = 'text';
+                    el.style.webkitTextFillColor = 'transparent';
+                    el.style.backgroundClip = 'text';
+                });
+                // Set accent for progress bar
+                const progressFill = document.getElementById('cs-progress-fill');
+                if (progressFill) progressFill.style.background = project.color;
+                // Set accent for deliverable checks
+                expandedCaseStudy.querySelectorAll('.cs-deliverable-check').forEach(el => el.style.borderColor = project.color + '40');
+
+                // Initialize animations
+                setTimeout(() => initCaseStudyAnimations(), 100);
             }
 
             // Store active tile
@@ -4375,6 +4982,7 @@
         function closePortfolioExpanded() {
             if (portfolioExpanded) portfolioExpanded.classList.remove('active');
             if (bgImageContainer) bgImageContainer.classList.remove('portfolio-open');
+            if (csScrollObserver) csScrollObserver.disconnect();
 
             setTimeout(() => {
                 if (workGrid) workGrid.classList.remove('expanding');
