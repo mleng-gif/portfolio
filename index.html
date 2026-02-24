@@ -1955,6 +1955,633 @@
             color: var(--accent);
         }
 
+        /* ═══ VIDEO GAME BIO CARD ═══ */
+        .about-layout {
+            display: flex;
+            gap: 48px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bio-card-toggle {
+            position: fixed;
+            bottom: 72px;
+            right: 24px;
+            z-index: 100;
+            padding: 0;
+            background: var(--bg-panel);
+            border: 1px solid var(--marker-about);
+            border-radius: 8px;
+            color: var(--marker-about);
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            height: 36px;
+        }
+
+        .bio-card-toggle.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bio-card-toggle:hover {
+            background: rgba(255, 217, 82, 0.1);
+            box-shadow: 0 0 20px rgba(255, 217, 82, 0.15);
+        }
+
+        .bio-card-toggle .toggle-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            border-right: 1px solid rgba(255, 217, 82, 0.2);
+        }
+
+        .bio-card-toggle .toggle-label {
+            padding: 0 14px;
+            white-space: nowrap;
+        }
+
+        .bio-card-toggle.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(91, 164, 255, 0.08);
+        }
+
+        .bio-card-toggle.active .toggle-icon {
+            border-right-color: rgba(91, 164, 255, 0.2);
+        }
+
+        .bio-card-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 56px;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .bio-card-wrapper.open {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .bio-card-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 8, 10, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .bio-card {
+            position: relative;
+            width: 520px;
+            max-width: 90vw;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            background: var(--bg-panel);
+            border: 1px solid rgba(255, 217, 82, 0.25);
+            border-radius: 12px;
+            padding: 0;
+            transform: scale(0.88) translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            opacity: 0;
+            box-shadow:
+                0 0 40px rgba(255, 217, 82, 0.06),
+                0 0 80px rgba(255, 217, 82, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .bio-card-wrapper.open .bio-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Scanline overlay */
+        .bio-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 12px;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            z-index: 5;
+        }
+
+        /* Card header / portrait area */
+        .bio-card-header {
+            position: relative;
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid rgba(255, 217, 82, 0.12);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .bio-card-portrait {
+            width: 96px;
+            height: 96px;
+            border-radius: 8px;
+            border: 2px solid var(--marker-about);
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            background: var(--bg-dark);
+        }
+
+        .bio-card-portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Pixel corner decorations */
+        .bio-card-portrait::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            border-image: repeating-linear-gradient(
+                90deg,
+                var(--marker-about) 0 4px,
+                transparent 4px 8px
+            ) 2;
+            z-index: 2;
+            mix-blend-mode: overlay;
+            opacity: 0.4;
+        }
+
+        .bio-card-portrait-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--marker-about);
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-panel-alt));
+        }
+
+        .bio-card-id {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bio-card-class {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--marker-about);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bio-card-class::before {
+            content: '▸';
+        }
+
+        .bio-card-name {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .bio-card-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .bio-card-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 4px 10px;
+            border: 1px solid rgba(255, 217, 82, 0.2);
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--marker-about);
+            background: rgba(255, 217, 82, 0.04);
+        }
+
+        .bio-card-level-num {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Stats section */
+        .bio-card-stats {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 217, 82, 0.08);
+        }
+
+        .bio-card-section-title {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bio-card-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(128,128,128,0.15), transparent);
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .stat-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-secondary);
+            width: 80px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-bar-track {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .stat-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2));
+        }
+
+        .stat-bar-fill.stat-design { background: linear-gradient(90deg, #ffd952, #ffb800); }
+        .stat-bar-fill.stat-motion { background: linear-gradient(90deg, #5ba4ff, #3d7aff); }
+        .stat-bar-fill.stat-code { background: linear-gradient(90deg, #3dffa3, #00d67a); }
+        .stat-bar-fill.stat-direction { background: linear-gradient(90deg, #ff7854, #ff5630); }
+        .stat-bar-fill.stat-teaching { background: linear-gradient(90deg, #ff5c8d, #e83e73); }
+        .stat-bar-fill.stat-systems { background: linear-gradient(90deg, #c084fc, #a855f7); }
+
+        .stat-value {
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 28px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* Equipment/Loadout */
+        .bio-card-equipment {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 217, 82, 0.08);
+        }
+
+        .equip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .equip-slot {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            border: 1px solid rgba(128,128,128,0.06);
+            transition: all 0.25s ease;
+        }
+
+        .equip-slot:hover {
+            border-color: var(--marker-about);
+            background: rgba(255, 217, 82, 0.03);
+        }
+
+        .equip-slot-icon {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .equip-slot-info {
+            min-width: 0;
+        }
+
+        .equip-slot-label {
+            font-family: var(--mono);
+            font-size: 8px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .equip-slot-name {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Achievements */
+        .bio-card-achievements {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 217, 82, 0.08);
+        }
+
+        .achievement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            border: 1px solid rgba(128,128,128,0.06);
+            transition: all 0.25s ease;
+        }
+
+        .achievement:hover {
+            border-color: rgba(255, 217, 82, 0.2);
+        }
+
+        .achievement-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            background: rgba(255, 217, 82, 0.08);
+            border: 1px solid rgba(255, 217, 82, 0.15);
+        }
+
+        .achievement-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .achievement-name {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .achievement-desc {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-top: 1px;
+        }
+
+        .achievement-year {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            flex-shrink: 0;
+        }
+
+        /* Party members / side quests */
+        .bio-card-party {
+            padding: 20px 28px;
+        }
+
+        .party-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .party-member {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            border: 1px solid rgba(128,128,128,0.06);
+            transition: all 0.25s ease;
+        }
+
+        .party-member:hover {
+            border-color: rgba(255, 217, 82, 0.15);
+        }
+
+        .party-member-icon {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .party-member-name {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+
+        /* Close button */
+        .bio-card-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid rgba(128,128,128,0.15);
+            background: var(--bg-dark);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 6;
+        }
+
+        .bio-card-close:hover {
+            border-color: var(--marker-about);
+            color: var(--marker-about);
+        }
+
+        /* XP bar at bottom of card */
+        .bio-card-xp {
+            padding: 12px 28px 16px;
+            border-top: 1px solid rgba(255, 217, 82, 0.08);
+        }
+
+        .xp-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .xp-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .xp-value {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--marker-about);
+        }
+
+        .xp-bar-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--marker-about), #ffb800);
+            border-radius: 3px;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .xp-bar-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0 8px,
+                rgba(0,0,0,0.15) 8px 10px
+            );
+        }
+
+        /* Responsive adjustments for bio card */
+        @media (max-width: 768px) {
+            .bio-card {
+                width: 100%;
+                max-width: 95vw;
+                max-height: calc(100vh - 100px);
+            }
+
+            .bio-card-header {
+                padding: 20px;
+            }
+
+            .bio-card-portrait {
+                width: 72px;
+                height: 72px;
+            }
+
+            .bio-card-stats,
+            .bio-card-equipment,
+            .bio-card-achievements,
+            .bio-card-party {
+                padding: 16px 20px;
+            }
+
+            .equip-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .party-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .bio-card-toggle {
+                bottom: 64px;
+                right: 12px;
+            }
+        }
+
         /* Contact links */
         .contact-links {
             display: flex;
@@ -3459,6 +4086,203 @@
                         <span class="skill-tag">Template Systems</span>
                         <span class="skill-tag">Art Direction</span>
                         <span class="skill-tag">Motion Systems</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio Card Toggle Button -->
+            <button class="bio-card-toggle" id="bio-card-toggle">
+                <span class="toggle-icon">&#9776;</span>
+                <span class="toggle-label">Bio Card</span>
+            </button>
+
+            <!-- Video Game Bio Card Overlay -->
+            <div class="bio-card-wrapper" id="bio-card-wrapper">
+                <div class="bio-card-backdrop" id="bio-card-backdrop"></div>
+                <div class="bio-card" id="bio-card">
+                    <button class="bio-card-close" id="bio-card-close">&times;</button>
+
+                    <!-- Header: Portrait + Identity -->
+                    <div class="bio-card-header">
+                        <div class="bio-card-portrait">
+                            <img src="https://images.squarespace-cdn.com/content/v1/54ceaa47e4b0b90ad0d67952/1424658592264-5M4BHCVU32TX365A7Z6W/image-asset.jpeg?format=500w" alt="Michael Leng" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="bio-card-portrait-fallback" style="display:none;">ML</div>
+                        </div>
+                        <div class="bio-card-id">
+                            <div class="bio-card-class">Motion Designer</div>
+                            <div class="bio-card-name">Michael Leng</div>
+                            <div class="bio-card-title">Sr. Brand & Motion Design<br>Brooklyn, NY</div>
+                            <div class="bio-card-level">
+                                <span>YRS</span>
+                                <span class="bio-card-level-num">10+</span>
+                                <span style="color: var(--text-dim);">experience</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="bio-card-stats">
+                        <div class="bio-card-section-title">Skill Breakdown</div>
+                        <div class="stat-row">
+                            <span class="stat-label">Design</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-design" data-width="95"></div>
+                            </div>
+                            <span class="stat-value">95</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Motion</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-motion" data-width="98"></div>
+                            </div>
+                            <span class="stat-value">98</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Code</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-code" data-width="78"></div>
+                            </div>
+                            <span class="stat-value">78</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Direction</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-direction" data-width="90"></div>
+                            </div>
+                            <span class="stat-value">90</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Teaching</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-teaching" data-width="85"></div>
+                            </div>
+                            <span class="stat-value">85</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Systems</span>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill stat-systems" data-width="92"></div>
+                            </div>
+                            <span class="stat-value">92</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment / Loadout -->
+                    <div class="bio-card-equipment">
+                        <div class="bio-card-section-title">Toolkit</div>
+                        <div class="equip-grid">
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#9830;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">Main</div>
+                                    <div class="equip-slot-name">After Effects</div>
+                                </div>
+                            </div>
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#9827;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">3D</div>
+                                    <div class="equip-slot-name">Cinema 4D</div>
+                                </div>
+                            </div>
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#9824;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">Design</div>
+                                    <div class="equip-slot-name">Figma</div>
+                                </div>
+                            </div>
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#9829;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">Scripting</div>
+                                    <div class="equip-slot-name">Expressions</div>
+                                </div>
+                            </div>
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#9733;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">Vector</div>
+                                    <div class="equip-slot-name">Illustrator</div>
+                                </div>
+                            </div>
+                            <div class="equip-slot">
+                                <span class="equip-slot-icon">&#10047;</span>
+                                <div class="equip-slot-info">
+                                    <div class="equip-slot-label">Edit</div>
+                                    <div class="equip-slot-name">Premiere Pro</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="bio-card-achievements">
+                        <div class="bio-card-section-title">Milestones</div>
+                        <div class="achievement-list">
+                            <div class="achievement">
+                                <div class="achievement-icon">&#127942;</div>
+                                <div class="achievement-info">
+                                    <div class="achievement-name">Sports Emmy Award</div>
+                                    <div class="achievement-desc">CBS Sports — Super Bowl 50</div>
+                                </div>
+                                <span class="achievement-year">2016</span>
+                            </div>
+                            <div class="achievement">
+                                <div class="achievement-icon">&#127891;</div>
+                                <div class="achievement-info">
+                                    <div class="achievement-name">Parsons BFA</div>
+                                    <div class="achievement-desc">Communication Design</div>
+                                </div>
+                                <span class="achievement-year">COMP</span>
+                            </div>
+                            <div class="achievement">
+                                <div class="achievement-icon">&#128218;</div>
+                                <div class="achievement-info">
+                                    <div class="achievement-name">Instructor — Parsons</div>
+                                    <div class="achievement-desc">Training next-gen designers</div>
+                                </div>
+                                <span class="achievement-year">NOW</span>
+                            </div>
+                            <div class="achievement">
+                                <div class="achievement-icon">&#9876;</div>
+                                <div class="achievement-info">
+                                    <div class="achievement-name">Jenseits LLC</div>
+                                    <div class="achievement-desc">Founded independent studio</div>
+                                </div>
+                                <span class="achievement-year">ACT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Off the Clock -->
+                    <div class="bio-card-party">
+                        <div class="bio-card-section-title">Off the Clock</div>
+                        <div class="party-grid">
+                            <div class="party-member">
+                                <div class="party-member-icon">&#129354;</div>
+                                <div class="party-member-name">Brazilian<br>Jiu Jitsu</div>
+                            </div>
+                            <div class="party-member">
+                                <div class="party-member-icon">&#127918;</div>
+                                <div class="party-member-name">Co-op<br>Gaming</div>
+                            </div>
+                            <div class="party-member">
+                                <div class="party-member-icon">&#127956;</div>
+                                <div class="party-member-name">Geological<br>Wonders</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- XP Bar -->
+                    <div class="bio-card-xp">
+                        <div class="xp-header">
+                            <span class="xp-label">Career XP</span>
+                            <span class="xp-value">10,240 / 12,000</span>
+                        </div>
+                        <div class="xp-bar-track">
+                            <div class="xp-bar-fill" id="xp-bar-fill"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -5038,6 +5862,86 @@
                 try { localStorage.setItem('theme', 'light'); } catch(e) {}
             }
         });
+        // ═══ VIDEO GAME BIO CARD ═══
+        (function() {
+            const toggle = document.getElementById('bio-card-toggle');
+            const wrapper = document.getElementById('bio-card-wrapper');
+            const backdrop = document.getElementById('bio-card-backdrop');
+            const closeBtn = document.getElementById('bio-card-close');
+            const card = document.getElementById('bio-card');
+            const xpFill = document.getElementById('xp-bar-fill');
+            let isOpen = false;
+
+            function openBioCard() {
+                isOpen = true;
+                wrapper.classList.add('open');
+                toggle.classList.add('active');
+                toggle.querySelector('.toggle-label').textContent = 'Close';
+                // Animate stat bars
+                setTimeout(() => {
+                    card.querySelectorAll('.stat-bar-fill').forEach((bar, i) => {
+                        setTimeout(() => {
+                            bar.style.width = bar.dataset.width + '%';
+                        }, i * 80);
+                    });
+                    // Animate XP bar
+                    if (xpFill) xpFill.style.width = '85%';
+                }, 200);
+            }
+
+            function closeBioCard() {
+                isOpen = false;
+                wrapper.classList.remove('open');
+                toggle.classList.remove('active');
+                toggle.querySelector('.toggle-label').textContent = 'Bio Card';
+                // Reset stat bars
+                card.querySelectorAll('.stat-bar-fill').forEach(bar => {
+                    bar.style.width = '0%';
+                });
+                if (xpFill) xpFill.style.width = '0%';
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    if (isOpen) closeBioCard();
+                    else openBioCard();
+                });
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closeBioCard);
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeBioCard);
+            }
+
+            // ESC to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isOpen) closeBioCard();
+            });
+
+            // Show/hide toggle button based on about section visibility
+            const aboutSection = document.getElementById('section-about');
+            const observer = new MutationObserver(() => {
+                if (aboutSection) {
+                    const isAboutActive = aboutSection.classList.contains('active');
+                    toggle.classList.toggle('visible', isAboutActive);
+                    if (!isAboutActive && isOpen) closeBioCard();
+                }
+            });
+
+            if (aboutSection) {
+                observer.observe(aboutSection, { attributes: true, attributeFilter: ['class'] });
+                // Also check on scroll for initial state
+                const checkVisibility = () => {
+                    const isAboutActive = aboutSection.classList.contains('active');
+                    toggle.classList.toggle('visible', isAboutActive);
+                };
+                window.addEventListener('scroll', checkVisibility, { passive: true });
+                checkVisibility();
+            }
+        })();
     </script>
 </body>
 </html>
