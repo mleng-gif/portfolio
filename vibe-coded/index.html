@@ -94,7 +94,25 @@
   .now .hint { min-height: 1.45em; }
   .now .seg { margin-top: 6px; }
   .hero.viewing .intro, .hero.viewing .now, .hero.viewing .cue { opacity: 0; pointer-events: none; }
-  .cue { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); z-index: 1; text-decoration: none; transition: opacity .5s; }
+  .cue { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 1; height: 34px; padding: 0 14px 0 calc(14px + var(--track-sign)); border: 1px solid var(--ink); background: var(--bg); color: var(--ink); cursor: pointer; transition: opacity .5s, background .2s; }
+  .cue:hover { background: var(--heat-soft); }
+  .hero.spreading .intro, .hero.spreading .now, .hero.spreading .cue { opacity: 0; pointer-events: none; }
+  /* the contact sheet: frames placed by the scene over each slide's window */
+  .sheet-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+  .sheet-ui[hidden] { display: none; }
+  .sheet-bar { position: absolute; left: 50%; top: 84px; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; pointer-events: auto; white-space: nowrap; opacity: 0; transition: opacity .4s var(--ease); }
+  .sheet-ui.on .sheet-bar { opacity: 1; }
+  .si { position: absolute; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; color: var(--ink); text-align: left; }
+  .si .sv { position: absolute; overflow: hidden; border-radius: 2px; background: #000; opacity: 0; transition: opacity .5s var(--ease); }
+  .sheet-ui.on .si .sv { opacity: 1; }
+  .si .sv img, .si .sv video, .si .sv .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .si .sv .still { padding: 6px; } .si .sv .still .big { font-size: 16px; } .si .sv .still .big small { display: none; }
+  .si .sl { position: absolute; left: 0; right: 0; top: calc(100% + 6px); font: var(--t-data); font-size: 11.5px; line-height: 1.25; color: var(--muted); opacity: 0; transition: opacity .4s var(--ease) .1s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .si .sl b { color: var(--ink); font-weight: 500; font-family: var(--f-sans); font-size: 13px; }
+  .si .sl .n { color: var(--heat); margin-right: 6px; }
+  .sheet-ui.on .si .sl { opacity: 1; }
+  .si:hover .sl b, .si:focus-visible .sl b { color: var(--heat); }
+  .si:focus-visible { outline: 2px solid var(--heat); outline-offset: 3px; }
   .cue:hover { color: var(--ink); }
 
   /* the frame */
@@ -107,7 +125,7 @@
     opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease) .1s, transform .45s var(--ease) .1s; }
   .viewer.on .vcap { opacity: 1; transform: none; }
   .vcap:focus { outline: none; }
-  .vcap h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 6px 0 0; text-wrap: balance; }
+  .vcap h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 6px 0 0; text-wrap: balance; overflow-wrap: break-word; }
   .vcap .chips { margin-top: 10px; }
   .vcap p { margin: 0; text-wrap: pretty; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .vcap .seg { margin-top: 14px; flex-wrap: wrap; }
@@ -124,7 +142,10 @@
     .intro p.lede { display: none; }
     h1 { font-size: 32px; }
     .now { left: var(--pad); width: auto; text-align: left; align-items: flex-start; bottom: 26px; }
-    .cue { display: none; }
+    .hero.spreading #stage { inset: 124px 8px 20px; }
+    .sheet-bar { left: var(--pad); right: var(--pad); top: 72px; transform: none; justify-content: space-between; gap: 10px; }
+    .sheet-bar .hint, .sheet-bar #scount, .sheet-bar .sep2 { display: none; }
+    .si .sl { font-size: 10.5px; } .si .sl b { font-size: 12px; }
     .clock .sep, .clock .role { display: none; }
     .mark .wm { letter-spacing: 0.4em; }
   }
@@ -199,7 +220,11 @@
     <p class="data hint" id="nhint"></p>
     <div class="seg" role="group" aria-label="Projector"><button type="button" id="nprev">‹ Prev</button><button type="button" class="solid" id="nview">View</button><button type="button" id="nnext">Next ›</button></div>
   </div>
-  <a class="cue sign" href="#index-band" id="cue">Index ↓</a>
+  <button class="cue sign" type="button" id="cue">Contact sheet ⤢</button>
+  <div class="sheet-ui" id="sheetui" hidden>
+    <div class="sheet-bar"><p class="data"><span class="heat">[ Contact sheet ]</span><span class="sep2"> · </span><span id="scount"></span><span class="sep2 hint"> · </span><span class="hint">pick a frame to project it</span></p><div class="seg"><button type="button" id="sback">Back to the table</button></div></div>
+    <div id="sitems"></div>
+  </div>
 
   <div class="viewer" id="viewer" hidden>
     <div class="vshot" id="fpic"></div>
@@ -217,17 +242,6 @@
   </div>
 </section>
 
-<main class="sheet" id="index-band">
-  <section class="band" aria-labelledby="h-index">
-    <div class="head-row">
-      <div><p class="count data"><span class="heat">[ Index ]</span> · <span class="k">Every piece</span></p>
-      <h2 class="sec" id="h-index">All of them, at once <span class="sl">//</span></h2></div>
-      <span class="data" id="span2"></span>
-    </div>
-    <nav class="tiles" id="index" aria-label="All pieces"></nav>
-  </section>
-  <footer class="band foot"><span class="data">© Michael Leng 2026</span></footer>
-</main>
 
 <!-- The drawing engine below is @lucasmarkes/hairline (https://github.com/lucasmarkes/hairline).
 MIT License
@@ -1000,7 +1014,6 @@ const root = document.documentElement, $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, "0");
 const N = PIECES.length, years = PIECES.map((p) => +p.year), y0 = Math.min(...years), y1 = Math.max(...years);
 $("span1").textContent = pad(N) + " pieces · " + y0 + "–" + y1;
-$("span2").textContent = pad(N) + " pieces · " + y0 + " — " + y1;
 
 (function clock() {
   const d = new Date();
@@ -1025,6 +1038,7 @@ const DEFAULT_HINT = TOUCH ? "Tap a slide to project it" : "Hover the magazine �
 let hoverI = -1;
 function onHover(a) { hoverI = a; $("nhint").textContent = a >= 0 ? "Slide " + pad(a + 1) + " · " + PIECES[a].title + " — click to project" : DEFAULT_HINT; }
 function onLoad(i, done) {
+  if (i < 0) { $("nc").textContent = "[ — ]"; $("nstate").textContent = "Lamp off"; $("ntitle").textContent = ""; $("nview").disabled = true; return; }
   $("nc").textContent = "[ " + pad(i + 1) + " / " + pad(N) + " ]";
   $("nstate").textContent = done ? "Projecting" : "Loading";
   $("ntitle").textContent = PIECES[i].title;
@@ -1038,12 +1052,24 @@ function fillFrame(i) {
   $("fpic").innerHTML = picHTML(p, true, true); watchLoops($("fpic"));
   $("fc").textContent = "[ " + pad(i + 1) + " / " + pad(N) + " ]";
   $("fw").textContent = "· " + p.where + " · " + p.year;
-  $("ftitle").textContent = p.title;
+  $("ftitle").textContent = p.title.replace(/([_.])/g, "$1\u200b"); // file-name titles break at _ and .
   $("fchips").innerHTML = p.medium.split(" · ").map((m) => chip(m)).join("");
   $("fdesc").textContent = p.desc;
   const a = $("fopen"); a.href = p.url; a.textContent = "Open " + p.where + " ↗";
 }
 $("nhint").textContent = DEFAULT_HINT;
+function onSpread(on) { $("hero").classList.toggle("spreading", on); }
+// one frame per piece on the contact sheet; the scene places them
+$("scount").textContent = pad(N) + " pieces";
+PIECES.forEach((p, i) => {
+  const b = document.createElement("button");
+  b.className = "si"; b.type = "button"; b.dataset.i = i;
+  b.innerHTML = '<span class="sv">' + picHTML(p, false, true) + '</span><span class="sl"><span class="n"></span><b></b></span>';
+  b.querySelector(".n").textContent = pad(i + 1);
+  b.querySelector("b").textContent = p.title;
+  b.setAttribute("aria-label", "Project " + p.title);
+  $("sitems").appendChild(b);
+});
 
 /* ---------------------------------------------------------------- the light table: magazine → projector → screen → the camera pushes in */
 const scene = (() => {
@@ -1101,8 +1127,31 @@ const scene = (() => {
   const ex0 = Math.min(...EXT.map((q) => q[0])) - 8, ex1 = Math.max(...EXT.map((q) => q[0])) + 8, ey0 = Math.min(...EXT.map((q) => q[1])) - 8, ey1 = Math.max(...EXT.map((q) => q[1])) + 8;
   let VB = [0, 0, VBW, VBH];
   const narrow = () => innerWidth < 760;
-  const frameView = () => { VB = narrow() ? [ex0, ey0, ex1 - ex0, ey1 - ey0] : [0, 0, VBW, VBH]; svg.setAttribute("viewBox", VB.map((n) => n.toFixed(1)).join(" ")); camKey = ""; };
+  let spreadOn = false;
+  const frameView = () => {
+    if (narrow()) {
+      if (spreadOn) { const r = stage.getBoundingClientRect(), w = ex1 - ex0, h = (w * r.height) / Math.max(r.width, 1), cy = (ey0 + ey1) / 2; VB = [ex0, cy - h / 2, w, h]; }
+      else VB = [ex0, ey0, ex1 - ex0, ey1 - ey0];
+    } else VB = [0, 0, VBW, VBH];
+    svg.setAttribute("viewBox", VB.map((n) => n.toFixed(1)).join(" ")); camKey = "";
+  };
   frameView();
+
+  /* ---- the contact sheet: a plate floating in front of the table, slides laid flat on it in a grid */
+  const SHZ = 46, SM = 14, SGX = 14, SGY = 12, LBL = 20;
+  function sheetLayout() {
+    const cols = narrow() ? 2 : 5, rows = Math.ceil(N / cols);
+    const w = cols * W + (cols - 1) * SGX + 2 * SM, h = rows * (H + LBL) + (rows - 1) * SGY + 2 * SM - 6;
+    const x0 = 70 - w / 2, y0 = 210 - h / 2;
+    const cells = PIECES.map((_, i) => ({ x: x0 + SM + (i % cols) * (W + SGX), y: y0 + SM + Math.floor(i / cols) * (H + LBL + SGY) }));
+    return { cols, rows, w, h, x0, y0, cells };
+  }
+  let SL = sheetLayout();
+  function spreadPose() {
+    const [vx, vy, vw, vh] = VB, top = narrow() ? 0.05 : 0.11, bot = narrow() ? 0.03 : 0.05;
+    const tw = vw * 0.92, th = vh * (1 - top - bot), S = Math.min(tw / SL.w, th / SL.h);
+    return { az: 0, k: 1, dist: HOME.dist, T: [SL.x0 + SL.w / 2, SL.y0 + SL.h / 2, SHZ], S, cx: vx + vw / 2, cy: vy + vh * top + th / 2 };
+  }
 
   // where the screen lands when the camera arrives, in viewBox units
   function shotTarget() {
@@ -1112,19 +1161,21 @@ const scene = (() => {
   }
   const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const sm = (x) => x * x * (3 - 2 * x), ss = (a, b, x) => clamp((x - a) / (b - a), 0, 1);
-  function poseAt(it, t) {
-    const base = it < 1 ? lerpPose(INTRO, HOME, easeIO(it)) : HOME;
+  function poseAt(it, t, st) {
+    let base = it < 1 ? lerpPose(INTRO, HOME, easeIO(it)) : HOME;
+    if (st > 0) { const e = easeIO(st), z = easeIO(ss(0.05, 1, st)), sp = spreadPose(), q = lerpPose(base, sp, z); q.az = lerp(base.az, 0, e); q.k = lerp(base.k, 1, e); base = q; }
     if (t <= 0) return base;
     const e = easeIO(t), z = easeIO(ss(0.08, 1, t)), tg = shotTarget();
     const shot = { az: 0, k: 0, dist: base.dist, T: [(SX0 + SX1) / 2, SY, (SZ0 + SZ1) / 2], S: Math.min(tg.w / SW, tg.h / SH), cx: tg.cx, cy: tg.cy };
     const p = lerpPose(base, shot, z); p.az = lerp(base.az, 0, e); p.k = lerp(base.k, 0, e);
     return p;
   }
-  function setCamera(it, t) {
-    const key = it.toFixed(4) + "," + t.toFixed(4) + VB.join(",");
+  let spT = 0;
+  function setCamera(it, t, st) {
+    const key = it.toFixed(4) + "," + t.toFixed(4) + "," + st.toFixed(4) + VB.join(",");
     if (key === camKey) return false;
-    camKey = key; camT = t; introT = it;
-    const pose = poseAt(it, t); P = proj3(pose); front = facing(pose);
+    camKey = key; camT = t; introT = it; spT = st;
+    const pose = poseAt(it, t, st); P = proj3(pose); front = facing(pose);
     return true;
   }
 
@@ -1156,6 +1207,8 @@ const scene = (() => {
 
   const gScreen = mk("g", {}, root), gBeam = mk("g", {}, root), gTrayFar = mk("g", {}, root), gSlides = mk("g", {}, root);
   const gTrayNear = mk("g", {}, root), gBodyBack = mk("g", {}, root), gGate = mk("g", {}, root), gBodyFront = mk("g", {}, root);
+  const gSheet = mk("g", { style: "opacity:0" }, root), gSpread = mk("g", {}, root);
+  const SHT = { edge: mk("path", { class: "sil" }, gSheet), top: mk("path", { class: "sil" }, gSheet), cells: mk("path", { class: "nf lo dash" }, gSheet), marks: mk("path", { class: "nf lo" }, gSheet) };
   const el = (g, cls, extra) => mk("path", Object.assign({ class: cls }, extra || {}), g);
 
   /* the static solids, as elements; drawStatic() writes their paths for the current camera */
@@ -1187,8 +1240,18 @@ const scene = (() => {
     place(lamp, P(PX1 - 12, PY1, 12));
     gRefl.style.opacity = (ss(0.85, 1, introT) * (1 - ss(0, 0.15, camT))).toFixed(3);
     // everything but the screen recedes as the camera closes on it
-    const rest = (1 - ss(0.4, 0.85, camT)).toFixed(3);
-    [gBeam, gTrayFar, gSlides, gTrayNear, gBodyBack, gGate, gBodyFront].forEach((g) => { g.style.opacity = rest; });
+    const rest = ((1 - ss(0.4, 0.85, camT)) * (1 - 0.7 * ss(0.15, 0.8, spT))).toFixed(3);
+    [gBeam, gTrayFar, gSlides, gTrayNear, gBodyBack, gGate, gBodyFront, gScreen].forEach((g) => { g.style.opacity = g === gScreen ? (1 - 0.7 * ss(0.15, 0.8, spT)).toFixed(3) : rest; });
+    // the sheet
+    gSheet.style.opacity = ss(0.3, 0.7, spT).toFixed(3);
+    if (spT > 0) {
+      const ring = rrect(SL.x0, SL.y0, SL.x0 + SL.w, SL.y0 + SL.h, 5, 5);
+      SHT.edge.setAttribute("d", poly(hull(ringAt(P, ring, SHZ).concat(ringAt(P, ring, SHZ - 2.4)))));
+      SHT.top.setAttribute("d", poly(ringAt(P, ring, SHZ)));
+      SHT.cells.setAttribute("d", SL.cells.map((c) => poly([P(c.x - 2, c.y - 2, SHZ), P(c.x + W + 2, c.y - 2, SHZ), P(c.x + W + 2, c.y + H + 2, SHZ), P(c.x - 2, c.y + H + 2, SHZ)])).join(""));
+      let m = ""; for (const [x, y] of [[SL.x0 + 6, SL.y0 + 6], [SL.x0 + SL.w - 6, SL.y0 + 6], [SL.x0 + 6, SL.y0 + SL.h - 6], [SL.x0 + SL.w - 6, SL.y0 + SL.h - 6]]) m += seg(P(x - 3, y, SHZ), P(x + 3, y, SHZ)) + seg(P(x, y - 3, SHZ), P(x, y + 3, SHZ));
+      SHT.marks.setAttribute("d", m);
+    }
   }
 
   /* the screen and its beam */
@@ -1209,7 +1272,7 @@ const scene = (() => {
     const code = []; for (let k = 0; k <= i; k++) code.push(mk("circle", { r: 0.9, class: "dot off" }, grp));
     const spot = mk("circle", { r: 1.6, class: "dot " + (i === MARK ? "" : "off") }, grp);
     if (!p.shot) pic._lines = GLYPHS[p.glyph] || [];
-    return { grp, back, face, img, clip, win, pic, code, spot, a: tween(LEAN[i % LEAN.length]), z: tween(i === MARK ? PROUD : 0), t: 0, mv: null, gate: false, drawn: "" };
+    return { grp, back, face, img, clip, win, pic, code, spot, a: tween(LEAN[i % LEAN.length]), z: tween(i === MARK ? PROUD : 0), t: 0, mv: null, layer: "tray", sp: null, spv: 0, drawn: "" };
   });
 
   /* ---- motion: a few long, eased moves on top of the kernel's tweens */
@@ -1217,7 +1280,7 @@ const scene = (() => {
   const mval = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * easeIO(clamp((now - m.t0) / m.dur, 0, 1)));
   const mlin = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * clamp((now - m.t0) / m.dur, 0, 1));
   const mdone = (m, now) => !m || m.dur <= 0 || now >= m.t0 + m.dur;
-  let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), introMv = move(1, 1, 0, 0), zoomed = false, zoomBusy = false;
+  let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), introMv = move(1, 1, 0, 0), spMv = move(0, 0, 0, 0), zoomed = false, zoomBusy = false, spreadBusy = false;
 
   function pose(i, now) {
     const sd = slides[i];
@@ -1226,16 +1289,22 @@ const scene = (() => {
     const pa = sm(ss(0, 0.28, t)), pb = sm(ss(0.28, 0.72, t)), pc = sm(ss(0.72, 1, t));
     const ox = lerp(0, GX, pb), oy = lerp(i * G, GY, pb);
     const oz = lerp(lerp(lift, HT, pa), GZ, pc) + Math.sin(pb * Math.PI) * 10;
-    return { t, ox, oy, oz, ang: th * (1 - pa) };
+    const base = { t, ox, oy, oz, ang: th * (1 - pa), s: 0 };
+    const e = sd.sp ? mval(sd.sp, now) : sd.spv;
+    if (e <= 0) return base;
+    // out of the magazine, up in an arc, turning flat, down onto its cell
+    const c = SL.cells[i];
+    return { t, s: e, ox: lerp(ox, c.x, e), oy: lerp(oy, c.y + H, e), oz: lerp(oz, SHZ + 0.6, e) + Math.sin(e * Math.PI) * 60, ang: lerp(base.ang, -90, e) };
   }
   const affine = (o, x, y, w, h) => { const f = (n) => n.toFixed(4); return "matrix(" + [f((x[0] - o[0]) / w), f((x[1] - o[1]) / w), f((y[0] - o[0]) / h), f((y[1] - o[1]) / h), f(o[0]), f(o[1])].join(" ") + ")"; };
   function drawSlide(i, now) {
     const sd = slides[i], q = pose(i, now);
-    const gate = q.t > 0.28;
-    if (gate !== sd.gate) {
-      sd.gate = gate;
-      if (gate) gGate.appendChild(sd.grp);
-      else { const nx = slides.find((s, k) => k > i && !s.gate); gSlides.insertBefore(sd.grp, nx ? nx.grp : null); }
+    const layer = q.s > 0.001 ? "spread" : q.t > 0.28 ? "gate" : "tray";
+    if (layer !== sd.layer) {
+      sd.layer = layer;
+      if (layer === "spread") gSpread.appendChild(sd.grp);
+      else if (layer === "gate") gGate.appendChild(sd.grp);
+      else { const nx = slides.find((s, k) => k > i && s.layer === "tray"); gSlides.insertBefore(sd.grp, nx ? nx.grp : null); }
     }
     const key = [q.ox, q.oy, q.oz, q.ang].map((n) => n.toFixed(2)).join(",") + camKey;
     if (sd.drawn === key) return; sd.drawn = key;
@@ -1286,19 +1355,20 @@ const scene = (() => {
   new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) BL.wake(); }).observe(stage);
   const BL = register(stage, (_dt, now) => {
     let moving = false;
-    if (setCamera(mlin(introMv, now), mlin(camMv, now))) drawStatic();
-    if (!mdone(camMv, now) || !mdone(introMv, now)) moving = true;
+    if (setCamera(mlin(introMv, now), mlin(camMv, now), mlin(spMv, now))) drawStatic();
+    if (!mdone(camMv, now) || !mdone(introMv, now) || !mdone(spMv, now)) moving = true;
     slides.forEach((sd, i) => {
       drawSlide(i, now);
-      if (!tdone(sd.a, now) || !tdone(sd.z, now) || !mdone(sd.mv, now)) moving = true;
+      if (!tdone(sd.a, now) || !tdone(sd.z, now) || !mdone(sd.mv, now) || !mdone(sd.sp, now)) moving = true;
       if (sd.mv && mdone(sd.mv, now)) { sd.t = sd.mv.to; sd.mv = null; sd.drawn = ""; drawSlide(i, now); }
+      if (sd.sp && mdone(sd.sp, now)) { sd.spv = sd.sp.to; sd.sp = null; sd.drawn = ""; drawSlide(i, now); }
     });
     drawScreen(now);
     if (!mdone(lampMv, now)) moving = true;
     if (!RM() && visible && mval(lampMv, now) > 0 && camT < 1) moving = true;
     return moving;
   });
-  addEventListener("resize", () => { frameView(); if (zoomed) placeShot(); BL.wake(); });
+  addEventListener("resize", () => { frameView(); if (zoomed) placeShot(); if (spreadOn && !spreadBusy) { SL = sheetLayout(); slides.forEach((sd) => { sd.drawn = ""; }); camKey = ""; requestAnimationFrame(placeSheet); } BL.wake(); });
 
   /* ---- hover: the fan, as before; the slide that left the tray leaves a gap */
   let act = -1, loaded = -1, pending = -1;
@@ -1324,6 +1394,7 @@ const scene = (() => {
   let seq = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, RM() ? 0 : ms));
   async function load(i, { openAfter = false, keepView = false } = {}) {
+    if (spreadOn) { unspread(i); return; }
     const my = ++seq;
     if (zoomed && !keepView) await closeFrame();
     if (my !== seq) return;
@@ -1367,7 +1438,7 @@ const scene = (() => {
     const r = screenRect();
     Object.assign(shot.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: (r.width * 22 / 1600).toFixed(1) + "px" });
     if (innerWidth < 760) Object.assign(cap.style, { left: "", width: "", top: Math.min(r.top + r.height + 18, r.hh - cap.offsetHeight - 16) + "px" });
-    else Object.assign(cap.style, { left: r.left + "px", width: r.width + "px", top: r.top + r.height + 22 + "px" });
+    else Object.assign(cap.style, { left: r.left + "px", width: r.width + "px", top: r.top + r.height + 30 + "px" });
   }
   const camDone = () => new Promise((res) => { const tick = () => (mdone(camMv, performance.now()) ? res() : requestAnimationFrame(tick)); tick(); });
   async function openFrame() {
@@ -1378,7 +1449,7 @@ const scene = (() => {
     const now = performance.now();
     camMv = move(camT, 1, 1700, now); BL.wake();
     await camDone();
-    drawStatic(); placeShot();
+    setCamera(mlin(introMv, performance.now()), 1, spT); drawStatic(); scrKey = ""; drawScreen(performance.now()); placeShot();
     viewer.classList.add("on");               // the recording fades in over the projected still
     const v = shot.querySelector("video"); if (v) { if (!v.src) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); }
     zoomBusy = false;
@@ -1396,6 +1467,58 @@ const scene = (() => {
     zoomed = false; zoomBusy = false; scrKey = ""; BL.wake();
   }
 
+  /* ---- the breakout: every slide leaves the magazine and lands on the contact sheet; each plays there */
+  const sheetUI = $("sheetui");
+  const items = () => [...sheetUI.querySelectorAll(".si")];
+  function placeSheet() {
+    const ctm = svg.getScreenCTM(), hr = hero.getBoundingClientRect(), pt = svg.createSVGPoint();
+    const cv = (q) => { pt.x = q[0]; pt.y = q[1]; const r = pt.matrixTransform(ctm); return [r.x - hr.left, r.y - hr.top]; };
+    items().forEach((el) => {
+      const i = +el.dataset.i, c = SL.cells[i], z = SHZ + 0.6;
+      const f0 = cv(P(c.x, c.y, z)), f1 = cv(P(c.x + W, c.y + H, z));
+      const w0 = cv(P(c.x + AX0, c.y + H - AY1, z)), w1 = cv(P(c.x + AX1, c.y + H - AY0, z));
+      Object.assign(el.style, { left: f0[0] + "px", top: f0[1] + "px", width: f1[0] - f0[0] + "px", height: f1[1] - f0[1] + "px" });
+      Object.assign(el.querySelector(".sv").style, { left: w0[0] - f0[0] + "px", top: w0[1] - f0[1] + "px", width: w1[0] - w0[0] + "px", height: w1[1] - w0[1] + "px" });
+    });
+  }
+  function playSheet(on) {
+    sheetUI.querySelectorAll("video").forEach((v) => { if (on && !matchMedia("(prefers-reduced-motion: reduce)").matches) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); });
+  }
+  function markSheet(i, on) { if (slides[i]) slides[i].face.classList.toggle("hi", !!on); }
+  async function spread() {
+    if (spreadOn || spreadBusy) return;
+    spreadBusy = true; ++seq;
+    if (zoomed) await closeFrame();
+    spreadOn = true; onSpread(true); frameView(); SL = sheetLayout(); setActive(-1);
+    const now = performance.now();
+    spMv = move(mlin(spMv, now), 1, 1700, now);
+    slides.forEach((sd, i) => { sd.sp = move(sd.spv, 1, 1150, now + 250 + i * 70); sd.drawn = ""; if (sd.img) sd.img.classList.add("on"); });
+    lampMv = move(mval(lampMv, now), 0, 300, now);
+    BL.wake();
+    await wait(250 + N * 70 + 1150 + 80);
+    // the slide that was in the projector is on the sheet now: the gate is empty
+    slides.forEach((sd) => { sd.t = 0; sd.mv = null; sd.face.classList.remove("hi"); });
+    loaded = -1; pending = -1; onLoad(-1, false);
+    setCamera(mlin(introMv, performance.now()), 0, 1); drawStatic(); slides.forEach((sd, i) => { sd.drawn = ""; drawSlide(i, performance.now()); });
+    placeSheet(); sheetUI.hidden = false; requestAnimationFrame(() => sheetUI.classList.add("on")); playSheet(true);
+    spreadBusy = false;
+  }
+  async function unspread(choice = -1) {
+    if (!spreadOn || spreadBusy) return;
+    spreadBusy = true;
+    sheetUI.classList.remove("on"); playSheet(false);
+    await wait(220);
+    sheetUI.hidden = true;
+    const now = performance.now();
+    slides.forEach((sd, i) => { sd.sp = move(sd.sp ? mval(sd.sp, now) : sd.spv, 0, 1050, now + (N - 1 - i) * 60); sd.drawn = ""; sd.face.classList.remove("hi"); });
+    spMv = move(mlin(spMv, now), 0, 1600, now + 150);
+    BL.wake();
+    await wait(150 + 1600 + 60);
+    slides.forEach((sd) => { if (sd.img) sd.img.classList.remove("on"); });
+    spreadOn = false; onSpread(false); frameView(); spreadBusy = false; setActive(-1); BL.wake();
+    if (choice >= 0) load(choice, { openAfter: true });
+  }
+
   /* ---- pointer, in viewBox units (home pose only) */
   const inPoly = (pts, [x, y]) => { let ins = false; for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) { const [xa, ya] = pts[a], [xb, yb] = pts[b]; if ((ya > y) !== (yb > y) && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) ins = !ins; } return ins; };
   const bodyHull = hull(ringAt(PH, body, 0).concat(ringAt(PH, body, BZ + 24)));
@@ -1410,7 +1533,7 @@ const scene = (() => {
   function hitScreen(p) { const c = screenCorners(); return inPoly([c.o, c.x, c.z, c.y], p) || inPoly(bodyHull, p); }
   const toVB = (e) => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const r = pt.matrixTransform(svg.getScreenCTM().inverse()); return [r.x, r.y]; };
   stage.addEventListener("pointermove", (e) => {
-    if (camT > 0 || introT < 1) { stage.style.cursor = zoomed ? "zoom-out" : ""; return; }
+    if (camT > 0 || introT < 1 || spT > 0) { stage.style.cursor = zoomed ? "zoom-out" : ""; return; }
     const p = toVB(e), h = hitSlide(p);
     setActive(h);
     stage.style.cursor = h >= 0 || (loaded >= 0 && hitScreen(p)) ? "pointer" : "";
@@ -1418,19 +1541,19 @@ const scene = (() => {
   stage.addEventListener("pointerleave", () => { if (camT === 0) setActive(-1); });
   stage.addEventListener("click", (e) => {
     if (zoomed) { closeFrame(); return; }
-    if (camT > 0) return;
+    if (camT > 0 || spT > 0) return;
     const p = toVB(e), h = hitSlide(p);
     if (h >= 0) { setActive(-1); load(h, { openAfter: true }); }
     else if (loaded >= 0 && hitScreen(p)) openFrame();
   });
 
   if (!RM()) introMv = move(0, 1, 2600, performance.now() + 250);
-  setCamera(mlin(introMv, performance.now()), 0);
+  setCamera(mlin(introMv, performance.now()), 0, 0);
   drawStatic();
   setActive(-1);
   for (let i = 0; i < N; i++) drawSlide(i, performance.now());
   drawScreen(performance.now());
-  return { load, openFrame, closeFrame, get loaded() { return loaded; }, get open() { return zoomed; }, N, introMs: RM() ? 0 : 2850 };
+  return { load, openFrame, closeFrame, spread, unspread, markSheet, get loaded() { return loaded; }, get open() { return zoomed; }, get spread_() { return spreadOn; }, N, introMs: RM() ? 0 : 2850 };
 })();
 
 
@@ -1444,33 +1567,24 @@ function frameStep(d) { const j = (framed + d + N) % N; fillFrame(j); scene.load
 $("fprev").addEventListener("click", () => frameStep(-1));
 $("fnext").addEventListener("click", () => frameStep(1));
 $("fclose").addEventListener("click", () => scene.closeFrame());
+$("cue").addEventListener("click", () => scene.spread());
+$("sback").addEventListener("click", () => scene.unspread());
+document.querySelectorAll(".si").forEach((b) => {
+  const i = +b.dataset.i;
+  b.addEventListener("click", () => scene.unspread(i));
+  b.addEventListener("pointerenter", () => scene.markSheet(i, true));
+  b.addEventListener("pointerleave", () => scene.markSheet(i, false));
+  b.addEventListener("focus", () => scene.markSheet(i, true));
+  b.addEventListener("blur", () => scene.markSheet(i, false));
+});
 addEventListener("keydown", (e) => {
+  if (scene.spread_ && e.key === "Escape") { scene.unspread(); return; }
   if (!scene.open) return;
   if (e.key === "Escape") scene.closeFrame();
   else if (e.key === "ArrowRight") frameStep(1);
   else if (e.key === "ArrowLeft") frameStep(-1);
 });
 
-$("cue").addEventListener("click", (e) => { e.preventDefault(); $("index-band").scrollIntoView({ behavior: STILL.matches ? "auto" : "smooth" }); });
-const index = $("index");
-PIECES.forEach((p, i) => {
-  const r = document.createElement("a");
-  r.className = "tile" + (p.wide ? " wide" : ""); r.href = p.url; r.target = "_blank"; r.rel = "noopener";
-  r.innerHTML = '<div class="shot">' + picHTML(p, !!p.wide, true) + '</div><div class="meta"><span class="n data"></span><span class="t"></span><span class="y data"></span><span class="m data"></span></div>';
-  r.querySelector(".n").textContent = pad(i + 1);
-  r.querySelector(".t").textContent = p.title;
-  r.querySelector(".m").textContent = p.medium;
-  r.querySelector(".y").textContent = p.year;
-  // a plain click projects it; a modified click still opens the piece
-  r.addEventListener("click", (e) => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    e.preventDefault();
-    $("hero").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    setTimeout(() => scene.load(i, { openAfter: true }), 450);
-  });
-  index.appendChild(r);
-  watchLoops(r);
-});
 
 // the opening: the featured slide goes in on its own, unless a hand gets there first
 let touched = false;
