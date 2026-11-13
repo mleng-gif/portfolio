@@ -1073,12 +1073,28 @@ const scene = (() => {
   const WINDOW = fillet([[AX0, AY0], [AX1, AY0], [AX1, AY1], [AX0, AY1]], [1.6, 1.6, 1.6, 1.6]);
   const BEZEL = fillet([[SX0 - BEZ, SZ0 - BEZ], [SX1 + BEZ, SZ0 - BEZ], [SX1 + BEZ, SZ1 + BEZ], [SX0 - BEZ, SZ1 + BEZ]], [4, 4, 4, 4]);
 
-  /* ---- the camera: a home pose (the isometric view), and a pose that looks straight at the screen */
-  const HOMEC = Cam(45, 0.5, 1.86);
-  fit(HOMEC, [[X0, Y1, 0], [X0, Y0, H + PULL], [X1, Y1, 0], [PX1, PY1, 0], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ], [X0, Y1, H + PULL]], VBW * 0.5, VBH * 0.5);
-  const HOME = { az: HOMEC.az, k: HOMEC.k, S: HOMEC.S, ox: HOMEC.ox, oy: HOMEC.oy };
-  const PH = proj(HOMEC);
-  let C = HOMEC, P = PH, front = facing(C), camT = 0, camKey = "home";
+  /* ---- the camera: a perspective camera. A pose is { az, k (sin of elevation), dist, T (the point it looks at), S, cx, cy (where T lands) } */
+  function proj3(cam) {
+    const c = Math.cos(cam.az), s = Math.sin(cam.az), k = cam.k, zf = Math.sqrt(1 - k * k), d = cam.dist;
+    const view = (x, y, z) => { const X = x * c - y * s, Y = x * s + y * c; return [X, Y * k - z * zf, Y * zf + z * k]; };
+    const [Xt, Vt, Dt] = view(cam.T[0], cam.T[1], cam.T[2]);
+    const ox = cam.cx - cam.S * Xt, oy = cam.cy - cam.S * Vt;
+    return (x, y, z) => { const [X, V, D] = view(x, y, z); const f = d / Math.max(d - (D - Dt), d * 0.2); return [ox + cam.S * (Xt + (X - Xt) * f), oy + cam.S * (Vt + (V - Vt) * f)]; };
+  }
+  const FITPTS = [[X0, Y1, 0], [X0, Y0, H + PULL], [X1, Y1, 0], [PX1, PY1, 0], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ], [X0, Y1, H + PULL], [PX1, PY1, BZ]];
+  function framed(pose, fill) {
+    const u = proj3(Object.assign({}, pose, { S: 1, cx: 0, cy: 0 })), q = FITPTS.map((p) => u(p[0], p[1], p[2]));
+    const x0 = Math.min(...q.map((p) => p[0])), x1 = Math.max(...q.map((p) => p[0])), y0 = Math.min(...q.map((p) => p[1])), y1 = Math.max(...q.map((p) => p[1]));
+    const S = Math.min((VBW * fill) / (x1 - x0), (VBH * fill) / (y1 - y0));
+    return Object.assign({}, pose, { S, cx: VBW / 2 - S * (x0 + x1) / 2, cy: VBH / 2 - S * (y0 + y1) / 2 });
+  }
+  const HOME = framed({ az: rad(42), k: 0.44, dist: 470, T: [70, 20, 40] }, 0.84);
+  // the opening: low and close, swung round; it settles into HOME before the first slide goes in
+  const INTRO = Object.assign({}, HOME, { az: rad(16), k: 0.16, dist: 300, S: HOME.S * 1.5, cy: HOME.cy + 70, cx: HOME.cx - 40 });
+  const lerpPose = (a, b, e) => ({ az: lerp(a.az, b.az, e), k: lerp(a.k, b.k, e), dist: lerp(a.dist, b.dist, e), S: Math.exp(lerp(Math.log(a.S), Math.log(b.S), e)),
+    T: [0, 1, 2].map((j) => lerp(a.T[j], b.T[j], e)), cx: lerp(a.cx, b.cx, e), cy: lerp(a.cy, b.cy, e) });
+  const PH = proj3(HOME);
+  let P = PH, front = facing(HOME), camT = 0, introT = 1, camKey = "home";
 
   // on narrow screens, crop the view to the drawing (with room for a pulled slide and the travelling one)
   const EXT = [[X0, Y1, 0], [X0, Y0, H + PULL + 6], [X1, Y1, 0], [PX1, PY1, 0], [PX1, PY0, 0], [GX, 60, HT + H + 10], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ]].map((q) => PH(q[0], q[1], q[2]));
@@ -1096,33 +1112,36 @@ const scene = (() => {
   }
   const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const sm = (x) => x * x * (3 - 2 * x), ss = (a, b, x) => clamp((x - a) / (b - a), 0, 1);
-  function camAt(t) {
-    if (t <= 0) return HOMEC;
-    const e = easeIO(t), z = easeIO(ss(0.08, 1, t));
-    const az = lerp(HOME.az, 0, e), k = lerp(HOME.k, 0, e);
-    const unit = proj({ az, k, S: 1, ox: 0, oy: 0 });
-    const q = [unit(SX0, SY, SZ0), unit(SX1, SY, SZ0), unit(SX0, SY, SZ1), unit(SX1, SY, SZ1)];
-    const bx0 = Math.min(...q.map((p) => p[0])), bx1 = Math.max(...q.map((p) => p[0])), by0 = Math.min(...q.map((p) => p[1])), by1 = Math.max(...q.map((p) => p[1]));
-    const tg = shotTarget(), Sf = Math.min(tg.w / (bx1 - bx0), tg.h / (by1 - by0));
-    const home = PH((SX0 + SX1) / 2, SY, (SZ0 + SZ1) / 2);
-    const S = Math.exp(lerp(Math.log(HOME.S), Math.log(Sf), z));
-    const cx = lerp(home[0], tg.cx, z), cy = lerp(home[1], tg.cy, z);
-    const ux = (bx0 + bx1) / 2, uy = (by0 + by1) / 2;
-    return { az, k, S, ox: cx - S * ux, oy: cy - S * uy };
+  function poseAt(it, t) {
+    const base = it < 1 ? lerpPose(INTRO, HOME, easeIO(it)) : HOME;
+    if (t <= 0) return base;
+    const e = easeIO(t), z = easeIO(ss(0.08, 1, t)), tg = shotTarget();
+    const shot = { az: 0, k: 0, dist: base.dist, T: [(SX0 + SX1) / 2, SY, (SZ0 + SZ1) / 2], S: Math.min(tg.w / SW, tg.h / SH), cx: tg.cx, cy: tg.cy };
+    const p = lerpPose(base, shot, z); p.az = lerp(base.az, 0, e); p.k = lerp(base.k, 0, e);
+    return p;
   }
-  function setCamera(t) {
-    const key = t.toFixed(4) + VB.join(",");
+  function setCamera(it, t) {
+    const key = it.toFixed(4) + "," + t.toFixed(4) + VB.join(",");
     if (key === camKey) return false;
-    camKey = key; camT = t;
-    C = camAt(t); P = proj(C); front = facing(C);
+    camKey = key; camT = t; introT = it;
+    const pose = poseAt(it, t); P = proj3(pose); front = facing(pose);
     return true;
   }
 
   /* ---- layers, back to front */
   const root = mk("g", {}, svg);
   const defs = mk("defs", {}, svg);
-  const clipFilm = mk("clipPath", { id: "film-clip" }, defs); mk("rect", { x: 0, y: 0, width: AW, height: AH, rx: 1.6 }, clipFilm);
-  const clipScreen = mk("clipPath", { id: "screen-clip" }, defs); mk("rect", { x: 0, y: 0, width: 1600, height: 1000, rx: 22 }, clipScreen);
+  // pictures under perspective: the affine that best fits the projected quad, a touch oversized, clipped to the exact window
+  const quadAffine = (A, B, Cq, D, w, h) => {
+    const g = 1.05, ctr = [(A[0] + B[0] + Cq[0] + D[0]) / 4, (A[1] + B[1] + Cq[1] + D[1]) / 4];
+    const ax = [((B[0] - A[0]) + (D[0] - Cq[0])) / 2 * g, ((B[1] - A[1]) + (D[1] - Cq[1])) / 2 * g];
+    const ay = [((Cq[0] - A[0]) + (D[0] - B[0])) / 2 * g, ((Cq[1] - A[1]) + (D[1] - B[1])) / 2 * g];
+    const o = [ctr[0] - ax[0] / 2 - ay[0] / 2, ctr[1] - ax[1] / 2 - ay[1] / 2], f = (n) => n.toFixed(4);
+    return "matrix(" + [f(ax[0] / w), f(ax[1] / w), f(ay[0] / h), f(ay[1] / h), f(o[0]), f(o[1])].join(" ") + ")";
+  };
+  const clipPathEl = (id) => mk("path", {}, mk("clipPath", { id }, defs));
+  const SCRWIN = fillet([[SX0, SZ0], [SX1, SZ0], [SX1, SZ1], [SX0, SZ1]], [2.4, 2.4, 2.4, 2.4]);
+  const scrClip = clipPathEl("screen-clip");
   const grad = mk("linearGradient", { id: "beam", gradientUnits: "userSpaceOnUse" }, defs);
   mk("stop", { offset: "0", "stop-color": "var(--heat)", "stop-opacity": "0.34" }, grad);
   mk("stop", { offset: "0.55", "stop-color": "var(--heat)", "stop-opacity": "0.1" }, grad);
@@ -1132,8 +1151,8 @@ const scene = (() => {
   const body = rrect(PX0, PY0, PX1, PY1, 6, 6), bodyFront = rrect(PX0, GY - 0.6, PX1, PY1, 6, 6);
   // mirrors under the tray and the projector: drawn for the home pose, faded out while the camera travels
   const gRefl = mk("g", {}, root);
-  reflect(svg, gRefl, PH, facing(HOMEC), outer, 0, 14);
-  reflect(svg, gRefl, PH, facing(HOMEC), body, 0, 10);
+  reflect(svg, gRefl, PH, facing(HOME), outer, 0, 14);
+  reflect(svg, gRefl, PH, facing(HOME), body, 0, 10);
 
   const gScreen = mk("g", {}, root), gBeam = mk("g", {}, root), gTrayFar = mk("g", {}, root), gSlides = mk("g", {}, root);
   const gTrayNear = mk("g", {}, root), gBodyBack = mk("g", {}, root), gGate = mk("g", {}, root), gBodyFront = mk("g", {}, root);
@@ -1166,7 +1185,7 @@ const scene = (() => {
     let v = ""; for (let k = 0; k < 5; k++) { const y = PY1 - 9 - k * 3.4; v += seg(P(PX1 - 34, y, BZ), P(PX1 - 10, y, BZ)); }
     set(B.vents, v); set(B.plate, poly(rrect(PX0 + 8, 6, PX0 + 30, 16, 2, 4).map((q) => P(q.u, PY1, q.v))));
     place(lamp, P(PX1 - 12, PY1, 12));
-    gRefl.style.opacity = (1 - ss(0, 0.15, camT)).toFixed(3);
+    gRefl.style.opacity = (ss(0.85, 1, introT) * (1 - ss(0, 0.15, camT))).toFixed(3);
     // everything but the screen recedes as the camera closes on it
     const rest = (1 - ss(0.4, 0.85, camT)).toFixed(3);
     [gBeam, gTrayFar, gSlides, gTrayNear, gBodyBack, gGate, gBodyFront].forEach((g) => { g.style.opacity = rest; });
@@ -1177,19 +1196,20 @@ const scene = (() => {
   const beamEdge = el(gBeam, "nf dash", { style: "opacity:0" });
   const scrBack = el(gScreen, "lo"), scrFace = el(gScreen, "sil");
   const scrImgG = mk("g", { style: "opacity:0" }, gScreen);
-  const scrImg = mk("image", { width: 1600, height: 1000, preserveAspectRatio: "xMidYMid slice", "clip-path": "url(#screen-clip)" }, scrImgG);
+  const scrImg = mk("image", { width: 1600, height: 1000, preserveAspectRatio: "xMidYMid slice" }, mk("g", { "clip-path": "url(#screen-clip)" }, scrImgG));
   const scrWin = el(gScreen, "nf lo"), scrHang = el(gScreen, "nf dash");
 
   /* slides */
   const slides = PIECES.map((p, i) => {
     const grp = mk("g", {}, gSlides);
     const back = mk("path", { class: "lo" }, grp), face = mk("path", { class: "sil" }, grp);
-    const img = p.shot ? mk("image", { href: "img/" + p.shot + "-s.jpg", width: AW, height: AH, preserveAspectRatio: "xMidYMid slice", "clip-path": "url(#film-clip)", class: "film" }, grp) : null;
+    const clip = p.shot ? clipPathEl("film-" + i) : null;
+    const img = p.shot ? mk("image", { href: "img/" + p.shot + "-s.jpg", width: AW, height: AH, preserveAspectRatio: "xMidYMid slice", class: "film" }, mk("g", { "clip-path": "url(#film-" + i + ")" }, grp)) : null;
     const win = mk("path", { class: "nf" }, grp), pic = mk("path", { class: "nf lo" }, grp);
     const code = []; for (let k = 0; k <= i; k++) code.push(mk("circle", { r: 0.9, class: "dot off" }, grp));
     const spot = mk("circle", { r: 1.6, class: "dot " + (i === MARK ? "" : "off") }, grp);
     if (!p.shot) pic._lines = GLYPHS[p.glyph] || [];
-    return { grp, back, face, img, win, pic, code, spot, a: tween(LEAN[i % LEAN.length]), z: tween(i === MARK ? PROUD : 0), t: 0, mv: null, gate: false, drawn: "" };
+    return { grp, back, face, img, clip, win, pic, code, spot, a: tween(LEAN[i % LEAN.length]), z: tween(i === MARK ? PROUD : 0), t: 0, mv: null, gate: false, drawn: "" };
   });
 
   /* ---- motion: a few long, eased moves on top of the kernel's tweens */
@@ -1197,7 +1217,7 @@ const scene = (() => {
   const mval = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * easeIO(clamp((now - m.t0) / m.dur, 0, 1)));
   const mlin = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * clamp((now - m.t0) / m.dur, 0, 1));
   const mdone = (m, now) => !m || m.dur <= 0 || now >= m.t0 + m.dur;
-  let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), zoomed = false, zoomBusy = false;
+  let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), introMv = move(1, 1, 0, 0), zoomed = false, zoomBusy = false;
 
   function pose(i, now) {
     const sd = slides[i];
@@ -1225,8 +1245,9 @@ const scene = (() => {
     const film = (u, v) => w(AX0 + u * AW, AY0 + v * AH);
     sd.back.setAttribute("d", poly(FRAME.map((p) => wb(p[0], p[1]))));
     sd.face.setAttribute("d", poly(FRAME.map((p) => w(p[0], p[1]))));
-    sd.win.setAttribute("d", poly(WINDOW.map((p) => w(p[0], p[1]))));
-    if (sd.img) sd.img.setAttribute("transform", affine(film(0, 1), film(1, 1), film(0, 0), AW, AH));
+    const winD = poly(WINDOW.map((p) => w(p[0], p[1])));
+    sd.win.setAttribute("d", winD);
+    if (sd.img) { sd.clip.setAttribute("d", winD); sd.img.setAttribute("transform", quadAffine(film(0, 1), film(1, 1), film(0, 0), film(1, 0), AW, AH)); }
     else sd.pic.setAttribute("d", sd.pic._lines.map((l) => open(l.map(([u, v]) => film(u, v)))).join(""));
     place(sd.spot, w(W - 6.5, H - 6.5));
     sd.code.forEach((e, k) => place(e, w(7 + k * 3.4, H - 6.5)));
@@ -1244,7 +1265,8 @@ const scene = (() => {
     scrFace.setAttribute("d", poly(BEZEL.map(([u, v]) => sp(u, v))));
     const c = screenCorners();
     scrWin.setAttribute("d", poly([c.o, c.x, c.z, c.y]));
-    scrImg.setAttribute("transform", affine(c.o, c.x, c.y, 1600, 1000));
+    scrImg.setAttribute("transform", quadAffine(c.o, c.x, c.y, c.z, 1600, 1000));
+    scrClip.setAttribute("d", poly(SCRWIN.map(([u, v]) => sp(u, v))));
     scrHang.setAttribute("d", seg(sp(SX0 + 26, SZ1 + BEZ), sp(SX0 + 26, SZ1 + BEZ + 34)) + seg(sp(SX1 - 26, SZ1 + BEZ), sp(SX1 - 26, SZ1 + BEZ + 34)));
     const lens = lensRing(LY, LRAD * 0.5);
     beam.setAttribute("d", poly(hull(lens.concat([c.o, c.x, c.y, c.z]))));
@@ -1264,8 +1286,8 @@ const scene = (() => {
   new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) BL.wake(); }).observe(stage);
   const BL = register(stage, (_dt, now) => {
     let moving = false;
-    if (setCamera(mlin(camMv, now))) drawStatic();
-    if (!mdone(camMv, now)) moving = true;
+    if (setCamera(mlin(introMv, now), mlin(camMv, now))) drawStatic();
+    if (!mdone(camMv, now) || !mdone(introMv, now)) moving = true;
     slides.forEach((sd, i) => {
       drawSlide(i, now);
       if (!tdone(sd.a, now) || !tdone(sd.z, now) || !mdone(sd.mv, now)) moving = true;
@@ -1375,23 +1397,20 @@ const scene = (() => {
   }
 
   /* ---- pointer, in viewBox units (home pose only) */
-  const REST = -9, top = (i) => PH(W / 2, i * G + H * Math.sin(rad(REST)), H * Math.cos(rad(REST)));
-  const c0 = top(0), c1 = top(1), dv = [c1[0] - c0[0], c1[1] - c0[1]];
-  const px0 = PH(0, 0, 0), px1 = PH(1, 0, 0), ex = [px1[0] - px0[0], px1[1] - px0[1]];
-  const HALF = W / 2 + 6, det = dv[0] * ex[1] - dv[1] * ex[0];
-  function hitSlide([x, y]) {
-    const qx = x - c0[0], qy = y - c0[1];
-    const s = (qx * ex[1] - qy * ex[0]) / det, r = (dv[0] * qy - dv[1] * qx) / det;
-    if (Math.abs(r) > HALF || s < -0.5 || s > N + 0.5) return -1;
-    const i = clamp(Math.round(s), 0, N - 1);
-    return slides[i].t > 0 || slides[i].mv ? -1 : i;
-  }
   const inPoly = (pts, [x, y]) => { let ins = false; for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) { const [xa, ya] = pts[a], [xb, yb] = pts[b]; if ((ya > y) !== (yb > y) && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) ins = !ins; } return ins; };
   const bodyHull = hull(ringAt(PH, body, 0).concat(ringAt(PH, body, BZ + 24)));
+  // each slide's face at rest (with its lean), plus a band above it for the part that pulls up
+  const restFace = slides.map((_, i) => { const th = LEAN[i % LEAN.length], s = Math.sin(rad(th)), c = Math.cos(rad(th));
+    return FRAME.map(([u, v]) => PH(u, i * G + v * s, v * c)).concat([PH(W, i * G + H * s, H * c + 10), PH(0, i * G + H * s, H * c + 10)]); });
+  const restHull = restFace.map((q) => hull(q));
+  function hitSlide(p) {
+    for (let i = N - 1; i >= 0; i--) if (inPoly(restHull[i], p)) return slides[i].t > 0 || slides[i].mv ? -1 : i;
+    return -1;
+  }
   function hitScreen(p) { const c = screenCorners(); return inPoly([c.o, c.x, c.z, c.y], p) || inPoly(bodyHull, p); }
   const toVB = (e) => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const r = pt.matrixTransform(svg.getScreenCTM().inverse()); return [r.x, r.y]; };
   stage.addEventListener("pointermove", (e) => {
-    if (camT > 0) { stage.style.cursor = zoomed ? "zoom-out" : ""; return; }
+    if (camT > 0 || introT < 1) { stage.style.cursor = zoomed ? "zoom-out" : ""; return; }
     const p = toVB(e), h = hitSlide(p);
     setActive(h);
     stage.style.cursor = h >= 0 || (loaded >= 0 && hitScreen(p)) ? "pointer" : "";
@@ -1405,12 +1424,13 @@ const scene = (() => {
     else if (loaded >= 0 && hitScreen(p)) openFrame();
   });
 
-  setCamera(0); camKey = "home";
+  if (!RM()) introMv = move(0, 1, 2600, performance.now() + 250);
+  setCamera(mlin(introMv, performance.now()), 0);
   drawStatic();
   setActive(-1);
   for (let i = 0; i < N; i++) drawSlide(i, performance.now());
   drawScreen(performance.now());
-  return { load, openFrame, closeFrame, get loaded() { return loaded; }, get open() { return zoomed; }, N };
+  return { load, openFrame, closeFrame, get loaded() { return loaded; }, get open() { return zoomed; }, N, introMs: RM() ? 0 : 2850 };
 })();
 
 
@@ -1455,7 +1475,7 @@ PIECES.forEach((p, i) => {
 // the opening: the featured slide goes in on its own, unless a hand gets there first
 let touched = false;
 ["pointerdown", "keydown", "wheel", "touchstart"].forEach((t) => addEventListener(t, () => { touched = true; }, { once: true, passive: true, capture: true }));
-setTimeout(() => { if (!touched && scene.loaded < 0) scene.load(PIECES.findIndex((p) => p.featured)); }, 900);
+setTimeout(() => { if (!touched && scene.loaded < 0) scene.load(PIECES.findIndex((p) => p.featured)); }, scene.introMs + 350);
 </script>
 </body>
 </html>
