@@ -97,22 +97,35 @@
   .cue { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 1; height: 34px; padding: 0 14px 0 calc(14px + var(--track-sign)); border: 1px solid var(--ink); background: var(--bg); color: var(--ink); cursor: pointer; transition: opacity .5s, background .2s; }
   .cue:hover { background: var(--heat-soft); }
   .hero.spreading .intro, .hero.spreading .now, .hero.spreading .cue { opacity: 0; pointer-events: none; }
-  /* the contact sheet: frames placed by the scene over each slide's window */
-  .sheet-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+  /* the contact sheet, laid out like the index: tiles placed by the scene over each landed slide's picture.
+     --u is one world unit on the sheet in px, so type and gaps scale with the sheet */
+  .sheet-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; --u: 2.5px; }
   .sheet-ui[hidden] { display: none; }
-  .sheet-bar { position: absolute; left: 50%; top: 84px; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; pointer-events: auto; white-space: nowrap; opacity: 0; transition: opacity .4s var(--ease); }
-  .sheet-ui.on .sheet-bar { opacity: 1; }
-  .si { position: absolute; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; color: var(--ink); text-align: left; }
-  .si .sv { position: absolute; overflow: hidden; border-radius: 2px; background: #000; opacity: 0; transition: opacity .5s var(--ease); }
+  #stage .spread-g path, #stage .spread-g circle { transition: opacity .45s var(--ease); }
+  #stage .spread-g.laid path, #stage .spread-g.laid circle { opacity: 0; }
+  .shead { position: absolute; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: calc(var(--u) * 3); border-bottom: 1px solid var(--line); pointer-events: auto; opacity: 0; transition: opacity .4s var(--ease); }
+  .sheet-ui.on .shead { opacity: 1; }
+  .shead .count { margin: 0 0 calc(var(--u) * 1.4); }
+  .shead .count .k { color: var(--ink); margin-left: 4px; }
+  .shead h2 { font: 500 clamp(18px, calc(var(--u) * 8.6), 32px) / 1.1 var(--f-sans); letter-spacing: -0.02em; margin: 0; white-space: nowrap; }
+  .shead .sl2 { color: var(--faint); font-weight: 400; margin-left: 0.2em; }
+  .shead .sright { display: flex; align-items: center; gap: 14px; }
+  .si { position: absolute; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; color: var(--ink); text-align: left; font: inherit; }
+  .si .sv { position: absolute; inset: 0; overflow: hidden; border-radius: calc(var(--u) * 2.4); background: var(--bg); opacity: 0; transition: opacity .5s var(--ease); }
+  .si .sv::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .3s var(--ease); }
   .sheet-ui.on .si .sv { opacity: 1; }
-  .si .sv img, .si .sv video, .si .sv .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .si .sv .still { padding: 6px; } .si .sv .still .big { font-size: 16px; } .si .sv .still .big small { display: none; }
-  .si .sl { position: absolute; left: 0; right: 0; top: calc(100% + 6px); font: var(--t-data); font-size: 11.5px; line-height: 1.25; color: var(--muted); opacity: 0; transition: opacity .4s var(--ease) .1s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .si .sl b { color: var(--ink); font-weight: 500; font-family: var(--f-sans); font-size: 13px; }
-  .si .sl .n { color: var(--heat); margin-right: 6px; }
-  .sheet-ui.on .si .sl { opacity: 1; }
-  .si:hover .sl b, .si:focus-visible .sl b { color: var(--heat); }
-  .si:focus-visible { outline: 2px solid var(--heat); outline-offset: 3px; }
+  .si .sv img, .si .sv video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s var(--ease); }
+  .si:hover .sv img, .si:hover .sv video, .si:focus-visible .sv video { transform: scale(1.03); }
+  .si:hover .sv::after, .si:focus-visible .sv::after { box-shadow: inset 0 0 0 1.5px var(--heat); }
+  .si .meta { position: absolute; left: 0; right: 0; top: calc(100% + var(--u) * 2.4); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 1px calc(var(--u) * 2.2); align-items: baseline;
+    opacity: 0; transition: opacity .4s var(--ease) .12s; }
+  .sheet-ui.on .si .meta { opacity: 1; }
+  .si .meta .n, .si .meta .y, .si .meta .m { font: var(--t-data); font-size: clamp(9px, calc(var(--u) * 3.6), 12.5px); color: var(--muted); }
+  .si .meta .n { grid-row: span 2; }
+  .si .meta .t { font: 500 clamp(11px, calc(var(--u) * 5), 17px) / 1.2 var(--f-sans); letter-spacing: -0.012em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .si .meta .m { grid-column: 2 / 4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .si:hover .meta .n, .si:focus-visible .meta .n { color: var(--heat); }
+  .si:focus-visible { outline: none; }
   .cue:hover { color: var(--ink); }
 
   /* the frame */
@@ -143,9 +156,10 @@
     h1 { font-size: 32px; }
     .now { left: var(--pad); width: auto; text-align: left; align-items: flex-start; bottom: 26px; }
     .hero.spreading #stage { inset: 124px 8px 20px; }
-    .sheet-bar { left: var(--pad); right: var(--pad); top: 72px; transform: none; justify-content: space-between; gap: 10px; }
-    .sheet-bar .hint, .sheet-bar #scount, .sheet-bar .sep2 { display: none; }
-    .si .sl { font-size: 10.5px; } .si .sl b { font-size: 12px; }
+    .shead .count, .shead #scount { display: none; }
+    .shead { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 8px; }
+    .shead h2 { font-size: clamp(14px, calc(var(--u) * 5.2), 18px); }
+    .shead .seg button { height: 28px; padding: 0 10px 0 calc(10px + var(--track-sign)); }
     .clock .sep, .clock .role { display: none; }
     .mark .wm { letter-spacing: 0.4em; }
   }
@@ -222,7 +236,10 @@
   </div>
   <button class="cue sign" type="button" id="cue">Contact sheet ⤢</button>
   <div class="sheet-ui" id="sheetui" hidden>
-    <div class="sheet-bar"><p class="data"><span class="heat">[ Contact sheet ]</span><span class="sep2"> · </span><span id="scount"></span><span class="sep2 hint"> · </span><span class="hint">pick a frame to project it</span></p><div class="seg"><button type="button" id="sback">Back to the table</button></div></div>
+    <div class="shead" id="shead">
+      <div><p class="count data"><span class="heat">[ Index ]</span> · <span class="k">Every piece</span></p><h2>All of them, at once <span class="sl2">//</span></h2></div>
+      <div class="sright"><span class="data" id="scount"></span><div class="seg"><button type="button" id="sback">Back to the table</button></div></div>
+    </div>
     <div id="sitems"></div>
   </div>
 
@@ -1060,13 +1077,15 @@ function fillFrame(i) {
 $("nhint").textContent = DEFAULT_HINT;
 function onSpread(on) { $("hero").classList.toggle("spreading", on); }
 // one frame per piece on the contact sheet; the scene places them
-$("scount").textContent = pad(N) + " pieces";
+$("scount").textContent = pad(N) + " pieces · " + y0 + " — " + y1;
 PIECES.forEach((p, i) => {
   const b = document.createElement("button");
   b.className = "si"; b.type = "button"; b.dataset.i = i;
-  b.innerHTML = '<span class="sv">' + picHTML(p, false, true) + '</span><span class="sl"><span class="n"></span><b></b></span>';
+  b.innerHTML = '<span class="sv">' + picHTML(p, !!p.wide, true) + '</span><span class="meta"><span class="n"></span><span class="t"></span><span class="y"></span><span class="m"></span></span>';
   b.querySelector(".n").textContent = pad(i + 1);
-  b.querySelector("b").textContent = p.title;
+  b.querySelector(".t").textContent = p.title;
+  b.querySelector(".y").textContent = p.year;
+  b.querySelector(".m").textContent = p.medium;
   b.setAttribute("aria-label", "Project " + p.title);
   $("sitems").appendChild(b);
 });
@@ -1138,13 +1157,23 @@ const scene = (() => {
   frameView();
 
   /* ---- the contact sheet: a plate floating in front of the table, slides laid flat on it in a grid */
-  const SHZ = 46, SM = 14, SGX = 14, SGY = 12, LBL = 20;
+  // laid out like the index: 16:10 pictures, wide ones spanning two columns, a meta band under each
+  const SHZ = 46, SM = 16, SPW = 72, SPH = SPW / 1.6, SMH = 22, SGX = 12, SGY = 12;
   function sheetLayout() {
-    const cols = narrow() ? 2 : 5, rows = Math.ceil(N / cols);
-    const w = cols * W + (cols - 1) * SGX + 2 * SM, h = rows * (H + LBL) + (rows - 1) * SGY + 2 * SM - 6;
+    const cols = narrow() ? 2 : 4, hdr = narrow() ? 40 : 36, occ = [], cells = [];
+    const free = (r, c, span) => { for (let k = 0; k < span; k++) if (c + k >= cols || (occ[r] && occ[r][c + k])) return false; return true; };
+    PIECES.forEach((p, i) => {
+      const span = p.wide && !narrow() ? 2 : 1;
+      let r = 0, c = 0;
+      for (;; r++) { let hit = false; for (c = 0; c < cols; c++) if (free(r, c, span)) { hit = true; break; } if (hit) break; }
+      for (let k = 0; k < span; k++) (occ[r] = occ[r] || [])[c + k] = 1;
+      cells[i] = { r, c, span };
+    });
+    const rows = occ.length;
+    const w = 2 * SM + cols * SPW + (cols - 1) * SGX, h = 2 * SM + hdr + rows * (SPH + SMH) + (rows - 1) * SGY;
     const x0 = 70 - w / 2, y0 = 210 - h / 2;
-    const cells = PIECES.map((_, i) => ({ x: x0 + SM + (i % cols) * (W + SGX), y: y0 + SM + Math.floor(i / cols) * (H + LBL + SGY) }));
-    return { cols, rows, w, h, x0, y0, cells };
+    cells.forEach((q) => { q.x = x0 + SM + q.c * (SPW + SGX); q.y = y0 + SM + hdr + q.r * (SPH + SMH + SGY); q.w = q.span * SPW + (q.span - 1) * SGX; q.h = SPH; });
+    return { cols, rows, w, h, x0, y0, hdr, cells };
   }
   let SL = sheetLayout();
   function spreadPose() {
@@ -1207,8 +1236,8 @@ const scene = (() => {
 
   const gScreen = mk("g", {}, root), gBeam = mk("g", {}, root), gTrayFar = mk("g", {}, root), gSlides = mk("g", {}, root);
   const gTrayNear = mk("g", {}, root), gBodyBack = mk("g", {}, root), gGate = mk("g", {}, root), gBodyFront = mk("g", {}, root);
-  const gSheet = mk("g", { style: "opacity:0" }, root), gSpread = mk("g", {}, root);
-  const SHT = { edge: mk("path", { class: "sil" }, gSheet), top: mk("path", { class: "sil" }, gSheet), cells: mk("path", { class: "nf lo dash" }, gSheet), marks: mk("path", { class: "nf lo" }, gSheet) };
+  const gSheet = mk("g", { style: "opacity:0" }, root), gSpread = mk("g", { class: "spread-g" }, root);
+  const SHT = { edge: mk("path", { class: "sil" }, gSheet), top: mk("path", { class: "sil", style: "fill:var(--surface)" }, gSheet), cells: mk("path", { class: "nf lo dash" }, gSheet), marks: mk("path", { class: "nf lo" }, gSheet) };
   const el = (g, cls, extra) => mk("path", Object.assign({ class: cls }, extra || {}), g);
 
   /* the static solids, as elements; drawStatic() writes their paths for the current camera */
@@ -1248,7 +1277,7 @@ const scene = (() => {
       const ring = rrect(SL.x0, SL.y0, SL.x0 + SL.w, SL.y0 + SL.h, 5, 5);
       SHT.edge.setAttribute("d", poly(hull(ringAt(P, ring, SHZ).concat(ringAt(P, ring, SHZ - 2.4)))));
       SHT.top.setAttribute("d", poly(ringAt(P, ring, SHZ)));
-      SHT.cells.setAttribute("d", SL.cells.map((c) => poly([P(c.x - 2, c.y - 2, SHZ), P(c.x + W + 2, c.y - 2, SHZ), P(c.x + W + 2, c.y + H + 2, SHZ), P(c.x - 2, c.y + H + 2, SHZ)])).join(""));
+      SHT.cells.setAttribute("d", SL.cells.map((c) => poly([P(c.x, c.y, SHZ), P(c.x + c.w, c.y, SHZ), P(c.x + c.w, c.y + c.h, SHZ), P(c.x, c.y + c.h, SHZ)])).join(""));
       let m = ""; for (const [x, y] of [[SL.x0 + 6, SL.y0 + 6], [SL.x0 + SL.w - 6, SL.y0 + 6], [SL.x0 + 6, SL.y0 + SL.h - 6], [SL.x0 + SL.w - 6, SL.y0 + SL.h - 6]]) m += seg(P(x - 3, y, SHZ), P(x + 3, y, SHZ)) + seg(P(x, y - 3, SHZ), P(x, y + 3, SHZ));
       SHT.marks.setAttribute("d", m);
     }
@@ -1289,12 +1318,13 @@ const scene = (() => {
     const pa = sm(ss(0, 0.28, t)), pb = sm(ss(0.28, 0.72, t)), pc = sm(ss(0.72, 1, t));
     const ox = lerp(0, GX, pb), oy = lerp(i * G, GY, pb);
     const oz = lerp(lerp(lift, HT, pa), GZ, pc) + Math.sin(pb * Math.PI) * 10;
-    const base = { t, ox, oy, oz, ang: th * (1 - pa), s: 0 };
+    const base = { t, ox, oy, oz, ang: th * (1 - pa), s: 0, sx: 1, sy: 1 };
     const e = sd.sp ? mval(sd.sp, now) : sd.spv;
     if (e <= 0) return base;
-    // out of the magazine, up in an arc, turning flat, down onto its cell
-    const c = SL.cells[i];
-    return { t, s: e, ox: lerp(ox, c.x, e), oy: lerp(oy, c.y + H, e), oz: lerp(oz, SHZ + 0.6, e) + Math.sin(e * Math.PI) * 60, ang: lerp(base.ang, -90, e) };
+    // out of the magazine, up in an arc, turning flat, down onto its tile: the film window stretches over the tile's picture
+    const c = SL.cells[i], sxT = c.w / AW, syT = c.h / AH;
+    return { t, s: e, sx: lerp(1, sxT, e), sy: lerp(1, syT, e), ox: lerp(ox, c.x - AX0 * sxT, e), oy: lerp(oy, c.y + AY1 * syT, e),
+      oz: lerp(oz, SHZ + 0.6, e) + Math.sin(e * Math.PI) * 60, ang: lerp(base.ang, -90, e) };
   }
   const affine = (o, x, y, w, h) => { const f = (n) => n.toFixed(4); return "matrix(" + [f((x[0] - o[0]) / w), f((x[1] - o[1]) / w), f((y[0] - o[0]) / h), f((y[1] - o[1]) / h), f(o[0]), f(o[1])].join(" ") + ")"; };
   function drawSlide(i, now) {
@@ -1306,12 +1336,15 @@ const scene = (() => {
       else if (layer === "gate") gGate.appendChild(sd.grp);
       else { const nx = slides.find((s, k) => k > i && s.layer === "tray"); gSlides.insertBefore(sd.grp, nx ? nx.grp : null); }
     }
-    const key = [q.ox, q.oy, q.oz, q.ang].map((n) => n.toFixed(2)).join(",") + camKey;
+    const key = [q.ox, q.oy, q.oz, q.ang, q.sx, q.sy].map((n) => n.toFixed(2)).join(",") + camKey;
     if (sd.drawn === key) return; sd.drawn = key;
-    const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang));
-    const w = (u, v) => P(q.ox + u, q.oy + v * s, q.oz + v * c);
-    const wb = (u, v) => P(q.ox + u, q.oy + v * s - TK * c, q.oz + v * c + TK * s);
+    const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang)), sx = q.sx, sy = q.sy;
+    const w = (u, v) => P(q.ox + u * sx, q.oy + v * s * sy, q.oz + v * c * sy);
+    const wb = (u, v) => P(q.ox + u * sx, q.oy + v * s * sy - TK * c, q.oz + v * c * sy + TK * s);
     const film = (u, v) => w(AX0 + u * AW, AY0 + v * AH);
+    // on the way to the sheet the mount falls away and only the picture lands
+    const mount = q.s > 0 ? (1 - ss(0.45, 0.85, q.s)).toFixed(3) : "";
+    [sd.back, sd.face, sd.win, sd.spot, ...sd.code].forEach((e) => { e.style.opacity = mount; });
     sd.back.setAttribute("d", poly(FRAME.map((p) => wb(p[0], p[1]))));
     sd.face.setAttribute("d", poly(FRAME.map((p) => w(p[0], p[1]))));
     const winD = poly(WINDOW.map((p) => w(p[0], p[1])));
@@ -1473,18 +1506,19 @@ const scene = (() => {
   function placeSheet() {
     const ctm = svg.getScreenCTM(), hr = hero.getBoundingClientRect(), pt = svg.createSVGPoint();
     const cv = (q) => { pt.x = q[0]; pt.y = q[1]; const r = pt.matrixTransform(ctm); return [r.x - hr.left, r.y - hr.top]; };
+    const z = SHZ + 0.6, u = cv(P(0, 0, z)), u1 = cv(P(1, 0, z)), px = u1[0] - u[0];   // px per world unit on the sheet
     items().forEach((el) => {
-      const i = +el.dataset.i, c = SL.cells[i], z = SHZ + 0.6;
-      const f0 = cv(P(c.x, c.y, z)), f1 = cv(P(c.x + W, c.y + H, z));
-      const w0 = cv(P(c.x + AX0, c.y + H - AY1, z)), w1 = cv(P(c.x + AX1, c.y + H - AY0, z));
-      Object.assign(el.style, { left: f0[0] + "px", top: f0[1] + "px", width: f1[0] - f0[0] + "px", height: f1[1] - f0[1] + "px" });
-      Object.assign(el.querySelector(".sv").style, { left: w0[0] - f0[0] + "px", top: w0[1] - f0[1] + "px", width: w1[0] - w0[0] + "px", height: w1[1] - w0[1] + "px" });
+      const c = SL.cells[+el.dataset.i], a = cv(P(c.x, c.y, z)), b = cv(P(c.x + c.w, c.y + c.h, z));
+      Object.assign(el.style, { left: a[0] + "px", top: a[1] + "px", width: b[0] - a[0] + "px", height: b[1] - a[1] + "px" });
     });
+    const h0 = cv(P(SL.x0 + SM, SL.y0 + SM, SHZ)), h1 = cv(P(SL.x0 + SL.w - SM, SL.y0 + SM + SL.hdr - 8, SHZ));
+    Object.assign($("shead").style, { left: h0[0] + "px", top: h0[1] + "px", width: h1[0] - h0[0] + "px", height: h1[1] - h0[1] + "px" });
+    sheetUI.style.setProperty("--u", px.toFixed(3) + "px");
   }
   function playSheet(on) {
     sheetUI.querySelectorAll("video").forEach((v) => { if (on && !matchMedia("(prefers-reduced-motion: reduce)").matches) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); });
   }
-  function markSheet(i, on) { if (slides[i]) slides[i].face.classList.toggle("hi", !!on); }
+  function markSheet() {}
   async function spread() {
     if (spreadOn || spreadBusy) return;
     spreadBusy = true; ++seq;
@@ -1500,14 +1534,15 @@ const scene = (() => {
     slides.forEach((sd) => { sd.t = 0; sd.mv = null; sd.face.classList.remove("hi"); });
     loaded = -1; pending = -1; onLoad(-1, false);
     setCamera(mlin(introMv, performance.now()), 0, 1); drawStatic(); slides.forEach((sd, i) => { sd.drawn = ""; drawSlide(i, performance.now()); });
-    placeSheet(); sheetUI.hidden = false; requestAnimationFrame(() => sheetUI.classList.add("on")); playSheet(true);
+    placeSheet(); sheetUI.hidden = false; gSpread.classList.add("laid");   // the frames fall away; bare tiles remain
+    requestAnimationFrame(() => sheetUI.classList.add("on")); playSheet(true);
     spreadBusy = false;
   }
   async function unspread(choice = -1) {
     if (!spreadOn || spreadBusy) return;
     spreadBusy = true;
-    sheetUI.classList.remove("on"); playSheet(false);
-    await wait(220);
+    sheetUI.classList.remove("on"); playSheet(false); gSpread.classList.remove("laid");
+    await wait(380);
     sheetUI.hidden = true;
     const now = performance.now();
     slides.forEach((sd, i) => { sd.sp = move(sd.sp ? mval(sd.sp, now) : sd.spv, 0, 1050, now + (N - 1 - i) * 60); sd.drawn = ""; sd.face.classList.remove("hi"); });
