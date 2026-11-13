@@ -103,11 +103,11 @@
   .sheet-ui[hidden] { display: none; }
   #stage .spread-g path, #stage .spread-g circle { transition: opacity .45s var(--ease); }
   #stage .spread-g.laid path, #stage .spread-g.laid circle { opacity: 0; }
-  .shead { position: absolute; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: calc(var(--u) * 3); border-bottom: 1px solid var(--line); pointer-events: auto; opacity: 0; transition: opacity .4s var(--ease); }
+  .shead { position: absolute; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: calc(var(--u) * 2.4); border-bottom: 1px solid var(--line); pointer-events: auto; opacity: 0; transition: opacity .4s var(--ease); }
   .sheet-ui.on .shead { opacity: 1; }
   .shead .count { margin: 0 0 calc(var(--u) * 1.4); }
   .shead .count .k { color: var(--ink); margin-left: 4px; }
-  .shead h2 { font: 500 clamp(18px, calc(var(--u) * 8.6), 32px) / 1.1 var(--f-sans); letter-spacing: -0.02em; margin: 0; white-space: nowrap; }
+  .shead h2 { font: 500 clamp(18px, calc(var(--u) * 7.2), 34px) / 1.1 var(--f-sans); letter-spacing: -0.02em; margin: 0; white-space: nowrap; }
   .shead .sl2 { color: var(--faint); font-weight: 400; margin-left: 0.2em; }
   .shead .sright { display: flex; align-items: center; gap: 14px; }
   .si { position: absolute; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; color: var(--ink); text-align: left; font: inherit; }
@@ -117,12 +117,12 @@
   .si .sv img, .si .sv video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s var(--ease); }
   .si:hover .sv img, .si:hover .sv video, .si:focus-visible .sv video { transform: scale(1.03); }
   .si:hover .sv::after, .si:focus-visible .sv::after { box-shadow: inset 0 0 0 1.5px var(--heat); }
-  .si .meta { position: absolute; left: 0; right: 0; top: calc(100% + var(--u) * 2.4); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 1px calc(var(--u) * 2.2); align-items: baseline;
+  .si .meta { position: absolute; left: 0; right: 0; top: calc(100% + var(--u) * 1.8); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 1px calc(var(--u) * 2.2); align-items: baseline;
     opacity: 0; transition: opacity .4s var(--ease) .12s; }
   .sheet-ui.on .si .meta { opacity: 1; }
-  .si .meta .n, .si .meta .y, .si .meta .m { font: var(--t-data); font-size: clamp(9px, calc(var(--u) * 3.6), 12.5px); color: var(--muted); }
+  .si .meta .n, .si .meta .y, .si .meta .m { font: var(--t-data); font-size: clamp(9px, calc(var(--u) * 3.3), 13.5px); color: var(--muted); }
   .si .meta .n { grid-row: span 2; }
-  .si .meta .t { font: 500 clamp(11px, calc(var(--u) * 5), 17px) / 1.2 var(--f-sans); letter-spacing: -0.012em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .si .meta .t { font: 500 clamp(11px, calc(var(--u) * 4.6), 19px) / 1.2 var(--f-sans); letter-spacing: -0.012em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .si .meta .m { grid-column: 2 / 4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .si:hover .meta .n, .si:focus-visible .meta .n { color: var(--heat); }
   .si:focus-visible { outline: none; }
@@ -1148,19 +1148,23 @@ const scene = (() => {
   const narrow = () => innerWidth < 760;
   let spreadOn = false;
   const frameView = () => {
-    if (narrow()) {
-      if (spreadOn) { const r = stage.getBoundingClientRect(), w = ex1 - ex0, h = (w * r.height) / Math.max(r.width, 1), cy = (ey0 + ey1) / 2; VB = [ex0, cy - h / 2, w, h]; }
-      else VB = [ex0, ey0, ex1 - ex0, ey1 - ey0];
-    } else VB = [0, 0, VBW, VBH];
+    VB = narrow() ? [ex0, ey0, ex1 - ex0, ey1 - ey0] : [0, 0, VBW, VBH];
+    // while the sheet is out, grow the view to the stage's own shape (only ever the slack side, so nothing jumps)
+    if (spreadOn) {
+      const r = stage.getBoundingClientRect(), a = r.width / Math.max(r.height, 1), [x, y, w, h] = VB;
+      if (a > w / h) { const w2 = h * a; VB = [x - (w2 - w) / 2, y, w2, h]; } else { const h2 = w / a; VB = [x, y - (h2 - h) / 2, w, h2]; }
+    }
     svg.setAttribute("viewBox", VB.map((n) => n.toFixed(1)).join(" ")); camKey = "";
   };
   frameView();
 
   /* ---- the contact sheet: a plate floating in front of the table, slides laid flat on it in a grid */
   // laid out like the index: 16:10 pictures, wide ones spanning two columns, a meta band under each
-  const SHZ = 46, SM = 16, SPW = 72, SPH = SPW / 1.6, SMH = 22, SGX = 12, SGY = 12;
+  const SHZ = 46, SM = 12, SPW = 72, SMH = 14.5, SGX = 10, SGY = 6;
+  let SPH = SPW / 1.6;
   function sheetLayout() {
-    const cols = narrow() ? 2 : 4, hdr = narrow() ? 40 : 36, occ = [], cells = [];
+    const cols = narrow() ? 2 : 4, hdr = narrow() ? 38 : 30, occ = [], cells = [];
+    SPH = narrow() ? SPW / 1.6 : SPW * 9 / 16;   // wider tiles on desktop, so the sheet can fill the screen's width
     const free = (r, c, span) => { for (let k = 0; k < span; k++) if (c + k >= cols || (occ[r] && occ[r][c + k])) return false; return true; };
     PIECES.forEach((p, i) => {
       const span = p.wide && !narrow() ? 2 : 1;
@@ -1177,8 +1181,8 @@ const scene = (() => {
   }
   let SL = sheetLayout();
   function spreadPose() {
-    const [vx, vy, vw, vh] = VB, top = narrow() ? 0.05 : 0.11, bot = narrow() ? 0.03 : 0.05;
-    const tw = vw * 0.92, th = vh * (1 - top - bot), S = Math.min(tw / SL.w, th / SL.h);
+    const [vx, vy, vw, vh] = VB, top = narrow() ? 0.04 : 0.065, bot = narrow() ? 0.02 : 0.015;
+    const tw = vw * 0.97, th = vh * (1 - top - bot), S = Math.min(tw / SL.w, th / SL.h);
     return { az: 0, k: 1, dist: HOME.dist, T: [SL.x0 + SL.w / 2, SL.y0 + SL.h / 2, SHZ], S, cx: vx + vw / 2, cy: vy + vh * top + th / 2 };
   }
 
