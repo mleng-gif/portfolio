@@ -76,7 +76,6 @@
   #stage svg { transition: opacity .7s var(--ease), filter .7s var(--ease); }
   #stage .film { opacity: 0.42; filter: grayscale(1) contrast(1.05); transition: opacity .6s var(--ease), filter .6s var(--ease); }
   #stage .film.on { opacity: 1; filter: none; }
-  .hero.viewing #stage svg { opacity: 0.22; filter: blur(1.5px); }
 
   .top { position: absolute; left: var(--pad); right: var(--pad); top: 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; z-index: 2; }
   .mark { display: flex; align-items: center; gap: 14px; }
@@ -99,24 +98,23 @@
   .cue:hover { color: var(--ink); }
 
   /* the frame */
-  .viewer { position: absolute; inset: 0; z-index: 4; }
+  .viewer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
   .viewer[hidden] { display: none; }
-  .scrim { position: absolute; inset: 0; border: 0; padding: 0; background: transparent; cursor: zoom-out; }
-  .float:focus { outline: none; }
-  .float { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: flex; gap: 32px; align-items: flex-end; will-change: transform; }
-  .float .pic { position: relative; flex: none; width: min(60vw, calc((100svh - 150px) * 1.6), 920px); aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
-  .float .pic img, .float .pic video, .float .pic .still, .float .pic svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .float .info { width: 300px; flex: none; opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease), transform .45s var(--ease); }
-  .float.settled .info { opacity: 1; transform: none; }
-  .float .info h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 10px 0 0; text-wrap: balance; }
-  .float .info .chips { margin-top: 12px; }
-  .float .info p { margin: 14px 0 0; text-wrap: pretty; }
-  .float .info .seg { margin-top: 20px; flex-wrap: wrap; }
-  @media (max-width: 900px) {
-    .float { flex-direction: column; align-items: stretch; gap: 18px; }
-    .float .pic { width: min(calc(100vw - 32px), calc((100svh - 380px) * 1.6)); }
-    .float .info { width: auto; max-width: min(calc(100vw - 32px), 560px); }
-    .float .info p { font-size: 14px; }
+  .vshot { position: absolute; overflow: hidden; background: #000; opacity: 0; transition: opacity .45s var(--ease); }
+  .viewer.on .vshot { opacity: 1; }
+  .vshot img, .vshot video, .vshot .still, .vshot svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vcap { position: absolute; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 8px 36px; align-items: start; pointer-events: auto;
+    opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease) .1s, transform .45s var(--ease) .1s; }
+  .viewer.on .vcap { opacity: 1; transform: none; }
+  .vcap:focus { outline: none; }
+  .vcap h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 6px 0 0; text-wrap: balance; }
+  .vcap .chips { margin-top: 10px; }
+  .vcap p { margin: 0; text-wrap: pretty; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .vcap .seg { margin-top: 14px; flex-wrap: wrap; }
+  @media (max-width: 760px) {
+    .vcap { left: var(--pad); right: var(--pad); grid-template-columns: 1fr; gap: 6px; }
+    .vcap h3 { font-size: 26px; }
+    .vcap p { font-size: 14px; -webkit-line-clamp: 4; }
   }
 
   @media (max-width: 760px) {
@@ -172,7 +170,7 @@
   .tile .m { grid-column: 2 / 4; }
   .tile[aria-current="true"] .n { color: var(--heat); }
   .foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; padding-bottom: 22px; }
-  @media (prefers-reduced-motion: reduce) { #stage svg, #stage .film, .float .info, .tile .shot img, .tile .shot video { transition: none; } .glyph .g { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { #stage svg, #stage .film, .vshot, .vcap, .tile .shot img, .tile .shot video { transition: none; } .glyph .g { animation: none; } }
 </style>
 </head>
 <body>
@@ -192,7 +190,7 @@
   <div class="intro">
     <p class="kicker data"><span class="heat">[ Light table ]</span> · <span id="span1"></span></p>
     <h1>Vibe-coded pieces, <span class="heat">held to the light.</span></h1>
-    <p class="lede">Pick a slide from the magazine. It loads into the projector, throws onto the screen, then floats up for a closer look.</p>
+    <p class="lede">Pick a slide from the magazine. It loads into the projector and throws onto the screen, then the camera moves in and the piece plays.</p>
   </div>
 
   <div class="now" aria-live="polite">
@@ -204,15 +202,16 @@
   <a class="cue sign" href="#index-band" id="cue">Index ↓</a>
 
   <div class="viewer" id="viewer" hidden>
-    <button class="scrim" type="button" aria-label="Close and return the picture to the screen"></button>
-    <div class="float" id="float" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="ftitle">
-      <div class="pic" id="fpic"></div>
-      <div class="info">
+    <div class="vshot" id="fpic"></div>
+    <div class="vcap" id="fcap" tabindex="-1" role="dialog" aria-labelledby="ftitle">
+      <div>
         <p class="data"><span class="heat" id="fc"></span> <span id="fw"></span></p>
         <h3 id="ftitle"></h3>
         <div class="chips" id="fchips"></div>
+      </div>
+      <div>
         <p id="fdesc"></p>
-        <div class="seg"><a class="solid" id="fopen" target="_blank" rel="noopener"></a><button type="button" id="fprev" aria-label="Previous piece">‹</button><button type="button" id="fnext" aria-label="Next piece">›</button><button type="button" class="x" id="fclose">Close</button></div>
+        <div class="seg"><a class="solid" id="fopen" target="_blank" rel="noopener"></a><button type="button" id="fprev" aria-label="Previous piece">‹</button><button type="button" id="fnext" aria-label="Next piece">›</button><button type="button" id="fclose">Close</button></div>
       </div>
     </div>
   </div>
@@ -1046,7 +1045,7 @@ function fillFrame(i) {
 }
 $("nhint").textContent = DEFAULT_HINT;
 
-/* ---------------------------------------------------------------- the light table: magazine → projector → screen → frame */
+/* ---------------------------------------------------------------- the light table: magazine → projector → screen → the camera pushes in */
 const scene = (() => {
   const { Cam, clamp, facing, fillet, fit, hull, lerp, open, poly, proj, rad, ringAt, rrect, run, seg,
     tdone, tset, tval, tween, mk, place, reflect, register, inject, reducedMotion } = HL;
@@ -1074,14 +1073,50 @@ const scene = (() => {
   const WINDOW = fillet([[AX0, AY0], [AX1, AY0], [AX1, AY1], [AX0, AY1]], [1.6, 1.6, 1.6, 1.6]);
   const BEZEL = fillet([[SX0 - BEZ, SZ0 - BEZ], [SX1 + BEZ, SZ0 - BEZ], [SX1 + BEZ, SZ1 + BEZ], [SX0 - BEZ, SZ1 + BEZ]], [4, 4, 4, 4]);
 
-  const C = Cam(45, 0.5, 1.86);
-  fit(C, [[X0, Y1, 0], [X0, Y0, H + PULL], [X1, Y1, 0], [PX1, PY1, 0], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ], [X0, Y1, H + PULL]], VBW * 0.5, VBH * 0.5);
-  const P = proj(C), front = facing(C);
+  /* ---- the camera: a home pose (the isometric view), and a pose that looks straight at the screen */
+  const HOMEC = Cam(45, 0.5, 1.86);
+  fit(HOMEC, [[X0, Y1, 0], [X0, Y0, H + PULL], [X1, Y1, 0], [PX1, PY1, 0], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ], [X0, Y1, H + PULL]], VBW * 0.5, VBH * 0.5);
+  const HOME = { az: HOMEC.az, k: HOMEC.k, S: HOMEC.S, ox: HOMEC.ox, oy: HOMEC.oy };
+  const PH = proj(HOMEC);
+  let C = HOMEC, P = PH, front = facing(C), camT = 0, camKey = "home";
+
   // on narrow screens, crop the view to the drawing (with room for a pulled slide and the travelling one)
-  const EXT = [[X0, Y1, 0], [X0, Y0, H + PULL + 6], [X1, Y1, 0], [PX1, PY1, 0], [PX1, PY0, 0], [GX, 60, HT + H + 10], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ]].map((q) => P(q[0], q[1], q[2]));
+  const EXT = [[X0, Y1, 0], [X0, Y0, H + PULL + 6], [X1, Y1, 0], [PX1, PY1, 0], [PX1, PY0, 0], [GX, 60, HT + H + 10], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ]].map((q) => PH(q[0], q[1], q[2]));
   const ex0 = Math.min(...EXT.map((q) => q[0])) - 8, ex1 = Math.max(...EXT.map((q) => q[0])) + 8, ey0 = Math.min(...EXT.map((q) => q[1])) - 8, ey1 = Math.max(...EXT.map((q) => q[1])) + 8;
-  const frameView = () => svg.setAttribute("viewBox", innerWidth < 760 ? [ex0, ey0, ex1 - ex0, ey1 - ey0].map((n) => n.toFixed(1)).join(" ") : "0 0 " + VBW + " " + VBH);
-  frameView(); addEventListener("resize", frameView);
+  let VB = [0, 0, VBW, VBH];
+  const narrow = () => innerWidth < 760;
+  const frameView = () => { VB = narrow() ? [ex0, ey0, ex1 - ex0, ey1 - ey0] : [0, 0, VBW, VBH]; svg.setAttribute("viewBox", VB.map((n) => n.toFixed(1)).join(" ")); camKey = ""; };
+  frameView();
+
+  // where the screen lands when the camera arrives, in viewBox units
+  function shotTarget() {
+    const [vx, vy, vw, vh] = VB;
+    if (narrow()) { const w = vw * 0.84; return { cx: vx + vw / 2, cy: vy + vh * 0.36, w, h: w / 1.6 }; }
+    const w = Math.min(vw * 0.6, vh * 0.62 * 1.6); return { cx: vx + vw / 2, cy: vy + vh * 0.4, w, h: w / 1.6 };
+  }
+  const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const sm = (x) => x * x * (3 - 2 * x), ss = (a, b, x) => clamp((x - a) / (b - a), 0, 1);
+  function camAt(t) {
+    if (t <= 0) return HOMEC;
+    const e = easeIO(t), z = easeIO(ss(0.08, 1, t));
+    const az = lerp(HOME.az, 0, e), k = lerp(HOME.k, 0, e);
+    const unit = proj({ az, k, S: 1, ox: 0, oy: 0 });
+    const q = [unit(SX0, SY, SZ0), unit(SX1, SY, SZ0), unit(SX0, SY, SZ1), unit(SX1, SY, SZ1)];
+    const bx0 = Math.min(...q.map((p) => p[0])), bx1 = Math.max(...q.map((p) => p[0])), by0 = Math.min(...q.map((p) => p[1])), by1 = Math.max(...q.map((p) => p[1]));
+    const tg = shotTarget(), Sf = Math.min(tg.w / (bx1 - bx0), tg.h / (by1 - by0));
+    const home = PH((SX0 + SX1) / 2, SY, (SZ0 + SZ1) / 2);
+    const S = Math.exp(lerp(Math.log(HOME.S), Math.log(Sf), z));
+    const cx = lerp(home[0], tg.cx, z), cy = lerp(home[1], tg.cy, z);
+    const ux = (bx0 + bx1) / 2, uy = (by0 + by1) / 2;
+    return { az, k, S, ox: cx - S * ux, oy: cy - S * uy };
+  }
+  function setCamera(t) {
+    const key = t.toFixed(4) + VB.join(",");
+    if (key === camKey) return false;
+    camKey = key; camT = t;
+    C = camAt(t); P = proj(C); front = facing(C);
+    return true;
+  }
 
   /* ---- layers, back to front */
   const root = mk("g", {}, svg);
@@ -1095,54 +1130,55 @@ const scene = (() => {
 
   const outer = rrect(X0, Y0, X1, Y1, WR, 6), inner = rrect(X0 + WT, Y0 + WT, X1 - WT, Y1 - WT, WR - WT, 6);
   const body = rrect(PX0, PY0, PX1, PY1, 6, 6), bodyFront = rrect(PX0, GY - 0.6, PX1, PY1, 6, 6);
-  reflect(svg, root, P, front, outer, 0, 14);
-  reflect(svg, root, P, front, body, 0, 10);
+  // mirrors under the tray and the projector: drawn for the home pose, faded out while the camera travels
+  const gRefl = mk("g", {}, root);
+  reflect(svg, gRefl, PH, facing(HOMEC), outer, 0, 14);
+  reflect(svg, gRefl, PH, facing(HOMEC), body, 0, 10);
 
   const gScreen = mk("g", {}, root), gBeam = mk("g", {}, root), gTrayFar = mk("g", {}, root), gSlides = mk("g", {}, root);
   const gTrayNear = mk("g", {}, root), gBodyBack = mk("g", {}, root), gGate = mk("g", {}, root), gBodyFront = mk("g", {}, root);
+  const el = (g, cls, extra) => mk("path", Object.assign({ class: cls }, extra || {}), g);
 
-  /* the magazine */
+  /* the static solids, as elements; drawStatic() writes their paths for the current camera */
+  const T = { far: [el(gTrayFar, "sil"), el(gTrayFar, "nf"), el(gTrayFar, "nf lo"), el(gTrayFar, "nf lo")],
+    near: [el(gTrayNear, "fo"), el(gTrayNear, "nf lo"), el(gTrayNear, "nf"), el(gTrayNear, "nf sil"), el(gTrayNear, "nf lo"), el(gTrayNear, "nf"), el(gTrayNear, "nf lo")] };
+  const B = { lens: el(gBodyBack, "sil"), lensRim: el(gBodyBack, "nf"), lensIn: el(gBodyBack, "nf lo"), lensBand: el(gBodyBack, "nf lo"),
+    lensGlow: el(gBodyBack, "fo", { style: "fill:var(--heat);opacity:0" }), sil: el(gBodyBack, "sil"), top: el(gBodyBack, "nf"),
+    fsil: el(gBodyFront, "sil"), ftop: el(gBodyFront, "nf"), crease: el(gBodyFront, "nf sil"), vents: el(gBodyFront, "nf lo"), plate: el(gBodyFront, "nf lo") };
+  const lamp = mk("circle", { r: 2.2, class: "dot off" }, gBodyFront);
+  const lensRing = (y, r = LRAD) => { const o = []; for (let j = 0; j <= 28; j++) { const a = (j / 28) * Math.PI * 2; o.push(P(LX + r * Math.cos(a), y, LZ + r * Math.sin(a))); } return o; };
   const ribs = (x0, x1) => { let d = ""; for (let i = 0; i <= N; i++) { const y = i * G - G / 2; d += seg(P(x0, y, WH), P(x1, y, WH)); } return d; };
-  [[poly(hull(ringAt(P, outer, 0).concat(ringAt(P, outer, WH)))), "sil"], [poly(ringAt(P, inner, WH)), "nf"],
-    [open(ringAt(P, run(inner, (q) => !front(q)), 2.5)), "nf lo"], [ribs(X0, X0 + WT), "nf lo"]].forEach(([d, c]) => mk("path", { d, class: c }, gTrayFar));
-  {
+  function drawStatic() {
+    const set = (e, d) => e.setAttribute("d", d);
+    set(T.far[0], poly(hull(ringAt(P, outer, 0).concat(ringAt(P, outer, WH))))); set(T.far[1], poly(ringAt(P, inner, WH)));
+    set(T.far[2], open(ringAt(P, run(inner, (q) => !front(q)), 2.5))); set(T.far[3], ribs(X0, X0 + WT));
     const iF = LR_(ringAt(P, run(inner, front), WH)), oT = LR_(ringAt(P, run(outer, front), WH)), oB = LR_(ringAt(P, run(outer, front), 0));
     const hx = (X0 + X1) / 2, onEnd = (rg) => rg.map((q) => P(q.u, Y1, q.v));
-    [[poly([...iF, oT[oT.length - 1], ...oB.slice().reverse(), oT[0]]), "fo"], [open(oT), "nf lo"], [open(iF), "nf"],
-      [open([oT[0], ...oB, oT[oT.length - 1]]), "nf sil"], [ribs(X1 - WT, X1), "nf lo"],
-      [poly(onEnd(rrect(hx - 14, 6, hx + 14, 15, 2.5, 5))), "nf"], [poly(onEnd(rrect(hx - 12.4, 7.5, hx + 12.4, 13.5, 1.2, 5))), "nf lo"]]
-      .forEach(([d, c]) => mk("path", { d, class: c }, gTrayNear));
-  }
-
-  /* the projector: lens barrel (farthest), whole body, then — after the gate — the front half of the body over the slot */
-  const lensRing = (y, r = LRAD) => { const o = []; for (let j = 0; j <= 28; j++) { const a = (j / 28) * Math.PI * 2; o.push(P(LX + r * Math.cos(a), y, LZ + r * Math.sin(a))); } return o; };
-  mk("path", { d: poly(hull(lensRing(PY0).concat(lensRing(LY)))), class: "sil" }, gBodyBack);
-  mk("path", { d: poly(lensRing(LY)), class: "nf" }, gBodyBack);
-  mk("path", { d: poly(lensRing(LY, LRAD * 0.62)), class: "nf lo" }, gBodyBack);
-  mk("path", { d: open(lensRing(LY + 9).slice(0, 15)), class: "nf lo" }, gBodyBack);
-  const lensGlow = mk("path", { d: poly(lensRing(LY, LRAD * 0.62)), class: "fo", style: "fill:var(--heat);opacity:0" }, gBodyBack);
-  mk("path", { d: poly(hull(ringAt(P, body, 0).concat(ringAt(P, body, BZ)))), class: "sil" }, gBodyBack);
-  mk("path", { d: poly(ringAt(P, body, BZ)), class: "nf" }, gBodyBack);
-  // the near half, painted over whatever the slot swallows
-  mk("path", { d: poly(hull(ringAt(P, bodyFront, 0).concat(ringAt(P, bodyFront, BZ)))), class: "sil" }, gBodyFront);
-  mk("path", { d: poly(ringAt(P, bodyFront, BZ)), class: "nf" }, gBodyFront);
-  { // creases down the near corner, vents on the lid, a lamp switch on the face
+    set(T.near[0], poly([...iF, oT[oT.length - 1], ...oB.slice().reverse(), oT[0]])); set(T.near[1], open(oT)); set(T.near[2], open(iF));
+    set(T.near[3], open([oT[0], ...oB, oT[oT.length - 1]])); set(T.near[4], ribs(X1 - WT, X1));
+    set(T.near[5], poly(onEnd(rrect(hx - 14, 6, hx + 14, 15, 2.5, 5)))); set(T.near[6], poly(onEnd(rrect(hx - 12.4, 7.5, hx + 12.4, 13.5, 1.2, 5))));
+    set(B.lens, poly(hull(lensRing(PY0).concat(lensRing(LY))))); set(B.lensRim, poly(lensRing(LY))); set(B.lensIn, poly(lensRing(LY, LRAD * 0.62)));
+    set(B.lensBand, open(lensRing(LY + 9).slice(0, 15))); set(B.lensGlow, poly(lensRing(LY, LRAD * 0.62)));
+    set(B.sil, poly(hull(ringAt(P, body, 0).concat(ringAt(P, body, BZ))))); set(B.top, poly(ringAt(P, body, BZ)));
+    set(B.fsil, poly(hull(ringAt(P, bodyFront, 0).concat(ringAt(P, bodyFront, BZ))))); set(B.ftop, poly(ringAt(P, bodyFront, BZ)));
     const nr = LR_(ringAt(P, run(bodyFront, front), BZ)), nb = LR_(ringAt(P, run(bodyFront, front), 0));
-    mk("path", { d: open([nr[0], ...nb, nr[nr.length - 1]]), class: "nf sil" }, gBodyFront);
+    set(B.crease, open([nr[0], ...nb, nr[nr.length - 1]]));
     let v = ""; for (let k = 0; k < 5; k++) { const y = PY1 - 9 - k * 3.4; v += seg(P(PX1 - 34, y, BZ), P(PX1 - 10, y, BZ)); }
-    mk("path", { d: v, class: "nf lo" }, gBodyFront);
-    mk("path", { d: poly(rrect(PX0 + 8, 6, PX0 + 30, 16, 2, 4).map((q) => P(q.u, PY1, q.v))), class: "nf lo" }, gBodyFront);
+    set(B.vents, v); set(B.plate, poly(rrect(PX0 + 8, 6, PX0 + 30, 16, 2, 4).map((q) => P(q.u, PY1, q.v))));
+    place(lamp, P(PX1 - 12, PY1, 12));
+    gRefl.style.opacity = (1 - ss(0, 0.15, camT)).toFixed(3);
+    // everything but the screen recedes as the camera closes on it
+    const rest = (1 - ss(0.4, 0.85, camT)).toFixed(3);
+    [gBeam, gTrayFar, gSlides, gTrayNear, gBodyBack, gGate, gBodyFront].forEach((g) => { g.style.opacity = rest; });
   }
-  const lamp = mk("circle", { r: 2.2, class: "dot off" }, gBodyFront); place(lamp, P(PX1 - 12, PY1, 12));
 
   /* the screen and its beam */
-  const beam = mk("path", { class: "fo", style: "fill:url(#beam);opacity:0" }, gBeam);
-  const beamEdge = mk("path", { class: "nf dash", style: "opacity:0" }, gBeam);
-  const scrBack = mk("path", { class: "lo" }, gScreen), scrFace = mk("path", { class: "sil" }, gScreen);
+  const beam = el(gBeam, "fo", { style: "fill:url(#beam);opacity:0" });
+  const beamEdge = el(gBeam, "nf dash", { style: "opacity:0" });
+  const scrBack = el(gScreen, "lo"), scrFace = el(gScreen, "sil");
   const scrImgG = mk("g", { style: "opacity:0" }, gScreen);
   const scrImg = mk("image", { width: 1600, height: 1000, preserveAspectRatio: "xMidYMid slice", "clip-path": "url(#screen-clip)" }, scrImgG);
-  const scrWin = mk("path", { class: "nf lo" }, gScreen);
-  const scrHang = mk("path", { class: "nf dash" }, gScreen);
+  const scrWin = el(gScreen, "nf lo"), scrHang = el(gScreen, "nf dash");
 
   /* slides */
   const slides = PIECES.map((p, i) => {
@@ -1152,20 +1188,16 @@ const scene = (() => {
     const win = mk("path", { class: "nf" }, grp), pic = mk("path", { class: "nf lo" }, grp);
     const code = []; for (let k = 0; k <= i; k++) code.push(mk("circle", { r: 0.9, class: "dot off" }, grp));
     const spot = mk("circle", { r: 1.6, class: "dot " + (i === MARK ? "" : "off") }, grp);
-    if (!p.shot) {
-      const g = GLYPHS[p.glyph] || [];
-      pic.dataset.glyph = "1"; pic._lines = g;
-    }
+    if (!p.shot) pic._lines = GLYPHS[p.glyph] || [];
     return { grp, back, face, img, win, pic, code, spot, a: tween(LEAN[i % LEAN.length]), z: tween(i === MARK ? PROUD : 0), t: 0, mv: null, gate: false, drawn: "" };
   });
 
   /* ---- motion: a few long, eased moves on top of the kernel's tweens */
-  const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-  const sm = (x) => x * x * (3 - 2 * x), ss = (a, b, x) => clamp((x - a) / (b - a), 0, 1);
   const move = (from, to, dur, now) => ({ from, to, t0: now, dur: RM() ? 0 : dur });
   const mval = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * easeIO(clamp((now - m.t0) / m.dur, 0, 1)));
+  const mlin = (m, now) => (!m ? 0 : m.dur <= 0 ? m.to : m.from + (m.to - m.from) * clamp((now - m.t0) / m.dur, 0, 1));
   const mdone = (m, now) => !m || m.dur <= 0 || now >= m.t0 + m.dur;
-  let lampMv = move(0, 0, 0, 0), bobOn = true, frameOut = false, frameBusy = false;
+  let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), zoomed = false, zoomBusy = false;
 
   function pose(i, now) {
     const sd = slides[i];
@@ -1176,16 +1208,16 @@ const scene = (() => {
     const oz = lerp(lerp(lift, HT, pa), GZ, pc) + Math.sin(pb * Math.PI) * 10;
     return { t, ox, oy, oz, ang: th * (1 - pa) };
   }
+  const affine = (o, x, y, w, h) => { const f = (n) => n.toFixed(4); return "matrix(" + [f((x[0] - o[0]) / w), f((x[1] - o[1]) / w), f((y[0] - o[0]) / h), f((y[1] - o[1]) / h), f(o[0]), f(o[1])].join(" ") + ")"; };
   function drawSlide(i, now) {
     const sd = slides[i], q = pose(i, now);
-    // the slide changes layer as it leaves or rejoins the tray
     const gate = q.t > 0.28;
     if (gate !== sd.gate) {
       sd.gate = gate;
       if (gate) gGate.appendChild(sd.grp);
       else { const nx = slides.find((s, k) => k > i && !s.gate); gSlides.insertBefore(sd.grp, nx ? nx.grp : null); }
     }
-    const key = [q.ox, q.oy, q.oz, q.ang].map((n) => n.toFixed(2)).join(",");
+    const key = [q.ox, q.oy, q.oz, q.ang].map((n) => n.toFixed(2)).join(",") + camKey;
     if (sd.drawn === key) return; sd.drawn = key;
     const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang));
     const w = (u, v) => P(q.ox + u, q.oy + v * s, q.oz + v * c);
@@ -1197,43 +1229,43 @@ const scene = (() => {
     if (sd.img) sd.img.setAttribute("transform", affine(film(0, 1), film(1, 1), film(0, 0), AW, AH));
     else sd.pic.setAttribute("d", sd.pic._lines.map((l) => open(l.map(([u, v]) => film(u, v)))).join(""));
     place(sd.spot, w(W - 6.5, H - 6.5));
-    sd.code.forEach((el, k) => place(el, w(7 + k * 3.4, H - 6.5)));
+    sd.code.forEach((e, k) => place(e, w(7 + k * 3.4, H - 6.5)));
   }
-  const affine = (o, x, y, w, h) => { const f = (n) => n.toFixed(4); return "matrix(" + [f((x[0] - o[0]) / w), f((x[1] - o[1]) / w), f((y[0] - o[0]) / h), f((y[1] - o[1]) / h), f(o[0]), f(o[1])].join(" ") + ")"; };
 
   let bob = 0, scrKey = "";
   const sp = (x, z) => P(x, SY, z + bob);
   function screenCorners() { return { o: sp(SX0, SZ1), x: sp(SX1, SZ1), y: sp(SX0, SZ0), z: sp(SX1, SZ0) }; }
   function drawScreen(now) {
     const L = mval(lampMv, now);
-    bob = bobOn && !RM() ? Math.sin(now / 1500) * 2.2 : 0;
-    const key = bob.toFixed(2) + "," + L.toFixed(3);
+    bob = !RM() ? Math.sin(now / 1500) * 2.2 * (1 - camT) : 0;
+    const key = bob.toFixed(2) + "," + L.toFixed(3) + camKey + (zoomed ? "z" : "");
     if (key === scrKey) return; scrKey = key;
     scrBack.setAttribute("d", poly(BEZEL.map(([u, v]) => P(u + 1.4, SY - 2.4, v + bob - 1.2))));
     scrFace.setAttribute("d", poly(BEZEL.map(([u, v]) => sp(u, v))));
     const c = screenCorners();
     scrWin.setAttribute("d", poly([c.o, c.x, c.z, c.y]));
     scrImg.setAttribute("transform", affine(c.o, c.x, c.y, 1600, 1000));
-    // two hangers up into nothing: it floats
     scrHang.setAttribute("d", seg(sp(SX0 + 26, SZ1 + BEZ), sp(SX0 + 26, SZ1 + BEZ + 34)) + seg(sp(SX1 - 26, SZ1 + BEZ), sp(SX1 - 26, SZ1 + BEZ + 34)));
-    // the beam: the hull of the lens and the picture
     const lens = lensRing(LY, LRAD * 0.5);
     beam.setAttribute("d", poly(hull(lens.concat([c.o, c.x, c.y, c.z]))));
     const lc = P(LX, LY, LZ), sc = sp((SX0 + SX1) / 2, (SZ0 + SZ1) / 2);
     grad.setAttribute("x1", lc[0]); grad.setAttribute("y1", lc[1]); grad.setAttribute("x2", sc[0]); grad.setAttribute("y2", sc[1]);
     beamEdge.setAttribute("d", seg(lc, c.o) + seg(lc, c.x) + seg(lc, c.y) + seg(lc, c.z));
-    beam.style.opacity = L.toFixed(3); beamEdge.style.opacity = (L * 0.5).toFixed(3);
-    lensGlow.style.opacity = (L * 0.85).toFixed(3);
-    scrImgG.style.opacity = (frameOut ? 0 : sm(ss(0.35, 1, L))).toFixed(3);
+    const away = 1 - ss(0, 0.5, camT); // the beam gives way as the camera reaches the screen
+    beam.style.opacity = (L * away).toFixed(3); beamEdge.style.opacity = (L * 0.5 * away).toFixed(3);
+    B.lensGlow.style.opacity = (L * 0.85).toFixed(3);
+    scrImgG.style.opacity = sm(ss(0.35, 1, L)).toFixed(3);
     scrFace.classList.toggle("hi", L > 0.5);
     lamp.classList.toggle("off", L < 0.5);
   }
 
   /* ---- the loop: sleeps when nothing moves and the screen is out of view */
   let visible = true;
-  new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) B.wake(); }).observe(stage);
-  const B = register(stage, (_dt, now) => {
+  new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) BL.wake(); }).observe(stage);
+  const BL = register(stage, (_dt, now) => {
     let moving = false;
+    if (setCamera(mlin(camMv, now))) drawStatic();
+    if (!mdone(camMv, now)) moving = true;
     slides.forEach((sd, i) => {
       drawSlide(i, now);
       if (!tdone(sd.a, now) || !tdone(sd.z, now) || !mdone(sd.mv, now)) moving = true;
@@ -1241,9 +1273,10 @@ const scene = (() => {
     });
     drawScreen(now);
     if (!mdone(lampMv, now)) moving = true;
-    if (bobOn && !RM() && visible && mval(lampMv, now) > 0) moving = true;
+    if (!RM() && visible && mval(lampMv, now) > 0 && camT < 1) moving = true;
     return moving;
   });
+  addEventListener("resize", () => { frameView(); if (zoomed) placeShot(); BL.wake(); });
 
   /* ---- hover: the fan, as before; the slide that left the tray leaves a gap */
   let act = -1, loaded = -1, pending = -1;
@@ -1259,18 +1292,18 @@ const scene = (() => {
       sd.face.classList.toggle("hi", i === a || (i === loaded && sd.t === 1));
       if (sd.img) sd.img.classList.toggle("on", i === a || i === loaded);
       sd.spot.classList.toggle("off", a < 0 ? i !== MARK : i !== a);
-      sd.code.forEach((el) => { el.classList.toggle("m", i === a); el.classList.toggle("off", i !== a); });
+      sd.code.forEach((e) => { e.classList.toggle("m", i === a); e.classList.toggle("off", i !== a); });
     });
     onHover(a);
-    B.wake();
+    BL.wake();
   }
 
   /* ---- loading: eject what's in the gate, carry the new slide over, drop it in, strike the lamp */
   let seq = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, RM() ? 0 : ms));
-  async function load(i, { openAfter = false, keepFrame = false } = {}) {
+  async function load(i, { openAfter = false, keepView = false } = {}) {
     const my = ++seq;
-    if (frameOut && !keepFrame) await closeFrame();
+    if (zoomed && !keepView) await closeFrame();
     if (my !== seq) return;
     if (loaded === i && !slides[i].mv) { if (openAfter) openFrame(); return; }
     const now = performance.now();
@@ -1287,68 +1320,64 @@ const scene = (() => {
     const t0 = sd.mv ? mval(sd.mv, now) : sd.t;
     sd.mv = move(t0, 1, 1700 * (1 - t0) + 200, start); sd.drawn = "";
     if (sd.img) sd.img.classList.add("on");
-    B.wake();
+    BL.wake();
     await wait(320 + 1700 * (1 - t0) + 220);
     if (my !== seq) return;
     sd.face.classList.add("hi");
     scrImg.setAttribute("href", "img/" + (PIECES[i].shot || "") + ".jpg");
     scrImg.style.display = PIECES[i].shot ? "" : "none";
-    lampMv = move(0, 1, 900, performance.now()); B.wake();
+    lampMv = move(0, 1, 900, performance.now()); BL.wake();
     pending = -1; onLoad(i, true);
-    await wait(950);
+    await wait(1000);
     if (my !== seq) return;
     if (openAfter) await openFrame();
   }
 
-  /* ---- the frame: the picture lifts off the screen and lands flat, in front of everything */
-  const viewer = $("viewer"), flo = $("float");
-  function screenMatrix(fw, fh) {
-    const ctm = svg.getScreenCTM(), hr = hero.getBoundingClientRect();
-    const pt = svg.createSVGPoint();
+  /* ---- the push-in: the camera swings round to face the screen and closes on it; the piece plays there */
+  const viewer = $("viewer"), shot = $("fpic"), cap = $("fcap");
+  function screenRect() {
+    const ctm = svg.getScreenCTM(), hr = hero.getBoundingClientRect(), pt = svg.createSVGPoint();
     const cv = (q) => { pt.x = q[0]; pt.y = q[1]; const r = pt.matrixTransform(ctm); return [r.x - hr.left, r.y - hr.top]; };
-    const c = screenCorners(), o = cv(c.o), x = cv(c.x), y = cv(c.y);
-    return "matrix(" + [(x[0] - o[0]) / fw, (x[1] - o[1]) / fw, (y[0] - o[0]) / fh, (y[1] - o[1]) / fh, o[0], o[1]].join(",") + ")";
+    const c = screenCorners(), a = cv(c.o), b = cv(c.z);
+    return { left: Math.min(a[0], b[0]), top: Math.min(a[1], b[1]), width: Math.abs(b[0] - a[0]), height: Math.abs(b[1] - a[1]), hw: hr.width, hh: hr.height };
   }
-  function landing() {
-    const hr = hero.getBoundingClientRect(), r = flo.getBoundingClientRect();
-    const fw = flo.querySelector(".pic").offsetWidth, fh = flo.querySelector(".pic").offsetHeight;
-    const tx = Math.round((hr.width - flo.offsetWidth) / 2), ty = Math.round(Math.max(72, (hr.height - flo.offsetHeight) / 2));
-    return { fw, fh, to: "translate(" + tx + "px," + ty + "px)" };
+  function placeShot() {
+    const r = screenRect();
+    Object.assign(shot.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: (r.width * 22 / 1600).toFixed(1) + "px" });
+    if (innerWidth < 760) Object.assign(cap.style, { left: "", width: "", top: Math.min(r.top + r.height + 18, r.hh - cap.offsetHeight - 16) + "px" });
+    else Object.assign(cap.style, { left: r.left + "px", width: r.width + "px", top: r.top + r.height + 22 + "px" });
   }
+  const camDone = () => new Promise((res) => { const tick = () => (mdone(camMv, performance.now()) ? res() : requestAnimationFrame(tick)); tick(); });
   async function openFrame() {
-    if (loaded < 0 || frameOut || frameBusy || pending >= 0) return;
-    frameBusy = true; frameOut = true;
+    if (loaded < 0 || zoomed || zoomBusy || pending >= 0) return;
+    zoomBusy = true; zoomed = true;
     fillFrame(loaded);
-    viewer.hidden = false; flo.classList.remove("settled");
-    const { fw, fh, to } = landing();
-    const from = screenMatrix(fw, fh);
-    hero.classList.add("viewing"); scrKey = ""; B.wake();
-    const a = flo.animate([{ transform: from, boxShadow: "0 0 0 rgba(0,0,0,0)" }, { transform: to }], { duration: RM() ? 0 : 950, easing: "cubic-bezier(.6,.02,.16,1)", fill: "forwards" });
-    await a.finished.catch(() => {});
-    flo.style.transform = to; a.cancel();
-    flo.classList.add("settled");
-    frameBusy = false;
-    flo.focus({ preventScroll: true });
+    hero.classList.add("viewing"); viewer.hidden = false; viewer.classList.remove("on");
+    const now = performance.now();
+    camMv = move(camT, 1, 1700, now); BL.wake();
+    await camDone();
+    drawStatic(); placeShot();
+    viewer.classList.add("on");               // the recording fades in over the projected still
+    const v = shot.querySelector("video"); if (v) { if (!v.src) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); }
+    zoomBusy = false;
+    cap.focus({ preventScroll: true });
   }
   async function closeFrame() {
-    if (!frameOut || frameBusy) return;
-    frameBusy = true;
-    flo.classList.remove("settled");
-    await wait(160);
-    const { fw, fh } = landing();
-    hero.classList.remove("viewing");
-    const a = flo.animate([{ transform: flo.style.transform }, { transform: screenMatrix(fw, fh) }], { duration: RM() ? 0 : 750, easing: "cubic-bezier(.5,0,.2,1)", fill: "forwards" });
-    await a.finished.catch(() => {});
-    frameOut = false; scrKey = ""; B.wake();
-    await wait(60);
-    viewer.hidden = true; a.cancel(); flo.style.transform = "";
-    frameBusy = false;
+    if (!zoomed || zoomBusy) return;
+    zoomBusy = true;
+    viewer.classList.remove("on");
+    await wait(260);
+    const v = shot.querySelector("video"); if (v) v.pause();
+    viewer.hidden = true; hero.classList.remove("viewing");
+    camMv = move(camT, 0, 1400, performance.now()); BL.wake();
+    await camDone();
+    zoomed = false; zoomBusy = false; scrKey = ""; BL.wake();
   }
 
-  /* ---- pointer, in viewBox units */
-  const REST = -9, top = (i) => P(W / 2, i * G + H * Math.sin(rad(REST)), H * Math.cos(rad(REST)));
+  /* ---- pointer, in viewBox units (home pose only) */
+  const REST = -9, top = (i) => PH(W / 2, i * G + H * Math.sin(rad(REST)), H * Math.cos(rad(REST)));
   const c0 = top(0), c1 = top(1), dv = [c1[0] - c0[0], c1[1] - c0[1]];
-  const px0 = P(0, 0, 0), px1 = P(1, 0, 0), ex = [px1[0] - px0[0], px1[1] - px0[1]];
+  const px0 = PH(0, 0, 0), px1 = PH(1, 0, 0), ex = [px1[0] - px0[0], px1[1] - px0[1]];
   const HALF = W / 2 + 6, det = dv[0] * ex[1] - dv[1] * ex[0];
   function hitSlide([x, y]) {
     const qx = x - c0[0], qy = y - c0[1];
@@ -1358,27 +1387,30 @@ const scene = (() => {
     return slides[i].t > 0 || slides[i].mv ? -1 : i;
   }
   const inPoly = (pts, [x, y]) => { let ins = false; for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) { const [xa, ya] = pts[a], [xb, yb] = pts[b]; if ((ya > y) !== (yb > y) && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) ins = !ins; } return ins; };
-  const bodyHull = hull(ringAt(P, body, 0).concat(ringAt(P, body, BZ + 24)));
+  const bodyHull = hull(ringAt(PH, body, 0).concat(ringAt(PH, body, BZ + 24)));
   function hitScreen(p) { const c = screenCorners(); return inPoly([c.o, c.x, c.z, c.y], p) || inPoly(bodyHull, p); }
   const toVB = (e) => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const r = pt.matrixTransform(svg.getScreenCTM().inverse()); return [r.x, r.y]; };
   stage.addEventListener("pointermove", (e) => {
-    if (frameOut) return;
+    if (camT > 0) { stage.style.cursor = zoomed ? "zoom-out" : ""; return; }
     const p = toVB(e), h = hitSlide(p);
     setActive(h);
     stage.style.cursor = h >= 0 || (loaded >= 0 && hitScreen(p)) ? "pointer" : "";
   });
-  stage.addEventListener("pointerleave", () => setActive(-1));
+  stage.addEventListener("pointerleave", () => { if (camT === 0) setActive(-1); });
   stage.addEventListener("click", (e) => {
-    if (frameOut) return;
+    if (zoomed) { closeFrame(); return; }
+    if (camT > 0) return;
     const p = toVB(e), h = hitSlide(p);
     if (h >= 0) { setActive(-1); load(h, { openAfter: true }); }
     else if (loaded >= 0 && hitScreen(p)) openFrame();
   });
 
+  setCamera(0); camKey = "home";
+  drawStatic();
   setActive(-1);
   for (let i = 0; i < N; i++) drawSlide(i, performance.now());
   drawScreen(performance.now());
-  return { load, openFrame, closeFrame, get loaded() { return loaded; }, get open() { return frameOut; }, N };
+  return { load, openFrame, closeFrame, get loaded() { return loaded; }, get open() { return zoomed; }, N };
 })();
 
 
@@ -1388,11 +1420,10 @@ $("nprev").addEventListener("click", () => scene.load(step(-1)));
 $("nnext").addEventListener("click", () => scene.load(step(1)));
 $("nview").addEventListener("click", () => scene.openFrame());
 // inside the frame, stepping swaps the picture in place while the projector reloads behind it
-function frameStep(d) { const j = (framed + d + N) % N; fillFrame(j); scene.load(j, { keepFrame: true }); }
+function frameStep(d) { const j = (framed + d + N) % N; fillFrame(j); scene.load(j, { keepView: true }); }
 $("fprev").addEventListener("click", () => frameStep(-1));
 $("fnext").addEventListener("click", () => frameStep(1));
 $("fclose").addEventListener("click", () => scene.closeFrame());
-document.querySelector(".scrim").addEventListener("click", () => scene.closeFrame());
 addEventListener("keydown", (e) => {
   if (!scene.open) return;
   if (e.key === "Escape") scene.closeFrame();
