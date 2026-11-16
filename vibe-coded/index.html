@@ -189,6 +189,17 @@
   .si .meta .n { color: var(--heat) !important; font-weight: 600; }
   .si .meta .t { font-weight: 600 !important; }
   .si .meta .m { text-transform: uppercase; letter-spacing: .08em; }
+  .si .meta { height: calc(var(--u) * (var(--smh, 27) - 1.8)); align-content: start; row-gap: calc(var(--u) * 0.5); }
+  .si .meta .t { white-space: normal !important; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+  .si .meta .d { grid-column: 2 / 4; margin-top: calc(var(--u) * 0.9); font: 400 clamp(10px, calc(var(--u) * 3.6), 14.5px) / 1.4 var(--f-sans); color: var(--muted);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
+  .si:hover .meta .d, .si:focus-visible .meta .d { color: var(--ink); }
+  .si .meta { overflow: hidden; }
+  /* small screens: a scrolling sheet with fixed, readable type */
+  .sheet-ui.scroll .si .meta { top: calc(100% + 9px); height: calc(var(--u) * var(--smh) - 12px); row-gap: 3px; column-gap: 8px; }
+  .sheet-ui.scroll .si .meta .t { font-size: 14.5px !important; line-height: 1.2; -webkit-line-clamp: 2; }
+  .sheet-ui.scroll .si .meta .n, .sheet-ui.scroll .si .meta .y, .sheet-ui.scroll .si .meta .m { font-size: 10.5px !important; }
+  .sheet-ui.scroll .si .meta .d { font-size: 12.5px; line-height: 1.4; -webkit-line-clamp: 3; margin-top: 4px; }
 
   @media (max-width: 760px) {
     :root { --top: 46px; --bot: 92px; }
@@ -206,7 +217,7 @@
     .tlright .tl { display: none; }
     .hero.spreading #stage { inset: calc(var(--top) + 60px) 8px calc(var(--bot) + 8px); }
     .shead .count, .shead #scount { display: none; }
-    .shead { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 8px; }
+    .shead { align-items: center; gap: 10px; }
     .shead h2 { font-size: clamp(14px, calc(var(--u) * 5.2), 18px) !important; }
     .shead .seg button { height: 28px; padding: 0 10px 0 calc(10px + var(--track-sign)); }
   }
@@ -1014,7 +1025,7 @@ var HL = (() => {
 <script>
 "use strict";
 /* ---------------------------------------------------------------- the pieces */
-const PIECES = [{"title": "yuánfèn", "year": "2025", "glyph": "yuanfen", "shot": "yuanfen", "vid": "yuanfen", "wide": true, "where": "live site", "url": "https://yuan-fen.vercel.app", "medium": "Three.js · GLSL · Tone.js", "desc": "Two souls of 25,000 particles orbit each other. Hold to pull them together, release to let go, double-tap to push apart. Particles that cross over stay where they land, so each soul carries pieces of the other, and the score is generated live with FM synthesis."}, {"title": "Tags, floating gallery", "year": "2026", "glyph": "tags", "shot": "tags", "vid": "tags", "where": "live site", "url": "https://tags-dusky.vercel.app", "medium": "Three.js · fly-through", "desc": "The 64 forum signature tags I made in the mid-2000s, hung in white 3D space. Fly through with scroll or WASD, click a tag to glide up to it, regroup them by colour or set them in orbit, and press space to send a shockwave through the room."}, {"title": "michael_leng_portfolio.aep", "year": "2026", "glyph": "ae", "shot": "aefolio", "vid": "aefolio", "where": "live site", "url": "https://mlengco.vercel.app", "medium": "HTML · scroll-scrubbed", "desc": "My motion portfolio built as an After Effects project. The page is a comp: scrolling scrubs its timeline past Work, About and Contact markers, and a layer panel lets you drag position, scale and opacity, read the expression driving them and try effect presets on the hero."}, {"title": "Polar Calendar", "year": "2026", "glyph": "polar", "shot": "polar", "vid": "polar", "where": "piece", "url": "https://claude.ai/artifact/STaDybhZJJArWfGQenB2Ux", "medium": "SVG · Google Calendar", "desc": "My calendar drawn on a polar grid instead of a week of boxes, in five palettes, reading Google Calendar live."}, {"title": "Covered Call Engine", "year": "2026", "glyph": "cc", "shot": "ccengine", "vid": "ccengine", "where": "live site", "url": "https://cc-engine.vercel.app", "medium": "HTML · live market data", "desc": "An options-income desk set like a weekly broadsheet. It screens a few dozen tickers across four pillars for covered-call strikes, ranks them by implied-volatility rank and conviction, runs an alerts ticker across the top and tracks open positions. Its figures are blurred here."}, {"title": "NYC Tax Scale", "year": "2026", "glyph": "tax", "shot": "tax", "vid": "tax", "where": "tool", "url": "https://claude.ai/artifact/3aYUj5LZSpF55DjNexPh2S", "medium": "Calculator · data viz", "desc": "Salary, bonus, RSUs, freelance income and pre-tax benefits run through federal, state, local and NYC business taxes for any ZIP code and filing status, by year or by paycheck."}, {"title": "Azul", "year": "2026", "glyph": "azul", "shot": "azul", "vid": "azul", "wide": true, "featured": true, "where": "piece", "url": "https://claude.ai/artifact/YCYQVM46dQNZ29xzNwAD6h", "medium": "Three.js · GLSL · Claude", "desc": "A black opal that talks back. A vessel from my novel, rendered with a depth-marched shader for its inner fire and wet-glass highlights, sitting in mist on a moonlit island. Ask it something and it answers in fragments, live."}, {"title": "Resonance", "year": "2026", "glyph": "res", "shot": "resonance", "vid": "resonance", "where": "live site", "url": "https://mikey-resonance.vercel.app", "medium": "React · Three.js · Tone.js", "desc": "A personal operating system drawn as an ikigai field: particles in four colours for what I love, what I've mastered, what pays and what's needed, gathering around self-direction. Tabs in English and Khmer open finance, body and identity views, and a quote ticker runs across the top. Its figures are blurred here."}, {"title": "Grain", "year": "2026", "glyph": "grain", "shot": "grain", "vid": "grain", "where": "library", "url": "https://claude.ai/artifact/UrYB2RSTeqkczYEA4LGYu2", "medium": "WebGL · shaders", "desc": "Twenty grainy animated gradients, each a small shader, with a live editor and a copy-paste embed for any page."}, {"title": "Untitled (I–VIII)", "year": "2026", "glyph": "void", "shot": "void", "vid": "void", "where": "live site", "url": "https://void-beryl-rho.vercel.app", "medium": "Three.js · GLSL · Tone.js", "desc": "A universe that spends ninety seconds being beautiful while it quietly learns how you move and which colours and melodies you favour. Then a black hole arrives, and across eight eras it takes one thing at a time: colour, light, frequency, motion, time, meaning. It remembers you between visits."}];
+const PIECES = [{"title": "yuánfèn", "year": "2025", "glyph": "yuanfen", "shot": "yuanfen", "vid": "yuanfen", "wide": true, "where": "live site", "url": "https://yuan-fen.vercel.app", "medium": "Three.js · GLSL · Tone.js", "desc": "Two souls of 25,000 particles orbit each other. Hold to pull them together, release to let go, double-tap to push apart. Particles that cross over stay where they land, so each soul carries pieces of the other, and the score is generated live with FM synthesis.", "blurb": "Two particle souls that trade pieces of each other, scored live with FM synthesis."}, {"title": "Tags, floating gallery", "year": "2026", "glyph": "tags", "shot": "tags", "vid": "tags", "where": "live site", "url": "https://tags-dusky.vercel.app", "medium": "Three.js · fly-through", "desc": "The 64 forum signature tags I made in the mid-2000s, hung in white 3D space. Fly through with scroll or WASD, click a tag to glide up to it, regroup them by colour or set them in orbit, and press space to send a shockwave through the room.", "blurb": "My mid-2000s forum signature tags, hung in white 3D space to fly through."}, {"title": "michael_leng_portfolio.aep", "year": "2026", "glyph": "ae", "shot": "aefolio", "vid": "aefolio", "where": "live site", "url": "https://mlengco.vercel.app", "medium": "HTML · scroll-scrubbed", "desc": "My motion portfolio built as an After Effects project. The page is a comp: scrolling scrubs its timeline past Work, About and Contact markers, and a layer panel lets you drag position, scale and opacity, read the expression driving them and try effect presets on the hero.", "blurb": "My motion portfolio built as an After Effects comp you scrub by scrolling."}, {"title": "Polar Calendar", "year": "2026", "glyph": "polar", "shot": "polar", "vid": "polar", "where": "piece", "url": "https://claude.ai/artifact/STaDybhZJJArWfGQenB2Ux", "medium": "SVG · Google Calendar", "desc": "My calendar drawn on a polar grid instead of a week of boxes, in five palettes, reading Google Calendar live.", "blurb": "My Google Calendar drawn live on a polar grid, in five palettes."}, {"title": "Covered Call Engine", "year": "2026", "glyph": "cc", "shot": "ccengine", "vid": "ccengine", "where": "live site", "url": "https://cc-engine.vercel.app", "medium": "HTML · live market data", "desc": "An options-income desk set like a weekly broadsheet. It screens a few dozen tickers across four pillars for covered-call strikes, ranks them by implied-volatility rank and conviction, runs an alerts ticker across the top and tracks open positions. Its figures are blurred here.", "blurb": "An options-income desk set like a weekly broadsheet. Figures blurred here."}, {"title": "NYC Tax Scale", "year": "2026", "glyph": "tax", "shot": "tax", "vid": "tax", "where": "tool", "url": "https://claude.ai/artifact/3aYUj5LZSpF55DjNexPh2S", "medium": "Calculator · data viz", "desc": "Salary, bonus, RSUs, freelance income and pre-tax benefits run through federal, state, local and NYC business taxes for any ZIP code and filing status, by year or by paycheck.", "blurb": "Every tax on a New York paycheck, for any ZIP code and filing status."}, {"title": "Azul", "year": "2026", "glyph": "azul", "shot": "azul", "vid": "azul", "wide": true, "featured": true, "where": "piece", "url": "https://claude.ai/artifact/YCYQVM46dQNZ29xzNwAD6h", "medium": "Three.js · GLSL · Claude", "desc": "A black opal that talks back. A vessel from my novel, rendered with a depth-marched shader for its inner fire and wet-glass highlights, sitting in mist on a moonlit island. Ask it something and it answers in fragments, live.", "blurb": "A black opal from my novel that answers your questions in fragments."}, {"title": "Resonance", "year": "2026", "glyph": "res", "shot": "resonance", "vid": "resonance", "where": "live site", "url": "https://mikey-resonance.vercel.app", "medium": "React · Three.js · Tone.js", "desc": "A personal operating system drawn as an ikigai field: particles in four colours for what I love, what I've mastered, what pays and what's needed, gathering around self-direction. Tabs in English and Khmer open finance, body and identity views, and a quote ticker runs across the top. Its figures are blurred here.", "blurb": "A personal operating system drawn as an ikigai particle field. Figures blurred here."}, {"title": "Grain", "year": "2026", "glyph": "grain", "shot": "grain", "vid": "grain", "where": "library", "url": "https://claude.ai/artifact/UrYB2RSTeqkczYEA4LGYu2", "medium": "WebGL · shaders", "desc": "Twenty grainy animated gradients, each a small shader, with a live editor and a copy-paste embed for any page.", "blurb": "Twenty grainy animated gradient shaders, with a live editor and embeds."}, {"title": "Untitled (I–VIII)", "year": "2026", "glyph": "void", "shot": "void", "vid": "void", "where": "live site", "url": "https://void-beryl-rho.vercel.app", "medium": "Three.js · GLSL · Tone.js", "desc": "A universe that spends ninety seconds being beautiful while it quietly learns how you move and which colours and melodies you favour. Then a black hole arrives, and across eight eras it takes one thing at a time: colour, light, frequency, motion, time, meaning. It remembers you between visits.", "blurb": "A universe that learns how you move, then a black hole takes it apart."}];
 const AWG = 40, AHG = 27;
 const ring = (cx, cy, r, n = 20) => { const k = AHG / AWG, o = []; for (let j = 0; j <= n; j++) { const a = (j / n) * Math.PI * 2; o.push([cx + r * k * Math.cos(a), cy + r * Math.sin(a)]); } return o; };
 const box = (a, b, c, d) => [[a, b], [c, b], [c, d], [a, d], [a, b]];
@@ -1103,11 +1114,12 @@ $("scount").textContent = pad(N) + " comps · " + y0 + " — " + y1;
 PIECES.forEach((p, i) => {
   const b = document.createElement("button");
   b.className = "si"; b.type = "button"; b.dataset.i = i;
-  b.innerHTML = '<span class="sv">' + picHTML(p, !!p.wide, true) + '</span><span class="meta"><span class="n"></span><span class="t"></span><span class="y"></span><span class="m"></span></span>';
+  b.innerHTML = '<span class="sv">' + picHTML(p, !!p.wide, true) + '</span><span class="meta"><span class="n"></span><span class="t"></span><span class="y"></span><span class="m"></span><span class="d"></span></span>';
   b.querySelector(".n").textContent = pad(i + 1);
-  b.querySelector(".t").textContent = p.title;
+  b.querySelector(".t").textContent = p.title.replace(/([_.])/g, "$1\u200b");
   b.querySelector(".y").textContent = p.year;
   b.querySelector(".m").textContent = p.medium;
+  b.querySelector(".d").textContent = p.blurb;
   b.setAttribute("aria-label", "Project " + p.title);
   $("sitems").appendChild(b);
 });
@@ -1175,7 +1187,7 @@ const scene = (() => {
     // while the sheet is out, grow the view to the stage's own shape (only ever the slack side, so nothing jumps)
     if (spreadOn) {
       const r = stage.getBoundingClientRect(), a = r.width / Math.max(r.height, 1), [x, y, w, h] = VB;
-      if (a > w / h) { const w2 = h * a; VB = [x - (w2 - w) / 2, y, w2, h]; } else { const h2 = w / a; VB = [x, y - (h2 - h) / 2, w, h2]; }
+      if (a > w / h) { const w2 = h * a; VB = [x - (w2 - w) / 2, y, w2, h]; } else { const h2 = w / a; VB = [x, narrow() ? y - Math.min((h2 - h) / 2, h * 0.6) : y - (h2 - h) / 2, w, h2]; }
     }
     svg.setAttribute("viewBox", VB.map((n) => n.toFixed(1)).join(" ")); camKey = "";
   };
@@ -1183,26 +1195,49 @@ const scene = (() => {
 
   /* ---- the contact sheet: a plate floating in front of the table, slides laid flat on it in a grid */
   // laid out like the index: 16:10 pictures, wide ones spanning two columns, a meta band under each
-  const SHZ = 46, SM = 12, SPW = 72, SMH = 14.5, SGX = 10, SGY = 6;
+  const SHZ = 46, SM = 12, SPW = 72, SGX = 10, SGY = 7, MPX = 122;
+  let SMH = 27;
   let SPH = SPW / 1.6;
-  function sheetLayout() {
-    const cols = narrow() ? 2 : 4, hdr = narrow() ? 38 : 30, occ = [], cells = [];
-    SPH = narrow() ? SPW / 1.6 : SPW * 9 / 16;   // wider tiles on desktop, so the sheet can fill the screen's width
+  // pack the pieces into a given number of columns; wide ones span two once there are three or more
+  function packCols(cols) {
+    const hdr = 30, occ = [], cells = [];
     const free = (r, c, span) => { for (let k = 0; k < span; k++) if (c + k >= cols || (occ[r] && occ[r][c + k])) return false; return true; };
     PIECES.forEach((p, i) => {
-      const span = p.wide && !narrow() ? 2 : 1;
+      const span = p.wide && cols >= 3 ? 2 : 1;
       let r = 0, c = 0;
       for (;; r++) { let hit = false; for (c = 0; c < cols; c++) if (free(r, c, span)) { hit = true; break; } if (hit) break; }
       for (let k = 0; k < span; k++) (occ[r] = occ[r] || [])[c + k] = 1;
       cells[i] = { r, c, span };
     });
     const rows = occ.length;
-    const w = 2 * SM + cols * SPW + (cols - 1) * SGX, h = 2 * SM + hdr + rows * (SPH + SMH) + (rows - 1) * SGY;
-    const x0 = 70 - w / 2, y0 = 210 - h / 2;
-    cells.forEach((q) => { q.x = x0 + SM + q.c * (SPW + SGX); q.y = y0 + SM + hdr + q.r * (SPH + SMH + SGY); q.w = q.span * SPW + (q.span - 1) * SGX; q.h = SPH; });
-    return { cols, rows, w, h, x0, y0, hdr, cells };
+    return { cols, rows, hdr, cells, w: 2 * SM + cols * SPW + (cols - 1) * SGX, h: 2 * SM + hdr + rows * (SPH + SMH) + (rows - 1) * SGY };
+  }
+  // choose the column count that gives the biggest tiles for the stage's shape, so the sheet fills any window
+  function sheetLayout() {
+    SPH = narrow() ? SPW / 1.6 : SPW * 9 / 16;
+    const r = stage.getBoundingClientRect(), top = narrow() ? 0.04 : 0.065, bot = narrow() ? 0.02 : 0.015;
+    if (narrow()) {
+      // small screens: the sheet runs the stage's full width at a readable size and the page scrolls down it
+      const W = r.width * 0.97, cols = W >= 500 ? 3 : 2;
+      SMH = 27; const S = W / packCols(cols).w;   // px per unit; the width doesn't depend on the meta band
+      SMH = MPX / S; const L = packCols(cols), x0 = 70 - L.w / 2, y0 = 210 - L.h / 2;
+      L.cells.forEach((q) => { q.x = x0 + SM + q.c * (SPW + SGX); q.y = y0 + SM + L.hdr + q.r * (SPH + SMH + SGY); q.w = q.span * SPW + (q.span - 1) * SGX; q.h = SPH; });
+      return Object.assign(L, { x0, y0, scroll: true, needPx: (L.h * S) / (1 - top - bot) + 2 });
+    }
+    SMH = 27;
+    const A = (r.width * 0.97) / Math.max(1, r.height * (1 - top - bot));
+    let best = null, bs = -1;
+    for (let cols = 1; cols <= 5; cols++) { const L = packCols(cols), sc = 1 / Math.max(L.w / A, L.h); if (sc > bs * 1.02) { bs = sc; best = L; } }
+    const L = best, x0 = 70 - L.w / 2, y0 = 210 - L.h / 2;
+    L.cells.forEach((q) => { q.x = x0 + SM + q.c * (SPW + SGX); q.y = y0 + SM + L.hdr + q.r * (SPH + SMH + SGY); q.w = q.span * SPW + (q.span - 1) * SGX; q.h = SPH; });
+    return Object.assign(L, { x0, y0 });
   }
   let SL = sheetLayout();
+  function fitHero() {
+    if (!SL.needPx) { hero.style.height = ""; return; }
+    const extra = SL.needPx - stage.getBoundingClientRect().height;
+    if (Math.abs(extra) > 1) hero.style.height = hero.getBoundingClientRect().height + extra + "px";
+  }
   function spreadPose() {
     const [vx, vy, vw, vh] = VB, top = narrow() ? 0.04 : 0.065, bot = narrow() ? 0.02 : 0.015;
     const tw = vw * 0.97, th = vh * (1 - top - bot), S = Math.min(tw / SL.w, th / SL.h);
@@ -1428,7 +1463,7 @@ const scene = (() => {
     if (!RM() && visible && mval(lampMv, now) > 0 && camT < 1) moving = true;
     return moving;
   });
-  addEventListener("resize", () => { frameView(); if (zoomed) placeShot(); if (spreadOn && !spreadBusy) { SL = sheetLayout(); slides.forEach((sd) => { sd.drawn = ""; }); camKey = ""; requestAnimationFrame(placeSheet); } BL.wake(); });
+  addEventListener("resize", () => { frameView(); if (zoomed) placeShot(); if (spreadOn && !spreadBusy) { SL = sheetLayout(); fitHero(); frameView(); slides.forEach((sd) => { sd.drawn = ""; }); camKey = ""; requestAnimationFrame(placeSheet); } BL.wake(); });
 
   /* ---- hover: the fan, as before; the slide that left the tray leaves a gap */
   let act = -1, loaded = -1, pending = -1;
@@ -1540,7 +1575,7 @@ const scene = (() => {
     });
     const h0 = cv(P(SL.x0 + SM, SL.y0 + SM, SHZ)), h1 = cv(P(SL.x0 + SL.w - SM, SL.y0 + SM + SL.hdr - 8, SHZ));
     Object.assign($("shead").style, { left: h0[0] + "px", top: h0[1] + "px", width: h1[0] - h0[0] + "px", height: h1[1] - h0[1] + "px" });
-    sheetUI.style.setProperty("--u", px.toFixed(3) + "px");
+    sheetUI.style.setProperty("--u", px.toFixed(3) + "px"); sheetUI.style.setProperty("--smh", SMH); sheetUI.classList.toggle("scroll", !!SL.scroll);
   }
   function playSheet(on) {
     sheetUI.querySelectorAll("video").forEach((v) => { if (on && !matchMedia("(prefers-reduced-motion: reduce)").matches) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); });
@@ -1550,7 +1585,7 @@ const scene = (() => {
     if (spreadOn || spreadBusy) return;
     spreadBusy = true; ++seq;
     if (zoomed) await closeFrame();
-    spreadOn = true; onSpread(true); frameView(); SL = sheetLayout(); setActive(-1);
+    spreadOn = true; onSpread(true); SL = sheetLayout(); fitHero(); frameView(); setActive(-1);
     const now = performance.now();
     spMv = move(mlin(spMv, now), 1, 1700, now);
     slides.forEach((sd, i) => { sd.sp = move(sd.spv, 1, 1150, now + 250 + i * 70); sd.drawn = ""; if (sd.img) sd.img.classList.add("on"); });
@@ -1568,6 +1603,7 @@ const scene = (() => {
   async function unspread(choice = -1) {
     if (!spreadOn || spreadBusy) return;
     spreadBusy = true;
+    if (scrollY > 0) scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     sheetUI.classList.remove("on"); playSheet(false); gSpread.classList.remove("laid");
     await wait(380);
     sheetUI.hidden = true;
@@ -1577,7 +1613,7 @@ const scene = (() => {
     BL.wake();
     await wait(150 + 1600 + 60);
     slides.forEach((sd) => { if (sd.img) sd.img.classList.remove("on"); });
-    spreadOn = false; onSpread(false); frameView(); spreadBusy = false; setActive(-1); BL.wake();
+    spreadOn = false; onSpread(false); hero.style.height = ""; frameView(); spreadBusy = false; setActive(-1); BL.wake();
     if (choice >= 0) load(choice, { openAfter: true });
   }
 
