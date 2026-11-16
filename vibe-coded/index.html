@@ -1158,7 +1158,9 @@ const scene = (() => {
     const view = (x, y, z) => { const X = x * c - y * s, Y = x * s + y * c; return [X, Y * k - z * zf, Y * zf + z * k]; };
     const [Xt, Vt, Dt] = view(cam.T[0], cam.T[1], cam.T[2]);
     const ox = cam.cx - cam.S * Xt, oy = cam.cy - cam.S * Vt;
-    return (x, y, z) => { const [X, V, D] = view(x, y, z); const f = d / Math.max(d - (D - Dt), d * 0.2); return [ox + cam.S * (Xt + (X - Xt) * f), oy + cam.S * (Vt + (V - Vt) * f)]; };
+    const fn = (x, y, z) => { const [X, V, D] = view(x, y, z); const f = d / Math.max(d - (D - Dt), d * 0.2); return [ox + cam.S * (Xt + (X - Xt) * f), oy + cam.S * (Vt + (V - Vt) * f)]; };
+    fn.depth = (x, y, z) => view(x, y, z)[2];   // bigger is nearer the camera
+    return fn;
   }
   const FITPTS = [[X0, Y1, 0], [X0, Y0, H + PULL], [X1, Y1, 0], [PX1, PY1, 0], [SX0 - BEZ, SY, SZ1 + BEZ + 34], [SX1 + BEZ, SY, SZ1 + BEZ], [SX1 + BEZ, SY, SZ0 - BEZ], [SX0 - BEZ, SY, SZ0 - BEZ], [X0, Y1, H + PULL], [PX1, PY1, BZ]];
   function framed(pose, fill) {
@@ -1373,6 +1375,7 @@ const scene = (() => {
   const mdone = (m, now) => !m || m.dur <= 0 || now >= m.t0 + m.dur;
   let lampMv = move(0, 0, 0, 0), camMv = move(0, 0, 0, 0), introMv = move(1, 1, 0, 0), spMv = move(0, 0, 0, 0), zoomed = false, zoomBusy = false, spreadBusy = false;
 
+  const RISE = 0.3, LIFT = 70;
   function pose(i, now) {
     const sd = slides[i];
     const t = sd.mv ? mval(sd.mv, now) : sd.t;
@@ -1383,21 +1386,24 @@ const scene = (() => {
     const base = { t, ox, oy, oz, ang: th * (1 - pa), s: 0, sx: 1, sy: 1 };
     const e = sd.sp ? mval(sd.sp, now) : sd.spv;
     if (e <= 0) return base;
-    // out of the magazine, up in an arc, turning flat, down onto its tile: the film window stretches over the tile's picture
+    // straight up out of its slot (clear of the walls and its neighbours), then across in an arc, turning flat,
+    // down onto its tile: the film window stretches over the tile's picture. Coming home it's the same path backwards.
     const c = SL.cells[i], sxT = c.w / AW, syT = c.h / AH;
-    return { t, s: e, sx: lerp(1, sxT, e), sy: lerp(1, syT, e), ox: lerp(ox, c.x - AX0 * sxT, e), oy: lerp(oy, c.y + AY1 * syT, e),
-      oz: lerp(oz, SHZ + 0.6, e) + Math.sin(e * Math.PI) * 60, ang: lerp(base.ang, -90, e) };
+    const a = sm(ss(0, RISE, e)), f = sm(ss(RISE, 1, e)), hz = oz + LIFT * a;
+    return { t, s: e, rising: e < RISE, sx: lerp(1, sxT, f), sy: lerp(1, syT, f), ox: lerp(ox, c.x - AX0 * sxT, f), oy: lerp(oy, c.y + AY1 * syT, f),
+      oz: lerp(hz, SHZ + 0.6, f) + Math.sin(f * Math.PI) * 26, ang: lerp(base.ang, -90, f) };
   }
   const affine = (o, x, y, w, h) => { const f = (n) => n.toFixed(4); return "matrix(" + [f((x[0] - o[0]) / w), f((x[1] - o[1]) / w), f((y[0] - o[0]) / h), f((y[1] - o[1]) / h), f(o[0]), f(o[1])].join(" ") + ")"; };
-  function drawSlide(i, now) {
-    const sd = slides[i], q = pose(i, now);
-    const layer = q.s > 0.001 ? "spread" : q.t > 0.28 ? "gate" : "tray";
+  function drawSlide(i, now, q = pose(i, now)) {
+    const sd = slides[i];
+    const layer = q.s > 0.001 && !q.rising ? "spread" : q.t > 0.28 ? "gate" : "tray";
     if (layer !== sd.layer) {
       sd.layer = layer;
       if (layer === "spread") gSpread.appendChild(sd.grp);
       else if (layer === "gate") gGate.appendChild(sd.grp);
       else { const nx = slides.find((s, k) => k > i && s.layer === "tray"); gSlides.insertBefore(sd.grp, nx ? nx.grp : null); }
     }
+    sd.q = q;
     const key = [q.ox, q.oy, q.oz, q.ang, q.sx, q.sy].map((n) => n.toFixed(2)).join(",") + camKey;
     if (sd.drawn === key) return; sd.drawn = key;
     const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang)), sx = q.sx, sy = q.sy;
@@ -1445,6 +1451,55 @@ const scene = (() => {
     lamp.classList.toggle("off", L < 0.5);
   }
 
+  /* ---- collisions: a slide in flight never passes through another. Each one's footprint is a box in the world;
+     a slide that set off later yields to one that set off earlier (and to every slide sitting in the magazine)
+     by rising over it, eased in over the first few units of overlap so nothing pops. */
+  function box(q) {
+    const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang)), xs = [q.ox, q.ox + W * q.sx], ys = [q.oy, q.oy + H * s * q.sy], zs = [q.oz, q.oz + H * c * q.sy];
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys) - TK, y1: Math.max(...ys) + TK, z0: Math.min(...zs), z1: Math.max(...zs) };
+  }
+  const tilted = (q) => Math.abs(q.ang) > 25;
+  function resolve(qs) {
+    const fly = qs.map((q, i) => i).filter((i) => qs[i].s > 0.001 && qs[i].s < 0.999);
+    if (!fly.length) return qs;
+    const seated = qs.map((q, i) => i).filter((i) => qs[i].s <= 0.001 && qs[i].t < 0.05);
+    fly.sort((a, b) => (slides[a].sp ? slides[a].sp.t0 : 0) - (slides[b].sp ? slides[b].sp.t0 : 0) || a - b);
+    const done = seated.map((i) => box(qs[i]));
+    fly.forEach((i) => {
+      const q = qs[i];
+      if (tilted(q)) {
+        let up = 0;
+        for (let pass = 0; pass < 3; pass++) {
+          const b = box(Object.assign({}, q, { oz: q.oz + up }));
+          let need = 0;
+          for (const o of done) {
+            const ox = Math.min(b.x1, o.x1) - Math.max(b.x0, o.x0), oy = Math.min(b.y1, o.y1) - Math.max(b.y0, o.y0);
+            if (ox <= 0 || oy <= 0) continue;
+            const r = sm(clamp(Math.min(ox, oy) / 10, 0, 1)), gap = o.z1 + 3 - b.z0;
+            if (gap > 0) need = Math.max(need, gap * r);
+          }
+          if (need <= 0.01) break; up += need;
+        }
+        if (up > 0) qs[i] = Object.assign({}, q, { oz: q.oz + up });
+      }
+      // an upright slide in its own lane above the magazine is only an obstacle to tilted ones
+      done.push(Object.assign(box(qs[i]), { lane: !tilted(qs[i]) }));
+    });
+    return qs;
+  }
+  // draw the slides in the air far-to-near, so the nearer one is always on top
+  let sortKey = "";
+  function depthSort() {
+    const on = slides.map((sd, i) => i).filter((i) => slides[i].layer === "spread");
+    if (on.length < 2) return;
+    const d = (i) => { const q = slides[i].q; if (!q) return 0; const s = Math.sin(rad(q.ang)), c = Math.cos(rad(q.ang));
+      return P.depth(q.ox + (W * q.sx) / 2, q.oy + (H / 2) * s * q.sy, q.oz + (H / 2) * c * q.sy); };
+    on.sort((a, b) => d(a) - d(b));
+    const key = on.join(",");
+    if (key === sortKey) return; sortKey = key;
+    on.forEach((i) => gSpread.appendChild(slides[i].grp));
+  }
+
   /* ---- the loop: sleeps when nothing moves and the screen is out of view */
   let visible = true;
   new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) BL.wake(); }).observe(stage);
@@ -1452,12 +1507,14 @@ const scene = (() => {
     let moving = false;
     if (setCamera(mlin(introMv, now), mlin(camMv, now), mlin(spMv, now))) drawStatic();
     if (!mdone(camMv, now) || !mdone(introMv, now) || !mdone(spMv, now)) moving = true;
+    const qs = resolve(slides.map((_, i) => pose(i, now)));
     slides.forEach((sd, i) => {
-      drawSlide(i, now);
+      drawSlide(i, now, qs[i]);
       if (!tdone(sd.a, now) || !tdone(sd.z, now) || !mdone(sd.mv, now) || !mdone(sd.sp, now)) moving = true;
       if (sd.mv && mdone(sd.mv, now)) { sd.t = sd.mv.to; sd.mv = null; sd.drawn = ""; drawSlide(i, now); }
       if (sd.sp && mdone(sd.sp, now)) { sd.spv = sd.sp.to; sd.sp = null; sd.drawn = ""; drawSlide(i, now); }
     });
+    depthSort();
     drawScreen(now);
     if (!mdone(lampMv, now)) moving = true;
     if (!RM() && visible && mval(lampMv, now) > 0 && camT < 1) moving = true;
@@ -1588,10 +1645,10 @@ const scene = (() => {
     spreadOn = true; onSpread(true); SL = sheetLayout(); fitHero(); frameView(); setActive(-1);
     const now = performance.now();
     spMv = move(mlin(spMv, now), 1, 1700, now);
-    slides.forEach((sd, i) => { sd.sp = move(sd.spv, 1, 1150, now + 250 + i * 70); sd.drawn = ""; if (sd.img) sd.img.classList.add("on"); });
+    slides.forEach((sd, i) => { sd.sp = move(sd.spv, 1, 1250, now + 250 + (N - 1 - i) * 70); sd.drawn = ""; if (sd.img) sd.img.classList.add("on"); });
     lampMv = move(mval(lampMv, now), 0, 300, now);
     BL.wake();
-    await wait(250 + N * 70 + 1150 + 80);
+    await wait(250 + N * 70 + 1250 + 80);
     // the slide that was in the projector is on the sheet now: the gate is empty
     slides.forEach((sd) => { sd.t = 0; sd.mv = null; sd.face.classList.remove("hi"); });
     loaded = -1; pending = -1; onLoad(-1, false);
@@ -1608,10 +1665,10 @@ const scene = (() => {
     await wait(380);
     sheetUI.hidden = true;
     const now = performance.now();
-    slides.forEach((sd, i) => { sd.sp = move(sd.sp ? mval(sd.sp, now) : sd.spv, 0, 1050, now + (N - 1 - i) * 60); sd.drawn = ""; sd.face.classList.remove("hi"); });
+    slides.forEach((sd, i) => { sd.sp = move(sd.sp ? mval(sd.sp, now) : sd.spv, 0, 1250, now + i * 75); sd.drawn = ""; sd.face.classList.remove("hi"); });
     spMv = move(mlin(spMv, now), 0, 1600, now + 150);
     BL.wake();
-    await wait(150 + 1600 + 60);
+    await wait(Math.max(150 + 1600, (N - 1) * 75 + 1250) + 60);
     slides.forEach((sd) => { if (sd.img) sd.img.classList.remove("on"); });
     spreadOn = false; onSpread(false); hero.style.height = ""; frameView(); spreadBusy = false; setActive(-1); BL.wake();
     if (choice >= 0) load(choice, { openAfter: true });
