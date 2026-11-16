@@ -5,98 +5,151 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Michael Leng · Vibe-coded pieces</title>
+<meta name="theme-color" content="#0d0e11">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   /* ---------------------------------------------------------------- system
-     A light table first, a ruled index second.
-       Geist             words      Geist Mono   facts      Barlow Condensed   signage */
+     The comp window: a dark ground on a 120px grid, panels in #191c20, amber for what's live, cyan for time.
+       Archivo          display and reading text
+       JetBrains Mono   everything the software would print: labels, values, timecode, buttons */
   :root {
-    --f-sans: "Geist", "Helvetica Neue", Arial, sans-serif;
-    --f-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --f-sign: "Barlow Condensed", "Arial Narrow", sans-serif;
-    --t-display: 600 clamp(34px, 4.3vw, 62px) / 0.98 var(--f-sans);
-    --t-section: 500 clamp(26px, 2.4vw, 32px) / 1.1 var(--f-sans);
-    --t-title:   600 clamp(28px, 2.6vw, 38px) / 1.02 var(--f-sans);
-    --t-head:    500 17px / 1.25 var(--f-sans);
-    --t-body:    400 15px / 1.6 var(--f-sans);
-    --t-sign:    500 12px / 1.2 var(--f-sign);
+    color-scheme: dark;
+    --bg: #0d0e11; --bg2: #15171a; --surface: #191c20; --grid: #14161a;
+    --ink: #eef0f3; --muted: #9a9fa6; --faint: #7d828a;
+    --line: #2f3338; --line-soft: #24272b; --line-strong: #3a3f45; --dot: #1c1f23;
+    --heat: #f9ac46; --heat-soft: rgba(249, 172, 70, .16); --heat-edge: rgba(249, 172, 70, .42);
+    --cyan: #54d0ec; --cyan-soft: rgba(84, 208, 236, .16); --cyan-edge: rgba(84, 208, 236, .40);
+    --rec: #ef4747; --code-green: #6f9c70;
+    --shadow: 0 40px 90px -30px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 255, 255, .06);
+    --hairline-plate: #0d0e11; --hairline-hi: #f9ac46; --hairline-edge: #8a8f96; --hairline-mid: #3d4248; --hairline-lo: #25282c;
+
+    --f-sans: "Archivo", system-ui, sans-serif;
+    --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --f-sign: var(--f-mono);
+    --t-display: 800 clamp(34px, 3.9vw, 60px) / 0.98 var(--f-sans);
+    --t-title:   800 clamp(28px, 2.6vw, 40px) / 1 var(--f-sans);
+    --t-head:    600 17px / 1.25 var(--f-sans);
+    --t-body:    400 15px / 1.55 var(--f-sans);
+    --t-sign:    600 11px / 1.2 var(--f-mono);
     --t-data:    400 12.5px / 1.45 var(--f-mono);
-    --track-sign: 0.22em;
+    --track-sign: 0.14em;
     --ease: cubic-bezier(0.32, 0.72, 0, 1);
-    --pad: clamp(20px, 3.2vw, 40px);
-
-    color-scheme: light;
-    --bg: #f1efea; --surface: #f8f7f4; --ink: #161514; --muted: #6d6a64; --faint: #a6a29a;
-    --line: #e1ddd4; --line-strong: #cdc8be; --dot: #d9d5cc;
-    --heat: #fa5d19; --heat-soft: #fde6d9;
-    --shadow: 0 40px 90px -30px rgba(40, 30, 20, .38), 0 0 0 1px rgba(0, 0, 0, .06);
-    --hairline-plate: #f1efea; --hairline-hi: #fa5d19; --hairline-edge: #9c988f; --hairline-mid: #bdb8ae; --hairline-lo: #dbd7ce;
+    --pad: clamp(18px, 2.2vw, 32px);
+    --top: 56px; --bot: 104px;
   }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-    color-scheme: dark; --bg: #0e0e0d; --surface: #151514; --ink: #f0eee9; --muted: #9a978f; --faint: #5f5c56;
-    --line: #242320; --line-strong: #35332f; --dot: #1f1e1c; --heat-soft: #2a160c; --shadow: 0 40px 90px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
-    --hairline-plate: #0e0e0d; --hairline-edge: #67645d; --hairline-mid: #45433e; --hairline-lo: #2a2926; } }
-  :root[data-theme="dark"] {
-    color-scheme: dark; --bg: #0e0e0d; --surface: #151514; --ink: #f0eee9; --muted: #9a978f; --faint: #5f5c56;
-    --line: #242320; --line-strong: #35332f; --dot: #1f1e1c; --heat-soft: #2a160c; --shadow: 0 40px 90px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
-    --hairline-plate: #0e0e0d; --hairline-edge: #67645d; --hairline-mid: #45433e; --hairline-lo: #2a2926; }
-
   * { box-sizing: border-box; }
   html { background: var(--bg); }
   body { margin: 0; color: var(--ink); font: var(--t-body); -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
-  .sign { font: var(--t-sign); letter-spacing: var(--track-sign); text-transform: uppercase; color: var(--muted); }
+  p, h1, h2, h3 { margin: 0; }
+  .sign { font: var(--t-sign); letter-spacing: var(--track-sign); text-transform: uppercase; color: var(--faint); }
   .data { font: var(--t-data); color: var(--muted); font-variant-numeric: tabular-nums; }
   .heat { color: var(--heat); }
-  .sl { color: var(--faint); font-weight: 400; margin-left: 0.2em; }
   button:focus-visible, a:focus-visible { outline: 2px solid var(--heat); outline-offset: 2px; }
 
-  .seg { display: inline-flex; border: 1px solid var(--ink); background: var(--bg); }
+  /* buttons: comp-panel controls; .solid is the amber tag */
+  .seg { display: inline-flex; border: 1px solid var(--line); background: var(--surface); }
   .seg button, .seg a { font: var(--t-sign); letter-spacing: var(--track-sign); text-transform: uppercase; height: 34px; display: inline-flex; align-items: center; padding: 0 12px 0 calc(12px + var(--track-sign));
-    border: 0; border-left: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
+    border: 0; border-left: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; text-decoration: none; white-space: nowrap; transition: color .2s, background .2s; }
   .seg > :first-child { border-left: 0; }
-  .seg [aria-pressed="true"], .seg .solid { background: var(--ink); color: var(--bg); }
-  .seg button:hover:not([aria-pressed="true"]):not(.solid), .seg a:hover:not(.solid) { background: var(--heat-soft); }
-  .seg .solid:hover { background: var(--heat); }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip { font: var(--t-data); color: var(--muted); border: 1px solid var(--line-strong); border-radius: 6px; padding: 4px 9px; white-space: nowrap; }
-  .chip b { color: var(--ink); font-weight: 500; margin-left: 6px; }
+  .seg button:hover:not(:disabled), .seg a:hover { color: var(--ink); background: var(--bg2); }
+  .seg .solid { color: var(--heat); background: var(--heat-soft); box-shadow: inset 0 0 0 1px var(--heat-edge); }
+  .seg .solid:hover { color: var(--bg) !important; background: var(--heat) !important; }
+  .seg button:disabled { opacity: .45; cursor: default; }
+  .tags, .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag, .chip { font: var(--t-sign); letter-spacing: .12em; text-transform: uppercase; padding: 7px 11px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); white-space: nowrap; }
+  .tag.amber, .chip { color: var(--heat); border-color: var(--heat-edge); background: var(--heat-soft); }
+  .tag.cyan { color: var(--cyan); border-color: var(--cyan-edge); background: var(--cyan-soft); }
+  .eyebrow { display: flex; align-items: center; gap: 12px; }
+  .eyebrow i { width: 26px; height: 2px; background: var(--heat); flex: none; }
+  .eyebrow p { font: 600 12.5px/1 var(--f-mono); letter-spacing: .3em; text-transform: uppercase; color: var(--heat); }
+  .expr { font: 400 12.5px/1.65 var(--f-mono); color: var(--faint); }
+  .expr .c { color: var(--code-green); } .expr .k { color: var(--cyan); } .expr .v { color: var(--heat); }
 
-  /* ---------------------------------------------------------------- the light table */
-  .hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; isolation: isolate; }
-  .hero .dots { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(var(--dot) 1.1px, transparent 1.3px); background-size: 18px 18px; background-position: 9px 9px;
-    -webkit-mask-image: radial-gradient(120% 90% at 55% 50%, #000 30%, transparent 85%); mask-image: radial-gradient(120% 90% at 55% 50%, #000 30%, transparent 85%); }
-  .reg { position: absolute; width: 13px; height: 13px; pointer-events: none;
-    background: linear-gradient(var(--faint), var(--faint)) center / 13px 1px no-repeat, linear-gradient(var(--faint), var(--faint)) center / 1px 13px no-repeat; }
-  .reg.a { left: 14px; top: 14px; } .reg.b { right: 14px; top: 14px; } .reg.c { left: 14px; bottom: 14px; } .reg.d { right: 14px; bottom: 14px; }
-  #stage { position: absolute; inset: 40px 24px 24px; aspect-ratio: auto; z-index: 0; }
+  /* ---------------------------------------------------------------- the comp */
+  .hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; isolation: isolate;
+    background:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px) 0 0 / 96px 96px,
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px) 0 0 / 96px 96px,
+      radial-gradient(110% 90% at 85% -10%, #181c21 0%, transparent 55%),
+      var(--bg); }
+  #stage { position: absolute; inset: calc(var(--top) + 8px) 20px calc(var(--bot) + 4px); aspect-ratio: auto; z-index: 0; }
   #stage svg { transition: opacity .7s var(--ease), filter .7s var(--ease); }
-  #stage .film { opacity: 0.42; filter: grayscale(1) contrast(1.05); transition: opacity .6s var(--ease), filter .6s var(--ease); }
+  #stage .film { opacity: 0.4; filter: grayscale(1) contrast(1.05); transition: opacity .6s var(--ease), filter .6s var(--ease); }
   #stage .film.on { opacity: 1; filter: none; }
 
-  .top { position: absolute; left: var(--pad); right: var(--pad); top: 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; z-index: 2; }
-  .mark { display: flex; align-items: center; gap: 14px; }
-  .mark .sq { width: 18px; height: 18px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font: 600 13px/1 var(--f-sans); }
-  .mark .wm { font: 500 14px/1 var(--f-sign); letter-spacing: 0.55em; text-transform: uppercase; }
-  .clock { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
-  .clock b { color: var(--ink); font-weight: 600; }
+  /* top chrome */
+  .ctop { position: absolute; top: 0; left: 0; right: 0; height: var(--top); padding: 0 var(--pad); display: flex; align-items: center; gap: 14px; z-index: 2;
+    border-bottom: 1px solid var(--line); background: linear-gradient(to bottom, var(--bg2), rgba(21, 23, 26, 0)); }
+  .rec { width: 9px; height: 9px; border-radius: 50%; background: var(--rec); box-shadow: 0 0 0 4px rgba(239, 71, 71, .18); flex: none; animation: rec 2s steps(1) infinite; }
+  @keyframes rec { 50% { opacity: .35; } }
+  .cfile { font: 400 13px/1 var(--f-mono); letter-spacing: .04em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cmeta { font: 400 13px/1 var(--f-mono); letter-spacing: .04em; color: var(--faint); white-space: nowrap; }
+  .cmeta b { color: var(--muted); font-weight: 500; }
+  .grow { flex: 1; }
+  .tc { font: 500 13px/1 var(--f-mono); letter-spacing: .04em; color: var(--cyan); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  .intro { position: absolute; left: var(--pad); top: 116px; width: min(440px, 40vw); z-index: 1; pointer-events: none; transition: opacity .5s var(--ease); }
-  .intro .kicker { margin: 0 0 14px; }
-  h1 { font: var(--t-display); letter-spacing: -0.04em; margin: 0; text-wrap: balance; }
-  .intro p.lede { margin: 16px 0 0; color: var(--muted); max-width: 36ch; text-wrap: pretty; }
+  /* the opening block */
+  .intro { position: absolute; left: var(--pad); top: calc(var(--top) + 30px); width: min(430px, 36vw); z-index: 1; pointer-events: none; transition: opacity .5s var(--ease); }
+  .logo { display: block; width: 116px; height: auto; color: var(--ink); margin: 0 0 14px -6px; }
+  .intro .eyebrow { margin-bottom: 16px; }
+  h1 { font: var(--t-display); letter-spacing: -0.02em; text-wrap: balance; }
+  .intro .lede { margin: 16px 0 0; color: var(--muted); font-size: 16px; line-height: 1.5; max-width: 38ch; text-wrap: pretty; }
+  .intro .tags { margin-top: 20px; }
 
-  .now { position: absolute; right: var(--pad); bottom: 30px; width: min(380px, 40vw); z-index: 1; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; transition: opacity .5s var(--ease); }
-  .now h2 { font: var(--t-title); letter-spacing: -0.03em; margin: 0; text-wrap: balance; min-height: 1em; }
-  .now .hint { min-height: 1.45em; }
-  .now .seg { margin-top: 6px; }
-  .hero.viewing .intro, .hero.viewing .now, .hero.viewing .cue { opacity: 0; pointer-events: none; }
-  .cue { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 1; height: 34px; padding: 0 14px 0 calc(14px + var(--track-sign)); border: 1px solid var(--ink); background: var(--bg); color: var(--ink); cursor: pointer; transition: opacity .5s, background .2s; }
-  .cue:hover { background: var(--heat-soft); }
-  .hero.spreading .intro, .hero.spreading .now, .hero.spreading .cue { opacity: 0; pointer-events: none; }
+  /* the projector readout: a comp panel */
+  .now { position: absolute; right: var(--pad); bottom: calc(var(--bot) + 18px); width: min(360px, 34vw); z-index: 1; background: rgba(25, 28, 32, .92); border: 1px solid var(--line);
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; transition: opacity .5s var(--ease); backdrop-filter: blur(6px); }
+  .cp-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--line-soft); padding-bottom: 10px; }
+  .cp-k { font: 500 12.5px/1.2 var(--f-mono); color: var(--muted); white-space: nowrap; }
+  .cp-v { font: 400 12.5px/1.2 var(--f-mono); color: var(--faint); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cp-v.amber { color: var(--heat); }
+  .now .hint { font: var(--t-data); font-size: 11.5px; color: var(--faint); min-height: 1.45em; }
+  .now .seg { align-self: flex-start; }
+  .hero.viewing .intro, .hero.viewing .now, .hero.spreading .intro, .hero.spreading .now { opacity: 0; pointer-events: none; }
+
+  /* bottom chrome: the timeline, one keyframe per piece */
+  .cbot { position: absolute; left: 0; right: 0; bottom: 0; height: var(--bot); padding: 0 var(--pad); display: flex; flex-direction: column; justify-content: center; gap: 10px; z-index: 2;
+    border-top: 1px solid var(--line); background: linear-gradient(to top, var(--bg2), rgba(21, 23, 26, 0)); }
+  .tlhead { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .tl { font: 500 12px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tl.layer { color: var(--muted); } .tl b { color: var(--heat); font-weight: 600; }
+  .tlright { display: flex; align-items: center; gap: 16px; }
+  .track { position: relative; height: 30px; margin: 0 7px; }
+  .tline { position: absolute; left: 0; right: 0; top: 14px; height: 2px; background: var(--line); }
+  .tdone { position: absolute; left: 0; top: 14px; height: 2px; width: 0; background: var(--faint); transition: width .9s var(--ease); }
+  .phead { position: absolute; top: -6px; bottom: -6px; width: 1px; background: var(--cyan); left: 0; transition: left .9s var(--ease); opacity: 0; }
+  .phead.on { opacity: 1; }
+  .kf { position: absolute; top: 0; width: 30px; height: 30px; margin-left: -15px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+  .kf::before { content: ""; position: absolute; left: 9px; top: 8px; width: 12px; height: 12px; transform: rotate(45deg); border: 1.5px solid var(--heat-edge); background: var(--bg); transition: background .25s, box-shadow .25s, border-color .25s; }
+  .kf:hover::before { border-color: var(--heat); }
+  .kf.on::before { background: var(--heat); border-color: var(--heat); box-shadow: 0 0 0 5px var(--heat-soft); }
+  .kf .tip { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); font: 500 11px/1 var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+    padding: 5px 8px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .kf:hover .tip, .kf:focus-visible .tip { opacity: 1; }
+  .hero.viewing .cbot .track, .hero.spreading .cbot .track { opacity: .5; }
+  .viewer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .viewer[hidden] { display: none; }
+  .vshot { position: absolute; overflow: hidden; background: #000; opacity: 0; transition: opacity .45s var(--ease); }
+  .viewer.on .vshot { opacity: 1; }
+  .vshot img, .vshot video, .vshot .still, .vshot svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vcap { position: absolute; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 8px 36px; align-items: start; pointer-events: auto;
+    opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease) .1s, transform .45s var(--ease) .1s; }
+  .viewer.on .vcap { opacity: 1; transform: none; }
+  .vcap:focus { outline: none; }
+  .vcap h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 6px 0 0; text-wrap: balance; overflow-wrap: break-word; }
+  .vcap .chips { margin-top: 10px; }
+  .vcap p { margin: 0; text-wrap: pretty; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .vcap .seg { margin-top: 14px; flex-wrap: wrap; }
+  @media (max-width: 760px) {
+    .vcap { left: var(--pad); right: var(--pad); grid-template-columns: 1fr; gap: 6px; }
+    .vcap h3 { font-size: 26px; }
+    .vcap p { font-size: 14px; -webkit-line-clamp: 4; }
+  }
+
   /* the contact sheet, laid out like the index: tiles placed by the scene over each landed slide's picture.
      --u is one world unit on the sheet in px, so type and gaps scale with the sheet */
   .sheet-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; --u: 2.5px; }
@@ -126,123 +179,85 @@
   .si .meta .m { grid-column: 2 / 4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .si:hover .meta .n, .si:focus-visible .meta .n { color: var(--heat); }
   .si:focus-visible { outline: none; }
-  .cue:hover { color: var(--ink); }
-
-  /* the frame */
-  .viewer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
-  .viewer[hidden] { display: none; }
-  .vshot { position: absolute; overflow: hidden; background: #000; opacity: 0; transition: opacity .45s var(--ease); }
-  .viewer.on .vshot { opacity: 1; }
-  .vshot img, .vshot video, .vshot .still, .vshot svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .vcap { position: absolute; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 8px 36px; align-items: start; pointer-events: auto;
-    opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease) .1s, transform .45s var(--ease) .1s; }
-  .viewer.on .vcap { opacity: 1; transform: none; }
-  .vcap:focus { outline: none; }
-  .vcap h3 { font: var(--t-title); letter-spacing: -0.03em; margin: 6px 0 0; text-wrap: balance; overflow-wrap: break-word; }
-  .vcap .chips { margin-top: 10px; }
-  .vcap p { margin: 0; text-wrap: pretty; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .vcap .seg { margin-top: 14px; flex-wrap: wrap; }
-  @media (max-width: 760px) {
-    .vcap { left: var(--pad); right: var(--pad); grid-template-columns: 1fr; gap: 6px; }
-    .vcap h3 { font-size: 26px; }
-    .vcap p { font-size: 14px; -webkit-line-clamp: 4; }
-  }
+  /* comp-window touches on the frame caption and the sheet */
+  .vcap h3 { font: var(--t-title); letter-spacing: -0.02em; }
+  .vcap p#fdesc { color: var(--muted); }
+  .vcap .data .heat { font-weight: 600; }
+  .shead .count { font: 600 12px/1 var(--f-mono); letter-spacing: .26em; text-transform: uppercase; color: var(--heat); display: flex; align-items: center; gap: 10px; }
+  .shead .count i { width: 22px; height: 2px; background: var(--heat); }
+  .shead h2 { font-weight: 800 !important; letter-spacing: -0.02em; }
+  .si .meta .n { color: var(--heat) !important; font-weight: 600; }
+  .si .meta .t { font-weight: 600 !important; }
+  .si .meta .m { text-transform: uppercase; letter-spacing: .08em; }
 
   @media (max-width: 760px) {
-    .hero { min-height: 680px; }
-    #stage { inset: 200px 8px 190px; }
-    .intro { top: 84px; width: auto; right: var(--pad); }
-    .intro p.lede { display: none; }
-    h1 { font-size: 32px; }
-    .now { left: var(--pad); width: auto; text-align: left; align-items: flex-start; bottom: 26px; }
-    .hero.spreading #stage { inset: 124px 8px 20px; }
+    :root { --top: 46px; --bot: 92px; }
+    .hero { min-height: 660px; }
+    .cmeta, .ctop .sep { display: none; }
+    .ctop { gap: 10px; }
+    #stage { inset: 236px 8px calc(var(--bot) + 132px); }
+    .intro { top: calc(var(--top) + 16px); width: auto; right: var(--pad); }
+    .logo { width: 64px; margin-bottom: 8px; }
+    .intro .eyebrow { margin-bottom: 10px; }
+    .intro .lede, .intro .tags { display: none; }
+    h1 { font-size: 30px; }
+    .now { left: var(--pad); right: var(--pad); width: auto; bottom: calc(var(--bot) + 12px); padding: 14px 16px; gap: 10px; }
+    .now .cp-row:not(.first), .now .expr { display: none; }
+    .tlright .tl { display: none; }
+    .hero.spreading #stage { inset: calc(var(--top) + 60px) 8px calc(var(--bot) + 8px); }
     .shead .count, .shead #scount { display: none; }
     .shead { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 8px; }
-    .shead h2 { font-size: clamp(14px, calc(var(--u) * 5.2), 18px); }
+    .shead h2 { font-size: clamp(14px, calc(var(--u) * 5.2), 18px) !important; }
     .shead .seg button { height: 28px; padding: 0 10px 0 calc(10px + var(--track-sign)); }
-    .clock .sep, .clock .role { display: none; }
-    .mark .wm { letter-spacing: 0.4em; }
   }
-
-  /* ---------------------------------------------------------------- the index */
-  .sheet { max-width: 1240px; margin: 0 auto 48px; background: var(--surface); border: 1px solid var(--line); }
-  @media (max-width: 720px) { .sheet { margin: 0; border-width: 1px 0; } }
-  .band { position: relative; padding: var(--pad); border-top: 1px solid var(--line); }
-  .band:first-child { border-top: 0; }
-  .band::before, .band::after { content: ""; position: absolute; top: -6px; width: 11px; height: 11px; pointer-events: none;
-    background: linear-gradient(var(--faint), var(--faint)) center / 11px 1px no-repeat, linear-gradient(var(--faint), var(--faint)) center / 1px 11px no-repeat; }
-  .band::before { left: -6px; } .band::after { right: -6px; }
-  .band:first-child::before, .band:first-child::after { display: none; }
-  .count { margin: 0 0 8px; }
-  .count .k { color: var(--ink); margin-left: 4px; }
-  h2.sec { font: var(--t-section); letter-spacing: -0.02em; margin: 0; }
-  .head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-  .shot { position: relative; aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden; background: var(--bg); }
-  .shot img, .shot video, .shot svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .shot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); pointer-events: none; transition: box-shadow .3s var(--ease); }
-  .still { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto; padding: 16px 18px; background: var(--bg);
-    background-image: radial-gradient(var(--dot) 1.1px, transparent 1.3px); background-size: 16px 16px; }
-  .still .glyph { position: static !important; width: 62% !important; height: auto !important; margin: auto; }
-  .still .big { font: 600 clamp(28px, 3vw, 40px) / 1 var(--f-sans); letter-spacing: -0.03em; }
-  .still .big small { font: var(--t-sign); letter-spacing: var(--track-sign); text-transform: uppercase; color: var(--muted); margin-left: 10px; }
-  .glyph path { fill: none; stroke: var(--muted); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: row dense; gap: 36px 24px; padding: 28px 0 0; }
-  @media (max-width: 980px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 560px) { .tiles { grid-template-columns: 1fr; gap: 28px; } }
-  .tile { display: block; text-decoration: none; color: inherit; cursor: pointer; }
-  .tile.wide { grid-column: span 2; }
-  .tile.wide .shot { aspect-ratio: auto; height: 0; padding-bottom: calc((100% - 24px) / 2 * 10 / 16); }
-  @media (max-width: 560px) { .tile.wide { grid-column: auto; } .tile.wide .shot { height: auto; padding-bottom: 0; aspect-ratio: 16 / 10; } }
-  .tile .shot img, .tile .shot video { transition: transform .7s var(--ease); }
-  .tile:hover .shot img, .tile:hover .shot video, .tile:focus-visible .shot img, .tile:focus-visible .shot video { transform: scale(1.025); }
-  .glyph .g { transform-box: fill-box; animation: drift 5.5s ease-in-out infinite alternate; }
-  .glyph .g1 { animation-delay: -1.8s; animation-duration: 6.4s; } .glyph .g2 { animation-delay: -3.1s; animation-duration: 4.9s; }
-  @keyframes drift { from { transform: translate(-3px, 2px); } to { transform: translate(4px, -3px); } }
-  .tile:hover .shot::after { box-shadow: inset 0 0 0 1.5px var(--heat); }
-  .tile .meta { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 3px 8px; align-items: baseline; margin-top: 14px; }
-  .tile .n { grid-row: span 2; }
-  .tile .t { font: var(--t-head); letter-spacing: -0.012em; }
-  .tile .m { grid-column: 2 / 4; }
-  .tile[aria-current="true"] .n { color: var(--heat); }
-  .foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; padding-bottom: 22px; }
-  @media (prefers-reduced-motion: reduce) { #stage svg, #stage .film, .vshot, .vcap, .tile .shot img, .tile .shot video { transition: none; } .glyph .g { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { #stage svg, #stage .film, .vshot, .vcap, .tdone, .phead { transition: none; } .rec { animation: none; } }
 </style>
 </head>
 <body>
 <section class="hero" id="hero" aria-label="Light table">
-  <div class="dots" aria-hidden="true"></div>
-  <span class="reg a"></span><span class="reg b"></span><span class="reg c"></span><span class="reg d"></span>
-  <div id="stage" role="img" aria-label="An isometric slide magazine beside a projector. A chosen slide is carried into the projector and thrown onto a floating screen."></div>
+  <div id="stage" role="img" aria-label="A slide magazine beside a projector, drawn in perspective. A chosen slide is carried into the projector and thrown onto a floating screen."></div>
 
-  <header class="top">
-    <div>
-      <div class="mark"><span class="sq" aria-hidden="true">✳</span><span class="wm">Michael Leng</span></div>
-      <div class="clock sign"><span id="clock"></span><span class="sep">·</span><span class="role">Motion designer &amp; creative technologist</span></div>
-    </div>
-    <div class="seg" role="group" aria-label="Theme"><button type="button" data-t="light">Light</button><button type="button" data-t="dark">Dark</button></div>
+  <header class="ctop">
+    <span class="rec" aria-hidden="true"></span>
+    <p class="cfile">michael_leng_vibe_coded.aep</p>
+    <p class="cmeta">[ <b id="ncomps"></b> comps · <b>24</b> fps ]</p>
+    <span class="grow"></span>
+    <p class="cmeta">COMP <b id="compn">—</b> / <span id="compt"></span></p>
+    <p class="tc" id="tc" aria-label="Timecode">00:00:00:00</p>
   </header>
 
   <div class="intro">
-    <p class="kicker data"><span class="heat">[ Light table ]</span> · <span id="span1"></span></p>
-    <h1>Vibe-coded pieces, <span class="heat">held to the light.</span></h1>
-    <p class="lede">Pick a slide from the magazine. It loads into the projector and throws onto the screen, then the camera moves in and the piece plays.</p>
+    <svg class="logo" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 619 576"> <path d="M583.68,308.42c-.68-32.2-36.99-37.46-57.42-18.54-21.16,17.24-29.21,42.35-35.64,68.58-2.59,6.35-1.4,17.95-7.56,20.52-8.41,2.22-17.5,3.89-25.74,5.94-3.3,1.4,1.21-6.71,1.26-8.1,5.4-17,9.26-32.93,12.42-50.58,3.33-9.09-2.21-16.4-8.46-21.42-7.25,6.14-8.87,16.42-13.68,24.3-34.16,38.07-14.49-77.84,6.12-28.62,4.82,6.79,15.41-9.27,9.54-14.04-11.4-15.03-34.13-13.88-41.94,3.78-6.05,9.8-7.94,23.9-6.66,36.36-1.06,6.47-7.84,11.11-12.06,15.84-10.93,11.36-6.27-14.41-5.94-21.06,7.03-38.55-6.96-46.64-33.3-16.74-3.17,6.42-3.26-1.22-6.12-3.24-19.42-9.3-24.78,31.8-31.68,42.84-4.32,11.76-12.07,34.16-27.9,27.54-13.83-19.33-9.59-11.56.54-20.7,29.95-27.6,1.27-56.12-20.34-24.3-4.19,5.5-5.71,12.66-6.12,19.62.78,4.02-4.47.55-6.3,2.34-2.72,7.45,7.23,4.44,9.18,16.38,5.59,18.91,29.88,23.59,42.48,9.18,8.14-10.99,13.45-23.41,18.36-35.82,3.01-8.64,4-20.29,10.08-27.54,12.02,3.25-16.84,67.72,6.84,51.84,10.65-7.11,6.82-25.92,9.54-37.8.5-11.07,6.99-18.5,15.3-25.02,14.35-10.38-17.35,97.82,35.28,37.98,5.83-10.68,3.35,9.71,15.84,10.98,12.99,2.78,19.81-10.68,25.74-19.98,4.61-5.17-2.8,16.81-3.24,19.44-3.83,13.63-6.25,27.98-12.42,41.4-36.34,8.77-71.34,20.68-106.74,31.5-39.92-17.07-93.13,9.35-97.92,55.25-3.19,102.99,139.44,81.1,190.61,29.34,32.84-30.13,56.24-71.59,69.84-116.45.83-4.06,4.07-4.06,7.02-5.04,36.99-9.98,75.85-33.34,81.18-75.96ZM287.77,348.56c-2.13-16.33,19.22-35.32,14.04-14.76-2.12,5.17-7.43,16.5-14.04,14.76ZM363.55,311.3c-.3.06-.42-.06-.36-.36.3-.06.42.06.36.36ZM237.19,494.9c-.09-.62.47-.34.36.18-.15-.03-.18-.18-.36-.18ZM479.64,396.62c-26.3,81.4-106.15,154.52-196.56,135.89-18.09-5.04-28.91-15.39-33.47-33.3-4.74-25.94,2.77-53.65,27.18-64.98,12-6.8,26.29-8.57,38.88-5.04,7-1.04-11.76,9.62-12.96,12.78-59.4,82.52,89.21,89.75,137.15-19.8,4.59-7.05,6.08-18.63,12.6-22.86,7-1.07,13.85-4.72,20.88-5.58,4.85-1.7,9.8-5.04,6.3,2.88ZM405.49,412.28c8.4-2.14,17.77-5.27,26.82-7.02,2.82.67-2.19,6.24-2.52,8.46-9,16.95-19.82,31.28-34.38,44.64-16.47,15.91-46.61,34.23-70.74,33.3-30.52-3.17-20.86-32.67-3.24-45.9,12.27-10.73,18.23-8.26,19.44,8.82,1.08,7.93-4.29,13.5-11.34,14.22-6.28,13.15,29.48,10.28,26.64-17.1,1-10.37-12.45-21.06-7.38-21.06,17.8-8,37.62-12.29,56.7-18.36ZM412.15,408.86c-.09-.45.09-.63.54-.54.09.45-.09.63-.54.54ZM307.57,440c-.29.5-.66.88-1.08,1.26-.46-.44.47-1.25,1.08-1.26ZM504.3,358.82c8.25-23.17,15.69-47.24,36.36-60.84,10.99-8.16,23.55.11,26.82,11.88-1.06,24.54-23.52,40.59-43.56,52.2-7.04,3.96-14.79,8.35-22.86,11.16-3.04-.38,3.68-10.74,3.24-14.4ZM538.32,297.09c.04-.48,1.13-.98,1.08-.36-.57-.17-.27.5-1.08.36Z"/> <path d="M235.57,435.32c3.23-9,6.27-18.15,8.1-27.72,2.29-9.41-.73-14.77,11.7-10.8,37.37,11.04,77.01,10.81,113.22.36,21.48-7.06,43.69-13.98,55.44-32.4.99-1.89,3.98-12.9-1.8-10.62-39.31,30.45-99.72,45.5-149.76,34.92-33.85-10.85-23.95-1.82-20.7-38.52,3.43-14.26,2.8-31.69,9.18-43.74,18.32-6.77,39.85-18.45,45.18-38.34,4.16-22.18-19.04-30.62-34.74-21.42-12.1,8.77-19.48,22.7-24.66,36.36-3.46,17.13-3.03,16.25-20.34,17.46-30.71,2.11-57-12.95-84.6-23.04-5.35-3.67-20.15-3.12-17.46-11.7-.31-25.01,1.9-50.89-1.44-75.78,1.65-11.74,20.9-45.61,28.8-21.06,1.85,26.1,1.15,51.26.9,77.22.13,5.92-.74,18.93,7.74,10.08,13.29-1.8,6.11-65.18,6.48-77.94-.61-5.03,3-9.06,4.32-13.86,2.05-6.1,3.96-11.54,7.38-16.92,9.36-13.16,10.78-.7,10.62,8.28,9.52,34.12-10.25,146.9,48.96,77.22,12.57,4.59,20.69-2.73,28.44-12.6,2.34-3.09,4.11,2.44,6.66,3.42,9.67,6.44,19.46-.32,27-6.48,13.28-11.91,6.4-23.81,18.18-2.52,9.08,18.32,1.48-29.06,3.42-33.66.62-6.62,6.32-12.07,10.08-16.92,9.61-12.44,4.43,11.23,4.5,16.38-6.76,137.83,192.09,92.07,208.26-10.44,1.52-14.2-.23-28.29-5.04-41.04-1.05-5.51-12.49-29.19-16.74-17.64,76.74,122.3-202.6,225.48-170.63,44.1-4.17-26.69-27.68,12.78-23.76,1.8,3.02-20.46,9.95-39.78,8.46-61.2-4.89-17.94-19.4-5.71-22.32,5.76-9.96,31.64-6.57,66.21-7.02,98.81-13.82,23.89-30.21,22.61-30.96-7.02-2.45-29.95,17.68-36.65,17.28-11.52-2.52,9.33,6.11,3.84,7.2-1.26.77-7.56,1.02-18.85-7.56-22.68-31.24-11.09-32.91,27.1-30.6,48.06,2.53,7.01.11,11.39-5.94,16.02-14.63,9.35-4.31-51.94-9.18-56.52-4.28-2.75-9.49,3.79-12.06,6.66-3.18,1.86-5.54,3.62-4.86,7.2,1.08,16.06-.91,34.07,4.86,48.24-52.37,69.41-1.05-166.42-59.58-86.58-2.42,4.22-4.86,7.74-6.84,12.06-2.4,4-2.64,10.08-4.32,1.62-8.89-28.54-33.43-6.71-38.7,11.16-10.42,28.31-1.19-2.39-28.8-26.1,26.11-61.08,98.03-123.57,167.4-91.08,4.17,1.16,1.05,2.4-.9,3.78-16.92,12.65-30.64,31.21-33.84,53.1-3.11,15.28-.88,32.2,9.36,42.3,20.27,10.25,27.37-30.68,7.74-22.32-2.67,3.7-2.14,8.89-4.5,12.96-3.79,1.21-5.25-7.64-5.94-10.8-3.06-19.87,7.05-39.53,19.08-52.38,6.64-6.12,18.98-25.45,28.08-16.92,27.63,10.87,84.77,39.15,109.26,9.18,28.64-56.68-72.43-47.47-100.61-32.04-13.45,6.26-10.02,6.51-24.12.9C197.67,1.32,123.87,60.45,92.12,120.88c-7.77,16-4.83,14.09-16.74,11.52-84.87,4.48-22.45,117.1,15.66,24.66,2.98-3.4,9.58,11.39,11.16,14.04,12.15,27.86,8.76,62.8,8.82,92.7,4.42,9.71-14.3-.08-32.76,11.16-22.48-12.96-48.07,4.7-57.24,26.82-32.73,85.74,115.49,100.07,103.49-19.62,19.79,5.93,39.72,16.35,57.96,24.48,68.19,19.76,58.5-26.88,49.86,54-2.78,7.09,2.39,19.7-9.54,14.76-44.61-10.16-97.5,10.78-106.56,60.12-6.11,88.87,97.21,57.86,119.33-.18ZM263.47,292.05c19.82-59.35,51.66-37.84,23.76-14.04-2.83,2.96-22.61,16.47-23.76,14.04ZM321.97,163.17c3.21-20.61.19-42.97,6.84-62.82,9.43-10.86-6.17,68.8-6.84,62.82ZM236.29,230.31c0,.24,0,.12,0,0,.5-.14.5.5,0,0ZM166.27,160.47c.55.1.5.94-.18.72-.02-.32.22-.38.18-.72ZM302.35,42.76c24.1-9.46,57.92-15.75,79.38,1.44,6.95,10.27-2.26,22.06-13.86,22.86-20.91,1.97-41-7.56-59.22-14.22-7.79-3.5-24.14-4.39-6.3-10.08ZM78.98,151.11c-13.37,49.97-52.06,20.38-22.68-1.08,5.45-2.66,10.6-4.5,16.92-3.06,2.82,1.57,6.87-.2,5.76,4.14ZM89.06,156.33c.22.08.37.23.36.54-.62.16-.62-.28-.36-.54ZM88.88,138.69c-.06-.3.06-.42.36-.36.06.3-.06.42-.36.36ZM90.5,129.15h-.54c0-.72.72-.7.54,0ZM90.32,128.25c.04-.2.36-.12.36-.36.41.22.02.67-.36.36ZM71.6,293.85c7.66-7.05,6.18-6.2,10.08,1.98,5.76,10.35-2.86,29.96-13.14,16.38-2.86-5.59-.24-13.3,3.06-18.36ZM37.76,281.43c.3-.06.42.06.36.36-.3.06-.42-.06-.36-.36ZM56.84,366.56c.52-.04.98-.02.9.54-.52.04-.98.02-.9-.54ZM111.02,288.63c-3.39,123.49-129.18,60.82-63.18-5.4,2.45-2.15,6.5-3.27,9.72-4.86,2.91.26,14.78-.34,11.16,3.96-14.43,12.13-14.31,41.53,9.72,40.32,18.03-3.61,17.85-27.08,9.18-39.78,8.33-1.75,27.47-11.43,23.4,5.76ZM60.98,304.83c-.35.62-.74-.2-.54-.72.7-.08-.1.54.54.72ZM124.52,277.11c.27.09.45.27.72.36-.07.4-1.06.24-.72-.36ZM153.32,290.97c.67-.19.51.45,1.08.36-.17.38-1.31.25-1.08-.36ZM176.35,301.95c.26-.42.73-.08.9.18-.16.49-.63-.18-.9-.18ZM218.83,309.5h.36c.04.51-1.35-.05-.36,0ZM225.49,309.15c.02-.46.67-.43.9-.18-.16.31-.63.47-.9.18ZM136.04,455.66c.18-.55.61.08.72.18-.18.55-.61-.08-.72-.18ZM228.01,391.04c-3.61,24.14-10.68,48.57-26.82,66.6-18.05,16.74-47.95,19.7-63-2.52-27.85-57.43,44.88-81.3,89.82-64.07Z"/> <path d="M520.74,152.91c-2.4-.23-.26-1.33-1.62-2.52-4.04-1.53-3.09,4.21-4.14,6.48-1.8,4.91-4.31,9.63-7.74,13.68-19.9,19.92-29.8-7.4-15.66-23.22,10.02-26.65,18.94-58.34,12.6-86.04-11.34-17.64-26.32,4.96-28.8,17.46-5.08,19.54-7.24,42.5-5.94,63-1.29,7.86,3.59,16.57,1.98,23.04-6.04,8.7-16.13,22.03-27.54,19.26-17.43-7.75-7.4-53.25,2.52-40.86.31,6.94-2.56,17.31-7.56,22.5-2.55,1.45-3.75,9.27.18,7.02,12.24-9.7,23.4-46.91-.36-46.08-20.4,5.84-24.28,37.36-15.48,54.54.3,2.64,4.62,4.36,2.34,6.66-17.66,16.99-15.88-24.52-15.66-34.56-.4-13.5,3.25-14.9-10.8-20.88-3.78-3.45-2.36,19.87-2.88,22.14-2.37,11.26,2.64,24.35.54,34.38-15.62,22.62-29.89,2.35-21.96-18.18,3.2-7.1,5.38-14.63,10.62-20.88,31.88-27.87-36.58-13.14-27,43.56,3.9,18.49,28.33,20.84,38.88,5.94,1.78-1.03,2.7-7.86,4.68-3.42,6.21,10.6,18.45,7.39,24.48-2.7,1.27-3.31,4.27-4.15,6.12-.54,17.69,7.14,32.29-8.28,42.84-19.98,9.89,28.95,47.72,2.88,45.36-19.8ZM483.48,149.31c.08-23.02,2.43-45.96,6.66-68.4,5.86-21.88,9.74-21.28,9.18,1.44-1.55,23.26-5.8,47.01-15.84,66.96Z"/> </svg>
+    <div class="eyebrow"><i></i><p>Vibe-coded // <span id="span1"></span></p></div>
+    <h1>Pieces held to&nbsp;the&nbsp;light.</h1>
+    <p class="lede">Shaders, toys and tools I built by talking to a machine. Pick a slide from the magazine; it loads into the projector, throws onto the screen, and the camera moves in.</p>
+    <div class="tags"><p class="tag amber">WebGL</p><p class="tag amber">Three.js</p><p class="tag amber">Generative</p><p class="tag cyan">+ Motion</p></div>
   </div>
 
   <div class="now" aria-live="polite">
-    <p class="data"><span class="heat" id="nc">[ — ]</span> · <span id="nstate">Lamp off</span></p>
-    <h2 id="ntitle"></h2>
-    <p class="data hint" id="nhint"></p>
+    <div class="cp-row first"><p class="cp-k">composition</p><p class="cp-v amber" id="ntitle">—</p></div>
+    <div class="cp-row"><p class="cp-k">layer</p><p class="cp-v" id="nc">[ — ]</p></div>
+    <div class="cp-row"><p class="cp-k">status</p><p class="cp-v" id="nstate">lamp off</p></div>
+    <p class="expr" id="nexpr"></p>
+    <p class="hint" id="nhint"></p>
     <div class="seg" role="group" aria-label="Projector"><button type="button" id="nprev">‹ Prev</button><button type="button" class="solid" id="nview">View</button><button type="button" id="nnext">Next ›</button></div>
   </div>
-  <button class="cue sign" type="button" id="cue">Contact sheet ⤢</button>
+
+  <footer class="cbot">
+    <div class="tlhead">
+      <p class="tl layer">LAYER <b id="tllayer">—</b></p>
+      <div class="tlright"><p class="tl">TIMELINE · <span id="nkf"></span> KEYFRAMES</p><div class="seg"><button type="button" id="cue">Contact sheet ⤢</button></div></div>
+    </div>
+    <div class="track" id="track"><div class="tline"></div><div class="tdone" id="tdone"></div><div class="phead" id="phead"></div></div>
+  </footer>
+
   <div class="sheet-ui" id="sheetui" hidden>
     <div class="shead" id="shead">
-      <div><p class="count data"><span class="heat">[ Index ]</span> · <span class="k">Every piece</span></p><h2>All of them, at once <span class="sl2">//</span></h2></div>
+      <div><p class="count"><i></i>Index // every piece</p><h2>All of them, at once</h2></div>
       <div class="sright"><span class="data" id="scount"></span><div class="seg"><button type="button" id="sback">Back to the table</button></div></div>
     </div>
     <div id="sitems"></div>
   </div>
-
   <div class="viewer" id="viewer" hidden>
     <div class="vshot" id="fpic"></div>
     <div class="vcap" id="fcap" tabindex="-1" role="dialog" aria-labelledby="ftitle">
@@ -258,8 +273,6 @@
     </div>
   </div>
 </section>
-
-
 <!-- The drawing engine below is @lucasmarkes/hairline (https://github.com/lucasmarkes/hairline).
 MIT License
 
@@ -1030,37 +1043,36 @@ const chip = (k, v) => '<span class="chip">' + esc(k) + (v ? "<b>" + esc(v) + "<
 const root = document.documentElement, $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, "0");
 const N = PIECES.length, years = PIECES.map((p) => +p.year), y0 = Math.min(...years), y1 = Math.max(...years);
-$("span1").textContent = pad(N) + " pieces · " + y0 + "–" + y1;
+$("span1").textContent = y0 + "–" + y1;
 
-(function clock() {
-  const d = new Date();
-  const day = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }).format(d).replace(/,/g, "");
-  const time = d.toLocaleTimeString("en-GB", { hour12: false });
-  const zone = (new Intl.DateTimeFormat("en-US", { timeZoneName: "short" }).formatToParts(d).find((x) => x.type === "timeZoneName") || {}).value || "";
-  const off = -d.getTimezoneOffset(), utc = "UTC" + (off >= 0 ? "+" : "−") + Math.floor(Math.abs(off) / 60) + (off % 60 ? ":" + pad(Math.abs(off) % 60) : "");
-  $("clock").innerHTML = esc(day) + " · <b>" + esc(time) + "</b> · " + esc(zone + " " + utc);
-  setTimeout(clock, 1000 - (Date.now() % 1000));
-})();
-
-const dark = () => (root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches);
-const themeButtons = document.querySelectorAll(".top .seg button");
-const syncTheme = () => themeButtons.forEach((b) => b.setAttribute("aria-pressed", String((b.dataset.t === "dark") === dark())));
-themeButtons.forEach((b) => b.addEventListener("click", () => { root.dataset.theme = b.dataset.t; syncTheme(); }));
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncTheme);
-syncTheme();
+$("ncomps").textContent = pad(N); $("compt").textContent = pad(N); $("nkf").textContent = pad(N);
+// the comp's timecode, HH:MM:SS:FF at 24 fps from when the page opened
+(() => { const t0 = performance.now(), tc = $("tc");
+  setInterval(() => { if (document.hidden) return; const f = Math.floor(((performance.now() - t0) / 1000) * 24), fr = f % 24, s = Math.floor(f / 24);
+    tc.textContent = pad(Math.floor(s / 3600)) + ":" + pad(Math.floor(s / 60) % 60) + ":" + pad(s % 60) + ":" + pad(fr); }, 1000 / 24); })();
 
 /* the readout and the frame's contents: the scene calls these */
 const TOUCH = matchMedia("(hover: none)").matches;
 const DEFAULT_HINT = TOUCH ? "Tap a slide to project it" : "Hover the magazine · click a slide to project it";
 let hoverI = -1;
 function onHover(a) { hoverI = a; $("nhint").textContent = a >= 0 ? "Slide " + pad(a + 1) + " · " + PIECES[a].title + " — click to project" : DEFAULT_HINT; }
+const EXPR = {
+  off: '<span class="c">// projector.lamp</span><br><span class="v">0</span>',
+  load: '<span class="c">// slide.position</span><br><span class="k">linear</span>(t, <span class="v">0</span>, <span class="v">1.7</span>, magazine, gate)',
+  on: '<span class="c">// projector.lamp</span><br><span class="k">easeOut</span>(t, <span class="v">0</span>, <span class="v">0.9</span>, <span class="v">0</span>, <span class="v">100</span>)',
+};
+const kfPos = (i) => (N > 1 ? (i / (N - 1)) * 100 : 0);
 function onLoad(i, done) {
-  if (i < 0) { $("nc").textContent = "[ — ]"; $("nstate").textContent = "Lamp off"; $("ntitle").textContent = ""; $("nview").disabled = true; return; }
+  document.querySelectorAll(".kf").forEach((k, j) => { k.classList.toggle("on", j === i); k.setAttribute("aria-current", String(j === i)); });
+  if (i < 0) { $("nc").textContent = "[ — ]"; $("nstate").textContent = "lamp off"; $("ntitle").textContent = "—"; $("nview").disabled = true;
+    $("compn").textContent = "—"; $("tllayer").textContent = "—"; $("tdone").style.width = "0"; $("phead").classList.remove("on"); $("nexpr").innerHTML = EXPR.off; return; }
   $("nc").textContent = "[ " + pad(i + 1) + " / " + pad(N) + " ]";
-  $("nstate").textContent = done ? "Projecting" : "Loading";
+  $("nstate").textContent = done ? "projecting" : "loading";
   $("ntitle").textContent = PIECES[i].title;
   $("nview").disabled = !done;
-  document.querySelectorAll(".tile").forEach((r, k) => r.setAttribute("aria-current", String(k === i)));
+  $("compn").textContent = pad(i + 1); $("tllayer").textContent = PIECES[i].title;
+  $("tdone").style.width = kfPos(i) + "%"; const ph = $("phead"); ph.style.left = kfPos(i) + "%"; ph.classList.add("on");
+  $("nexpr").innerHTML = done ? EXPR.on : EXPR.load;
 }
 let framed = -1;
 function fillFrame(i) {
@@ -1075,9 +1087,19 @@ function fillFrame(i) {
   const a = $("fopen"); a.href = p.url; a.textContent = "Open " + p.where + " ↗";
 }
 $("nhint").textContent = DEFAULT_HINT;
+$("nexpr").innerHTML = EXPR.off;
+// one keyframe per piece on the timeline
+PIECES.forEach((p, i) => {
+  const k = document.createElement("button");
+  k.type = "button"; k.className = "kf"; k.style.left = kfPos(i) + "%";
+  k.setAttribute("aria-label", "Load " + p.title);
+  k.innerHTML = '<span class="tip"></span>'; k.querySelector(".tip").textContent = pad(i + 1) + " · " + p.title;
+  k.addEventListener("click", () => scene.load(i));
+  $("track").appendChild(k);
+});
 function onSpread(on) { $("hero").classList.toggle("spreading", on); }
 // one frame per piece on the contact sheet; the scene places them
-$("scount").textContent = pad(N) + " pieces · " + y0 + " — " + y1;
+$("scount").textContent = pad(N) + " comps · " + y0 + " — " + y1;
 PIECES.forEach((p, i) => {
   const b = document.createElement("button");
   b.className = "si"; b.type = "button"; b.dataset.i = i;
@@ -1134,6 +1156,7 @@ const scene = (() => {
     return Object.assign({}, pose, { S, cx: VBW / 2 - S * (x0 + x1) / 2, cy: VBH / 2 - S * (y0 + y1) / 2 });
   }
   const HOME = framed({ az: rad(42), k: 0.44, dist: 470, T: [70, 20, 40] }, 0.84);
+  HOME.cx += 40;   // nudge right of the opening block
   // the opening: low and close, swung round; it settles into HOME before the first slide goes in
   const INTRO = Object.assign({}, HOME, { az: rad(16), k: 0.16, dist: 300, S: HOME.S * 1.5, cy: HOME.cy + 70, cx: HOME.cx - 40 });
   const lerpPose = (a, b, e) => ({ az: lerp(a.az, b.az, e), k: lerp(a.k, b.k, e), dist: lerp(a.dist, b.dist, e), S: Math.exp(lerp(Math.log(a.S), Math.log(b.S), e)),
